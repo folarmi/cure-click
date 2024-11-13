@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DashboardIcon } from "@radix-ui/react-icons";
 import { Flex } from "@radix-ui/themes";
 import { Link } from "react-router-dom";
 
 type Prop = {
-  route: string;
+  route: any;
 };
 
 const Breadcrumb = ({ route }: Prop) => {
@@ -19,9 +20,22 @@ const Breadcrumb = ({ route }: Prop) => {
         </Link>
       </Flex>
       <span className="text-gray-400">/</span>
-      <Link to="/specialist" className="text-gray12 font-medium">
-        {route}
-      </Link>
+      {route.split("/").map((item: string, index: number, arr: any) => (
+        <span key={index}>
+          <Link
+            to={`/${item}`}
+            className={
+              index === arr.length - 1
+                ? "text-gray12 font-medium"
+                : "text-gray10 font-medium"
+            }
+          >
+            {item}
+          </Link>
+          {index !== arr.length - 1 && "/"}{" "}
+          {/* Add a slash after each item except the last one */}
+        </span>
+      ))}
     </nav>
   );
 };

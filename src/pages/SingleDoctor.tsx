@@ -15,6 +15,9 @@ import Modal from "../components/ui/Modal";
 import { useState } from "react";
 import Availability from "../components/modals/Availability";
 import { PaymentBox } from "../components/ui/PaymentBox";
+import Breadcrumb from "../components/ui/BreadCrumb";
+import { BackgroundHeader } from "../components/ui/BackgroundHeader";
+import doctors from "../assets/doctors.svg";
 
 const SingleDoctor = () => {
   const [modal, setModal] = useState(false);
@@ -23,13 +26,20 @@ const SingleDoctor = () => {
     setModal(!modal);
   };
   return (
-    <DashboardLayout>
+    <DashboardLayout ifHeader={false}>
+      <BackgroundHeader className="relative h-full">
+        <Breadcrumb route="Find a Specialist / Dr Franklin Chang" />
+        <Flex justify="end" className="absolute right-0 bottom-0">
+          <img src={doctors} className="h-auto object-cover -mr-6" />
+        </Flex>
+      </BackgroundHeader>
+
       <div className="flex space-x-4 px-[50px] bg-gray_bg">
         <section className="w-[25%]">
           <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
-              className="w-full h-full object-cover rounded-lg"
+              className="w-[100px] h-[100px] object-cover rounded-lg absolute top-40"
             />
           </Box>
 
