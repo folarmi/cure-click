@@ -1,6 +1,5 @@
 import { IoWalletOutline } from "react-icons/io5";
 import { CustomText } from "./CustomText";
-import headerBg from "../../assets/headerBg.svg";
 import sampleImage from "../../assets/sampleImage.svg";
 import CustomSelect from "./CustomSelect";
 import { options } from "../../utils/data";
@@ -9,12 +8,20 @@ import { CustomButton } from "./CustomButton";
 import { CalendarIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { CustomInput } from "./CustomInput";
 import { useNavigate } from "react-router";
+import { BackgroundHeader } from "./BackgroundHeader";
+import Breadcrumb from "./BreadCrumb";
 
 type Prop = {
   ifNameAndWalletBalance?: boolean;
+  routeName: string;
+  Icon: React.ComponentType<{ className?: string }>;
 };
 
-const DashboardHeader = ({ ifNameAndWalletBalance = true }: Prop) => {
+const DashboardHeader = ({
+  ifNameAndWalletBalance = true,
+  routeName,
+  Icon,
+}: Prop) => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>();
   const navigate = useNavigate();
 
@@ -23,10 +30,8 @@ const DashboardHeader = ({ ifNameAndWalletBalance = true }: Prop) => {
   };
 
   return (
-    <div
-      className="bg-cover bg-center px-12 py-8"
-      style={{ backgroundImage: `url(${headerBg})` }}
-    >
+    <BackgroundHeader>
+      <Breadcrumb Icon={Icon} route={routeName} />
       {ifNameAndWalletBalance && (
         <div className="flex items-center justify-between">
           <CustomText
@@ -109,7 +114,7 @@ const DashboardHeader = ({ ifNameAndWalletBalance = true }: Prop) => {
           </CustomButton>
         </div>
       </div>
-    </div>
+    </BackgroundHeader>
   );
 };
 

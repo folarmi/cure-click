@@ -4,9 +4,13 @@ import { CustomButton } from "../components/ui/CustomButton";
 import { CustomInput } from "../components/ui/CustomInput";
 import { CustomText } from "../components/ui/CustomText";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../lib/store";
 
 const Login = () => {
   const navigate = useNavigate();
+  const userType = useSelector((state: RootState) => state.auth.userType);
+  console.log(userType);
   return (
     <AuthTwoLayout
       mainText="Login to Your Account"

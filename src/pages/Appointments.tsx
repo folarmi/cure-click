@@ -28,6 +28,7 @@ import CompletedAppointment from "../components/modals/CompletedAppointment";
 import { CancelAppointmentTwo } from "../components/modals/CancelAppointmentTwo";
 import { Reschedule } from "../components/modals/Reschedule";
 import { RescheduleTwo } from "../components/modals/RescheduleTwo";
+import { CalendarIcon } from "@radix-ui/react-icons";
 
 const Appointments = () => {
   const [modal, setModal] = useState(false);
@@ -163,7 +164,11 @@ const Appointments = () => {
   ];
   return (
     <DashboardLayout ifHeader={false}>
-      <DashboardHeader ifNameAndWalletBalance={false} />
+      <DashboardHeader
+        routeName="Appointments"
+        Icon={CalendarIcon}
+        ifNameAndWalletBalance={false}
+      />
 
       <Flex justify="center" className="px-12 mt-10">
         <Box className="w-[24%]">

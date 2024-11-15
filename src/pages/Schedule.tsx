@@ -6,18 +6,30 @@ import { HiOutlineTranslate } from "react-icons/hi";
 import PricePerSession from "../components/atoms/PricePerSession";
 import { CustomInput } from "../components/ui/CustomInput";
 import { CustomTextarea } from "../components/ui/CustomTextArea";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { DashboardIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
 import { PaymentBox } from "../components/ui/PaymentBox";
+import { BackgroundHeader } from "../components/ui/BackgroundHeader";
+import Breadcrumb from "../components/ui/BreadCrumb";
+import doctors from "../assets/doctors.svg";
 
 const Schedule = () => {
   return (
-    <DashboardLayout>
+    <DashboardLayout ifHeader={false}>
+      <BackgroundHeader className="relative h-full">
+        <Breadcrumb
+          Icon={DashboardIcon}
+          route="Dashboard / Find a Specialist / Dr Franklin Chang / Schedule"
+        />
+        <Flex justify="end" className="absolute right-0 bottom-0">
+          <img src={doctors} className="h-auto object-cover -mr-6" />
+        </Flex>
+      </BackgroundHeader>
       <Flex className="w-full px-12 bg-gray_bg" justify="end">
         <Box className="flex flex-col items-center ml-auto ">
           <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
-              className="w-full h-full object-cover rounded-lg"
+              className="w-[100px] h-[100px] top-40 object-cover rounded-lg absolute"
             />
           </Box>
 

@@ -1,5 +1,4 @@
 import DashboardLayout from "../components/layouts/DashboardLayout";
-import headerBg from "../assets/headerBg.svg";
 import {
   Badge,
   Box,
@@ -9,12 +8,14 @@ import {
   Text,
   TextField,
 } from "@radix-ui/themes";
-// import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { tableHeader, tableSample } from "../utils/data";
 import { ChevronRightIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Modal from "../components/ui/Modal";
 import { TransactionDetails } from "../components/modals/TransactionDetails";
 import { useState } from "react";
+import Breadcrumb from "../components/ui/BreadCrumb";
+import { IoWalletOutline } from "react-icons/io5";
+import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 
 const Wallet = () => {
   const [modal, setModal] = useState(false);
@@ -25,10 +26,8 @@ const Wallet = () => {
 
   return (
     <DashboardLayout ifHeader={false}>
-      <div
-        className="bg-cover bg-center px-12 py-8"
-        style={{ backgroundImage: `url(${headerBg})` }}
-      >
+      <BackgroundHeader>
+        <Breadcrumb Icon={IoWalletOutline} route="Wallet" />
         <Text
           size="7"
           as="p"
@@ -80,7 +79,7 @@ const Wallet = () => {
             </Text>
           </Box>
         </Flex>
-      </div>
+      </BackgroundHeader>
 
       <main className="mt-8 flex flex-col">
         <Text as="p" size="6" className="font-semibold w-[900px] mx-auto">

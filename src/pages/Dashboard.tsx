@@ -8,11 +8,12 @@ import sampleDoctorThree from "../assets/sampleDoctorThree.svg";
 import sampleDoctorFour from "../assets/sampleDoctorFour.svg";
 import { MeetingCard } from "../components/cards/MeetingCard";
 import MeetingCardTwo from "../components/cards/MeetingCardTwo";
+import { DashboardIcon } from "@radix-ui/react-icons";
 
 const Dashboard = () => {
   return (
     <DashboardLayout ifHeader={false}>
-      <DashboardHeader />
+      <DashboardHeader Icon={DashboardIcon} routeName="Dashboard" />
 
       <section className="px-6 mt-8">
         <div className="flex items-center justify-between">
@@ -46,7 +47,7 @@ const Dashboard = () => {
           <section className="flex flex-wrap w-[75%]">
             <DoctorCard
               image={sampleDoctor}
-              doctorName="Dr Franklin Chang "
+              doctorName="Dr Franklin Chang"
               doctorType="Geriatric Doctor"
               desc="Aberdeen Royal Infirmary Aberdeen UK"
               noOfSessions={3}

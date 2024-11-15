@@ -9,7 +9,11 @@ import doctors from "../assets/doctors.svg";
 import CustomSelect from "../components/ui/CustomSelect";
 import { options } from "../utils/data";
 import { CustomInput } from "../components/ui/CustomInput";
-import { CalendarIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import {
+  CalendarIcon,
+  DashboardIcon,
+  MagnifyingGlassIcon,
+} from "@radix-ui/react-icons";
 import { CustomButton } from "../components/ui/CustomButton";
 import { CustomText } from "../components/ui/CustomText";
 import Breadcrumb from "../components/ui/BreadCrumb";
@@ -20,7 +24,7 @@ const SearchResultsDashboard = () => {
     <DashboardLayout ifHeader={false}>
       <BackgroundHeader className="relative">
         {/* Breadcrumb */}
-        <Breadcrumb route="Find a Specialist" />
+        <Breadcrumb Icon={DashboardIcon} route="Find a Specialist" />
 
         {/* Title */}
         <CustomText

@@ -9,7 +9,7 @@ import { Badge, Box, Flex, Text } from "@radix-ui/themes";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { HiOutlineTranslate } from "react-icons/hi";
 import TopAndBottomText from "../components/atoms/TopAndBottomText";
-import { StarFilledIcon } from "@radix-ui/react-icons";
+import { DashboardIcon, StarFilledIcon } from "@radix-ui/react-icons";
 import Review from "../components/cards/Review";
 import Modal from "../components/ui/Modal";
 import { useState } from "react";
@@ -28,7 +28,10 @@ const SingleDoctor = () => {
   return (
     <DashboardLayout ifHeader={false}>
       <BackgroundHeader className="relative h-full">
-        <Breadcrumb route="Find a Specialist / Dr Franklin Chang" />
+        <Breadcrumb
+          Icon={DashboardIcon}
+          route="Find a Specialist / Dr Franklin Chang"
+        />
         <Flex justify="end" className="absolute right-0 bottom-0">
           <img src={doctors} className="h-auto object-cover -mr-6" />
         </Flex>

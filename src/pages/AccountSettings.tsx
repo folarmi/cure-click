@@ -1,9 +1,11 @@
 import DashboardLayout from "../components/layouts/DashboardLayout";
-import headerBg from "../assets/headerBg.svg";
 import { Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
 import AccountProfile from "./AccountProfile";
 import AccountSecurity from "./AccountSecurity";
 import { Preferences } from "./Preferences";
+import Breadcrumb from "../components/ui/BreadCrumb";
+import { DashboardIcon } from "@radix-ui/react-icons";
+import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 
 // type Prop = {
 //   sectionHeader: string;
@@ -13,19 +15,18 @@ import { Preferences } from "./Preferences";
 const AccountSettings = () => {
   return (
     <DashboardLayout ifHeader={false}>
-      <Tabs.Root defaultValue="preferences">
+      <Tabs.Root defaultValue="accountProfile" className="">
         {/* Background Section for Tabs List */}
-        <div
-          className="bg-cover bg-center px-12 py-8"
-          style={{ backgroundImage: `url(${headerBg})` }}
-        >
-          <Tabs.List>
+        <BackgroundHeader>
+          <Breadcrumb Icon={DashboardIcon} route="Account Settings" />
+
+          <Tabs.List className="w-1/2">
             <Tabs.Trigger value="accountProfile">Account Profile</Tabs.Trigger>
             <Tabs.Trigger value="security">Security</Tabs.Trigger>
             <Tabs.Trigger value="preferences">Preferences</Tabs.Trigger>
             <Tabs.Trigger value="emr">Electronic Medical Records</Tabs.Trigger>
           </Tabs.List>
-        </div>
+        </BackgroundHeader>
 
         <Flex
           justify="between"
@@ -33,7 +34,11 @@ const AccountSettings = () => {
           className="mt-10 px-12 border-b border-gray3 pb-4"
         >
           <Box>
-            <Text as="p" size="4" className="font-semibold text-gray12">
+            <Text
+              as="p"
+              size="4"
+              className="font-semibold text-gray12 cursor-pointer"
+            >
               Account Profile Settings
             </Text>
             <Text as="p" size="3" weight="regular" className="text-gray11 pt-1">
