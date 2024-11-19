@@ -11,6 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const userType = useSelector((state: RootState) => state.auth.userType);
   console.log(userType);
+
   return (
     <AuthTwoLayout
       mainText="Login to Your Account"

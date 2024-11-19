@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type UserType = "doctor" | "patients" | "";
+export type UserType = "doctor" | "patient" | "";
 
 interface AuthState {
   userType: UserType;

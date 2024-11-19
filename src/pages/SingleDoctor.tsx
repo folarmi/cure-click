@@ -9,7 +9,7 @@ import { Badge, Box, Flex, Text } from "@radix-ui/themes";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { HiOutlineTranslate } from "react-icons/hi";
 import TopAndBottomText from "../components/atoms/TopAndBottomText";
-import { DashboardIcon, StarFilledIcon } from "@radix-ui/react-icons";
+import { DashboardIcon } from "@radix-ui/react-icons";
 import Review from "../components/cards/Review";
 import Modal from "../components/ui/Modal";
 import { useState } from "react";
@@ -18,6 +18,7 @@ import { PaymentBox } from "../components/ui/PaymentBox";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import doctors from "../assets/doctors.svg";
+import { NumberOfReview } from "../components/ui/NumberOfReview";
 
 const SingleDoctor = () => {
   const [modal, setModal] = useState(false);
@@ -114,21 +115,7 @@ const SingleDoctor = () => {
             </div>
           </Box>
 
-          <Flex align="center" justify="between" className="bg-white p-4 mt-4">
-            <Text as="p" size="3" className="text-gray12 font-semibold">
-              24 Reviews
-            </Text>
-            <Flex align="center">
-              <Text as="p" size="3" className="text-gray12">
-                4.0
-              </Text>
-              <StarFilledIcon className="text-orange_10" />
-              <StarFilledIcon className="text-orange_10" />
-              <StarFilledIcon className="text-orange_10" />
-              <StarFilledIcon className="text-orange_10" />
-              <StarFilledIcon className="text-gray4" />
-            </Flex>
-          </Flex>
+          <NumberOfReview />
 
           <Review
             title="Review Title"

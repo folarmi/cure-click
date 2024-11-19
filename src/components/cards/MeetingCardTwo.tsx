@@ -7,11 +7,13 @@ type Props = {
   title: string;
   date: string;
   time: string;
-  doctorName: string;
+  doctorName?: string;
   onClick?: () => void;
   cancelOnClick?: () => void;
   ifButtons?: boolean;
   ifView?: boolean;
+  ifDocDetails?: boolean;
+  ifSpaceBetween?: boolean;
 };
 
 const MeetingCardTwo = ({
@@ -23,9 +25,11 @@ const MeetingCardTwo = ({
   cancelOnClick,
   ifButtons,
   ifView = true,
+  ifDocDetails = true,
+  ifSpaceBetween = true,
 }: Props) => {
   return (
-    <div className="py-4 px-6 border border-gray_3 rounded-xl mt-4">
+    <div className="py-4 px-6 border border-gray3 rounded-xl mt-4">
       <div className="flex justify-between">
         <CustomText
           weight="medium"
@@ -39,14 +43,18 @@ const MeetingCardTwo = ({
             size="2"
             onClick={onClick}
             variant="solid"
-            className="bg-gray_3 text-gray_9 cursor-pointer"
+            className="bg-gray3 text-gray9 cursor-pointer"
           >
             View
           </Button>
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between">
+      <div
+        className={`mt-3 flex items-center ${
+          ifSpaceBetween && "justify-between"
+        }`}
+      >
         <div className="flex items-center">
           <CalendarIcon className="text-gray_11" />
           <CustomText
@@ -69,18 +77,20 @@ const MeetingCardTwo = ({
         </div>
       </div>
 
-      <div className="flex items-center mt-6">
-        <img src={avatar} />
-        <div className="ml-2">
-          <CustomText className="text-gray_11" weight="medium" size="medium">
-            {doctorName}
-          </CustomText>
+      {ifDocDetails && (
+        <div className="flex items-center mt-6">
+          <img src={avatar} />
+          <div className="ml-2">
+            <CustomText className="text-gray_11" weight="medium" size="medium">
+              {doctorName}
+            </CustomText>
+          </div>
         </div>
-      </div>
+      )}
 
       {ifButtons && (
         <>
-          <Separator className="w-full bg-iris_8 my-5" />
+          <Separator className="w-full bg-iris8 my-5" />
 
           <div className="grid grid-cols-3 space-x-2 whitespace-nowrap">
             <Button

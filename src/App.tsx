@@ -4,17 +4,18 @@ import { RoutePage } from "./utils/RoutePage";
 import { Theme } from "@radix-ui/themes";
 import { Provider } from "react-redux";
 import { store } from "./lib/store";
+import ThemeSetter from "./components/ThemeSetter";
 
 function App() {
-  // const [count, setCount] = useState(0);
-
   return (
     <Provider store={store}>
+      <ThemeSetter userType="doctor" />
       <Theme>
         <Router>
           <RoutePage />
         </Router>
       </Theme>
+      {/* </ThemeSetter> */}
     </Provider>
   );
 }

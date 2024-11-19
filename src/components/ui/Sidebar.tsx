@@ -1,7 +1,6 @@
 import logo from "../../assets/icons/logo.svg";
 import avatar from "../../assets/avatar.svg";
 import { navBarItems, sampleNotifications } from "../../utils/data";
-import { CustomText } from "./CustomText";
 import { BellIcon } from "@radix-ui/react-icons";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -13,6 +12,7 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { BiX } from "react-icons/bi";
+
 import { useState } from "react";
 
 const Sidebar = () => {
@@ -26,7 +26,7 @@ const Sidebar = () => {
 
   const pathName = location.pathname;
   return (
-    <nav className="flex items-center justify-between py-5 px-16 bg-white border border-gray_3">
+    <nav className="flex items-center justify-between py-5 px-16 bg-white border border-gray3">
       <img
         src={logo}
         className="cursor-pointer"
@@ -40,21 +40,21 @@ const Sidebar = () => {
               <Icon
                 className={`${
                   pathName.startsWith(path)
-                    ? // pathName === path
-                      "text-iris9 fill-current"
+                    ? "text-[var(--color-primary)] fill-current"
                     : "text-neutral_11"
                 }`}
               />
 
-              <CustomText
-                weight="normal"
-                size="medium"
+              <Text
+                size="3"
                 className={`pl-2 ${
-                  pathName.startsWith(path) ? "text-iris9" : "text-neutral_11"
+                  pathName.startsWith(path)
+                    ? "text-[var(--color-primary)] font-medium"
+                    : "text-neutral_11 font-normal"
                 }`}
               >
                 {name}
-              </CustomText>
+              </Text>
             </NavLink>
           );
         })}

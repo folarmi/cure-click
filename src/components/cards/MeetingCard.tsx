@@ -27,25 +27,25 @@ const MeetingCard = ({
   rescheduleOnClick,
 }: Props) => {
   return (
-    <div className="bg-iris_9 rounded-xl border border-gray_3 px-8 py-4 w-full">
+    <div className="bg-[var(--color-primary)] rounded-xl border border-gray3 px-8 py-4 w-full">
       <CustomText
         weight="medium"
         size="large"
-        className="text-iris_2 min-w-[270px] pb-3"
+        className="text-iris2 min-w-[270px] pb-3"
       >
         {title}
       </CustomText>
 
       <div className="flex items-center mb-3">
-        <CalendarIcon className="text-iris_6" />
-        <CustomText className="pl-3 text-iris_6" weight="normal" size="small">
+        <CalendarIcon className="text-iris6" />
+        <CustomText className="pl-3 text-iris6" weight="normal" size="small">
           {date}
         </CustomText>
       </div>
 
       <div className="flex items-center mb-6">
-        <ClockIcon className="text-iris_6" />
-        <CustomText className="pl-3 text-iris_6" weight="normal" size="small">
+        <ClockIcon className="text-iris6" />
+        <CustomText className="pl-3 text-iris6" weight="normal" size="small">
           {time}
         </CustomText>
       </div>
@@ -53,10 +53,10 @@ const MeetingCard = ({
       <div className="flex items-center">
         <img src={avatar} />
         <div className="ml-2">
-          <CustomText className="text-iris_4" weight="medium" size="medium">
+          <CustomText className="text-iris4" weight="medium" size="medium">
             {doctorName}
           </CustomText>
-          <CustomText className="text-iris_5" weight="normal" size="small">
+          <CustomText className="text-iris5" weight="normal" size="small">
             {speciality}
           </CustomText>
         </div>
@@ -64,21 +64,21 @@ const MeetingCard = ({
 
       {ifButtons && (
         <>
-          <Separator className="w-full bg-iris_8 my-5" />
+          <Separator className="w-full bg-iris8 my-5" />
 
           <div className="flex items-center space-x-2 whitespace-nowrap">
             <Button
               size="3"
               variant="outline"
               onClick={cancelOnClick}
-              className="text-iris_3 border border-iris8 font-medium text-base cursor-pointer"
+              className="text-iris3 border border-iris8 font-medium text-base cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               size="3"
               variant="outline"
-              className="text-iris_3 border border-iris8"
+              className="text-iris3 border border-iris8"
               onClick={rescheduleOnClick}
             >
               Reschedule
@@ -87,7 +87,7 @@ const MeetingCard = ({
               onClick={onClick}
               size="3"
               variant="solid"
-              className="text-iris_9 bg-iris_2 cursor-pointer"
+              className="text-iris9 bg-iris2 cursor-pointer"
             >
               Join
             </Button>

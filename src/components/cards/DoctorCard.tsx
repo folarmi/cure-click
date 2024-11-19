@@ -54,7 +54,7 @@ const DoctorCard = ({
         </CustomText>
       </div>
 
-      <div className="mt-3 bg-gray_2 border border-gray_Alpha_3 p-3 rounded">
+      <div className="mt-3 bg-gray2 border border-gray_Alpha_3 p-3 rounded">
         <div className="flex items-center justify-between">
           <CustomText className="text-gray_11" size="small" weight="normal">
             Next Available

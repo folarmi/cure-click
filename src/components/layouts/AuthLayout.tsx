@@ -23,7 +23,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
 
   return (
     <Flex>
-      <Box className="w-[30%] bg-iris_3 h-screen pl-16 pt-6">
+      <Box className="w-[30%] bg-iris3 h-screen pl-16 pt-6">
         <img src={logo} className="w-28" />
 
         <section className="mt-24">
@@ -49,7 +49,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                   <CustomText
                     size="medium"
                     weight="normal"
-                    className={`${isActive ? "text-gray_11" : "text-gray_9"}`}
+                    className={`${isActive ? "text-gray_11" : "text-gray9"}`}
                   >
                     {subText}
                   </CustomText>

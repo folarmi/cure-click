@@ -42,9 +42,9 @@ const DashboardHeader = ({
             Hello 👋 Emmanuel
           </CustomText>
 
-          <div className="flex items-center border border-gray_4 rounded-md p-[10px] space-x-3">
-            <IoWalletOutline className="text-iris_1" />
-            <CustomText size="medium" weight="medium" className="text-iris_1">
+          <div className="flex items-center border border-gray4 rounded-md p-[10px] space-x-3">
+            <IoWalletOutline className="text-iris1" />
+            <CustomText size="medium" weight="medium" className="text-iris1">
               {" "}
               Wallet Balance N0.00
             </CustomText>
@@ -52,7 +52,7 @@ const DashboardHeader = ({
         </div>
       )}
 
-      <div className="mt-6 bg-iris_1 p-4 rounded-lg">
+      <div className="mt-6 bg-iris1 p-4 rounded-lg">
         <div className="flex items-center justify-between">
           <section>
             <CustomText

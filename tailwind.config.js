@@ -16,13 +16,13 @@ export default {
         iris_5: "#DADCFF",
         iris_6: "#CBCDFF",
         iris_8: "#9B9EF0",
-        iris_9: "#5B5BD6",
         iris_12: "#272962",
         iris_9: "#5B5BD6",
         text: "#1C2024",
         gray_2: "#F9F9F9",
         gray_3: "#F0F0F0",
         gray_4: "#E8E8E8",
+        // Stopped at gray_9
         gray_9: "#8D8D8D",
         gray_10: "#838383",
         gray_11: "#646464",
@@ -34,6 +34,7 @@ export default {
         neutral_8: "#000830",
         neutral_9: "#8B8D98",
         neutral_11: "#60646C",
+        neutral_12: "#60646C",
         grass_9: "#46A758",
         indigo_12: "#1F2D5C",
         gray_Alpha_3: "#0000000F",
@@ -50,6 +51,9 @@ export default {
         error_alpha_9: "#C40006D3",
         black_contrast: "#1C2024",
         tokens_colors_text: "#1C2024",
+        primary: "var(--color-primary)",
+        accent: "var(--color-accent)",
+        bg: "var(--color-bg)",
         // radix colors
         ...radixColors.blueA,
         ...radixColors.gray,
@@ -70,7 +74,14 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addBase, theme }) {
+      addBase({
+        ":root": {
+          "--color-iris9": theme("colors.iris9"),
+          "--color-cyanA12": theme("colors.cyanA12"),
+        },
+      });
+    },
+  ],
 };
-
-// Typography/Font size/2
