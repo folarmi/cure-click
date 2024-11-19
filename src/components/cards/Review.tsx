@@ -76,7 +76,7 @@ const Review = ({
           style={{
             border: "1px solid var(--border-gray)",
           }}
-          className="text-neutral_12 font-medium text-sm text-neutral_11 mt-4 w-[59px] bg-white rounded"
+          className="text-neutral_12 font-medium text-sm s mt-4 w-[59px] bg-white rounded"
         >
           Reply
         </Button>

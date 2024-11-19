@@ -1,5 +1,6 @@
 @import "@radix-ui/colors/iris.css";
 @import "@radix-ui/colors/grass.css";
+@import "@radix-ui/colors/gray.css";
 
 * {
   font-family: "Outfit", sans-serif;
@@ -12,6 +13,8 @@
   --border-gray: #e8e8e8;
   --color-primary: #4f46e5;
   --color-accent: #22c55e;
+  --grass9: var(--grass-9);
+  --gray11: var(--gray-11);
 }
 
 /* Patient Theme */
