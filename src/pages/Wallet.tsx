@@ -1,13 +1,5 @@
 import DashboardLayout from "../components/layouts/DashboardLayout";
-import {
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Tabs,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
+import { Badge, Box, Flex, Tabs, Text, TextField } from "@radix-ui/themes";
 import { tableHeader, tableSample } from "../utils/data";
 import { ChevronRightIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Modal from "../components/ui/Modal";
@@ -16,8 +8,14 @@ import { useState } from "react";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { IoWalletOutline } from "react-icons/io5";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
+import { useSelector } from "react-redux";
+import { RootState } from "../lib/store";
+import { DoctorWalletHeader } from "../components/ui/DoctorWalletHeader";
+import { WalletHeader } from "../components/ui/WalletHeader";
 
 const Wallet = () => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
+
   const [modal, setModal] = useState(false);
 
   const toggleModal = () => {
@@ -26,60 +24,38 @@ const Wallet = () => {
 
   return (
     <DashboardLayout ifHeader={false}>
-      <BackgroundHeader>
-        <Breadcrumb Icon={IoWalletOutline} route="Wallet" />
-        <Text
-          size="7"
-          as="p"
-          className="pt-6 text-tokens_colors_text font-semibold"
-        >
-          Wallet
-        </Text>
+      {userType === "patient" ? (
+        <BackgroundHeader>
+          <Breadcrumb Icon={IoWalletOutline} route="Wallet" />
+          <Text
+            size="7"
+            as="p"
+            className="pt-6 text-tokens_colors_text font-semibold"
+          >
+            Wallet
+          </Text>
 
-        <Flex
-          align="center"
-          justify="between"
-          className="mt-6 bg-white p-6 rounded-lg"
-        >
           <Flex
             align="center"
             justify="between"
-            className="bg-iris12 rounded-lg p-6 w-[40%]"
+            className="mt-6 bg-white p-6 rounded-lg"
           >
-            <Box>
-              <Text
-                size="3"
-                as="p"
-                weight="regular"
-                className=" text-iris3 pb-1"
-              >
-                Wallet Balance
-              </Text>
-              <Text size="7" as="p" className=" text-iris2 font-semibold">
-                NGN 18,908.00
+            <WalletHeader balance="NGN 18,908.00" title="Wallet Balance" />
+
+            <Box className="bg-iris3 p-4 w-[60%] rounded ml-6">
+              <Text as="p" weight="regular" size="3">
+                Your balance are pre-paid funds you have available to spend on
+                your sessions. Your available balance will be used to pay for
+                your sessions before any other payment method is used.You can
+                add money to your balance through the Deposit button, Funds
+                added are non-refundable.
               </Text>
             </Box>
-
-            <Button
-              size="3"
-              className="bg-grass9 font-semibold"
-              variant="solid"
-            >
-              Deposit
-            </Button>
           </Flex>
-
-          <Box className="bg-iris3 p-4 w-[60%] rounded ml-6">
-            <Text as="p" weight="regular" size="3">
-              Your balance are pre-paid funds you have available to spend on
-              your sessions. Your available balance will be used to pay for your
-              sessions before any other payment method is used.You can add money
-              to your balance through the Deposit button, Funds added are
-              non-refundable.
-            </Text>
-          </Box>
-        </Flex>
-      </BackgroundHeader>
+        </BackgroundHeader>
+      ) : (
+        <DoctorWalletHeader />
+      )}
 
       <main className="mt-8 flex flex-col">
         <Text as="p" size="6" className="font-semibold w-[900px] mx-auto">
