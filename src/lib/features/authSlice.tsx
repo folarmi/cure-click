@@ -8,7 +8,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  userType: "doctor",
+  userType: "patient",
   value: 0,
 };
 

@@ -1,74 +1,61 @@
-import { Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import { CustomText } from "../components/ui/CustomText";
 import { MeetingCard } from "../components/cards/MeetingCard";
-import { RootState } from "../lib/store";
-import { useSelector } from "react-redux";
-import { daysOfTheWeek } from "../utils/data";
+
 import MeetingCardTwo from "../components/cards/MeetingCardTwo";
+import Modal from "../components/ui/Modal";
+import { RescheduleTwo } from "../components/modals/RescheduleTwo";
+import { Reschedule } from "../components/modals/Reschedule";
+import { CancelAppointmentTwo } from "../components/modals/CancelAppointmentTwo";
+import CancelAppointment from "../components/modals/CancelAppointment";
+import CompletedAppointment from "../components/modals/CompletedAppointment";
+import { MeetingTwoDetailsCard } from "../components/modals/MeetingTwoDetailsCard";
+import AppointmentDetails from "../components/modals/AppointmentDetails";
+import { useState } from "react";
 
 const AppointmentModuleContent = () => {
-  const userType = useSelector((state: RootState) => state.auth.userType);
+  const [modal, setModal] = useState(false);
+  const [meetingCardTwoModal, setMeetingCardTwoModal] = useState(false);
+  const [cancelAppointment, setCancelAppointment] = useState(false);
+  const [completedAppointment, setCompletedAppointment] = useState(false);
+  const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
+  const [rescheduleModal, setRescheduleModal] = useState(false);
+  const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
+
+  const toggleModal = () => {
+    setModal(!modal);
+  };
+
+  const toggleMeetingCardTwoModal = () => {
+    setMeetingCardTwoModal(!meetingCardTwoModal);
+  };
+
+  const toggleCancel = () => {
+    setCancelAppointment(!cancelAppointment);
+  };
+
+  const toggleCompletedAppointment = () => {
+    setCompletedAppointment(!completedAppointment);
+  };
+
+  const toggleMeetingTwoCancel = () => {
+    if (meetingCardTwoModal) {
+      setMeetingCardTwoModal(false);
+    }
+    setMeetingTwoCancel(!meetingTwoCancel);
+  };
+
+  const toggleRescheduleModal = () => {
+    setRescheduleModal(!rescheduleModal);
+  };
+
+  const toggleRescheduleTwoModal = () => {
+    setRescheduleModalTwo(!rescheduleModalTwo);
+  };
 
   return (
-    <Flex justify="center" className="px-12 mt-10">
-      <Box className="w-[28%]">
-        {userType === "doctor" && (
-          <>
-            {" "}
-            <Box className="border border-gray3 rounded-lg p-6 my-4">
-              <Text
-                as="p"
-                size="2"
-                weight="medium"
-                className="text-gray12 pb-1"
-              >
-                Days Available
-              </Text>
-
-              <Flex align="center" justify="between">
-                {daysOfTheWeek?.map(({ filled, id, name }) => {
-                  return (
-                    <Box
-                      key={id}
-                      className={`h-9 w-9 rounded-full border border-gray3 py-[6px] pr-3 px-[11px] ${
-                        filled ? "bg-iris9" : ""
-                      }`}
-                    >
-                      <Text
-                        size="3"
-                        weight="medium"
-                        className={`text-center ${
-                          filled ? "text-iris3" : "text-gray11"
-                        }`}
-                      >
-                        {name}
-                      </Text>
-                    </Box>
-                  );
-                })}
-              </Flex>
-
-              <Text
-                size="1"
-                as="p"
-                weight="regular"
-                className="text-gray11 py-4"
-              >
-                You have 12 Sessions this week
-              </Text>
-
-              <Button
-                style={{
-                  border: "1px solid var(--border-gray)",
-                }}
-                size="2"
-                className="font-medium text-sm bg-white text-neutral_11"
-              >
-                Update Days Available
-              </Button>
-            </Box>
-          </>
-        )}
+    <Flex>
+      <Box>
         <div>
           <CustomText className="text-gray_12" size="large" weight="semibold">
             Upcoming Appointments
@@ -109,67 +96,56 @@ const AppointmentModuleContent = () => {
         />
       </Box>
 
-      <Box className="w-[72%] ml-6">
-        {userType === "doctor" && (
-          <div className="bg-white border border-gray3 rounded-lg p-6 my-4">
-            <Text as="p" size="2" weight="medium" className="pb-1">
-              Achievements
-            </Text>
-            <Flex
-              align="center"
-              justify="between"
-              className="w-full flex-wrap "
-            >
-              <img src={medalOne} />
-              <img src={medalTwo} />
-              <img src={medalThree} />
-              <img src={medalFour} />
-              <img src={medalOne} />
-              <img src={medalTwo} />
-              <img src={medalThree} />
-              <img src={medalFour} />
-            </Flex>
-          </div>
-        )}
+      <Modal show={modal} toggleModal={toggleModal}>
+        <div className="p-4">
+          <AppointmentDetails toggleModal={toggleModal} />
+        </div>
+      </Modal>
 
-        <CustomText className="text-gray_12" size="large" weight="semibold">
-          Appointment History
-        </CustomText>
-        <CustomText className="text-gray_11 pb-4" size="medium" weight="normal">
-          View your appointment history.
-        </CustomText>
+      <Modal show={meetingCardTwoModal} toggleModal={toggleMeetingCardTwoModal}>
+        <div className="p-4">
+          <MeetingTwoDetailsCard
+            toggleModal={toggleMeetingCardTwoModal}
+            toggleMeetingTwoCancel={toggleMeetingTwoCancel}
+          />
+        </div>
+      </Modal>
 
-        <Tabs.Root className="" defaultValue="allAppointments">
-          <Tabs.List>
-            <Tabs.Trigger value="allAppointments">
-              All Appointments
-            </Tabs.Trigger>
-            <Tabs.Trigger value="upcomingAppointments">
-              Upcoming Appointments
-            </Tabs.Trigger>
-            <Tabs.Trigger value="completedAppointments">
-              Completed Appointments
-            </Tabs.Trigger>
-            <Tabs.Trigger value="cancelledAppointments">
-              Cancelled Appointments
-            </Tabs.Trigger>
-            {userType === "doctor" && (
-              <Tabs.Trigger value="cancelledAppointments">
-                Rescheduled
-              </Tabs.Trigger>
-            )}
-          </Tabs.List>
+      <Modal
+        show={completedAppointment}
+        toggleModal={toggleCompletedAppointment}
+      >
+        <div className="p-4">
+          <CompletedAppointment
+            toggleModal={toggleCompletedAppointment}
+            // ifCompleted={false}
+          />
+        </div>
+      </Modal>
 
-          <Tabs.Content className=" w-full" value="allAppointments">
-            {userType === "patient" && (
-              <Table columns={columns} data={appointmentSampleData} />
-            )}
-            {userType === "doctor" && (
-              <Table columns={doctorColumns} data={doctorSampleData} />
-            )}
-          </Tabs.Content>
-        </Tabs.Root>
-      </Box>
+      <Modal show={cancelAppointment} toggleModal={toggleCancel}>
+        <div className="p-4">
+          <CancelAppointment toggleModal={toggleCancel} />
+        </div>
+      </Modal>
+
+      <Modal show={meetingTwoCancel} toggleModal={toggleMeetingTwoCancel}>
+        <div className="p-4">
+          <CancelAppointmentTwo toggleModal={toggleMeetingTwoCancel} />
+        </div>
+      </Modal>
+
+      <Modal show={rescheduleModal} toggleModal={toggleRescheduleModal}>
+        <div className="p-4">
+          <Reschedule toggleModal={toggleRescheduleModal} />
+        </div>
+      </Modal>
+
+      <Modal show={rescheduleModalTwo} toggleModal={toggleRescheduleTwoModal}>
+        <div className="p-4">
+          <RescheduleTwo toggleModal={toggleRescheduleTwoModal} />
+        </div>
+      </Modal>
     </Flex>
   );
 };
