@@ -22,7 +22,9 @@
   --color-bg: red;
   --color-text: #004d40;
   --color-primary: var(--iris-9);
-  --color-accent: #009688;
+  --meeting-card-date: var(--iris-6);
+  --meeting-card-divider-color: var(--iris-8);
+  --meeting-card-button-color: var(--iris-3);
 }
 
 /* Doctor Theme */
@@ -30,5 +32,7 @@
   --color-bg: yellow;
   --color-text: #4a148c;
   --color-primary: var(--grass-9);
-  --color-accent: #8e24aa;
+  --meeting-card-date: var(--grass-5);
+  --meeting-card-divider-color: var(--grass-8);
+  --meeting-card-button-color: var(--grass-3);
 }

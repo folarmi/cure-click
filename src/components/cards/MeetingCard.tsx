@@ -1,13 +1,16 @@
 import { CustomText } from "../ui/CustomText";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons";
 import avatar from "../../assets/avatar.svg";
-import { Button, Separator } from "@radix-ui/themes";
+import { Box, Button, Separator, Text } from "@radix-ui/themes";
+import { useSelector } from "react-redux";
+import { RootState } from "../../lib/store";
 
 type Props = {
   title: string;
   date: string;
   time: string;
-  doctorName: string;
+  doctorName?: string;
+  patientName?: string;
   speciality: string;
   ifButtons?: boolean;
   onClick?: () => void;
@@ -20,14 +23,17 @@ const MeetingCard = ({
   date,
   time,
   doctorName,
+  patientName,
   speciality,
   ifButtons = true,
   onClick,
   cancelOnClick,
   rescheduleOnClick,
 }: Props) => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
+
   return (
-    <div className="bg-[var(--color-primary)] rounded-xl border border-gray3 px-8 py-4 w-full">
+    <div className="bg-[var(--color-primary)] rounded-xl border border-gray3 px-8 py-4 w-[366px]">
       <CustomText
         weight="medium"
         size="large"
@@ -37,48 +43,73 @@ const MeetingCard = ({
       </CustomText>
 
       <div className="flex items-center mb-3">
-        <CalendarIcon className="text-iris6" />
-        <CustomText className="pl-3 text-iris6" weight="normal" size="small">
+        <CalendarIcon className="text-[var(--meeting-card-date)]" />
+        <CustomText
+          className="pl-3 text-[var(--meeting-card-date)]"
+          weight="normal"
+          size="small"
+        >
           {date}
         </CustomText>
       </div>
 
       <div className="flex items-center mb-6">
-        <ClockIcon className="text-iris6" />
-        <CustomText className="pl-3 text-iris6" weight="normal" size="small">
+        <ClockIcon className="text-[var(--meeting-card-date)]" />
+        <CustomText
+          className="pl-3 text-[var(--meeting-card-date)]"
+          weight="normal"
+          size="small"
+        >
           {time}
         </CustomText>
       </div>
 
-      <div className="flex items-center">
-        <img src={avatar} />
-        <div className="ml-2">
-          <CustomText className="text-iris4" weight="medium" size="medium">
-            {doctorName}
-          </CustomText>
-          <CustomText className="text-iris5" weight="normal" size="small">
-            {speciality}
-          </CustomText>
+      {userType === "patient" && (
+        <div className="flex items-center">
+          <img src={avatar} />
+          <div className="ml-2">
+            <CustomText className="text-iris4" weight="medium" size="medium">
+              {doctorName}
+            </CustomText>
+            <CustomText className="text-iris5" weight="normal" size="small">
+              {speciality}
+            </CustomText>
+          </div>
         </div>
-      </div>
+      )}
+
+      {userType === "doctor" && (
+        <Box className="my-6">
+          <Text as="p" className="text-grass5" size="2" weight="regular">
+            Patient
+          </Text>
+          <Text as="p" className="text-grass4" size="3" weight="medium">
+            {patientName}
+          </Text>
+        </Box>
+      )}
 
       {ifButtons && (
         <>
-          <Separator className="w-full bg-iris8 my-5" />
+          <Separator className="w-full bg-[var(--meeting-card-divider-color)] my-5" />
 
           <div className="flex items-center space-x-2 whitespace-nowrap">
             <Button
               size="3"
-              variant="outline"
+              style={{
+                border: "1px solid var(--meeting-card-divider-color)",
+              }}
               onClick={cancelOnClick}
-              className="text-iris3 border border-iris8 font-medium text-base cursor-pointer"
+              className="text-var(--meeting-card-button-color) bg-transparent font-medium text-base cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               size="3"
-              variant="outline"
-              className="text-iris3 border border-iris8"
+              style={{
+                border: "1px solid var(--meeting-card-divider-color)",
+              }}
+              className="text-var(--meeting-card-button-color) bg-transparent"
               onClick={rescheduleOnClick}
             >
               Reschedule
@@ -87,7 +118,7 @@ const MeetingCard = ({
               onClick={onClick}
               size="3"
               variant="solid"
-              className="text-iris9 bg-iris2 cursor-pointer"
+              className="text-[var(--color-primary)] bg-iris2 cursor-pointer"
             >
               Join
             </Button>

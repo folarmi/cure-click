@@ -250,3 +250,94 @@ export const themeData = [
     text: "System",
   },
 ];
+
+export const daysOfTheWeek = [
+  {
+    id: 1,
+    name: "S",
+    filled: false,
+  },
+  {
+    id: 2,
+    name: "M",
+    filled: true,
+  },
+  {
+    id: 3,
+    name: "T",
+    filled: false,
+  },
+  {
+    id: 4,
+    name: "W",
+    filled: true,
+  },
+  {
+    id: 5,
+    name: "T",
+    filled: false,
+  },
+  {
+    id: 5,
+    name: "F",
+    filled: true,
+  },
+  {
+    id: 5,
+    name: "S",
+    filled: true,
+  },
+];
+
+export const doctorSampleData = [
+  {
+    id: 1,
+    nameOfPatient: "Franklin Chang",
+    docType: "Geriatric Doctor",
+    summaryTitle: "Second Opinion on scheduled Cancer surgery",
+    summaryText: "Second Opinion on scheduled Cancer surgery",
+    date: "1 Jul, 2023",
+    time: "1:00 PM GMT +1",
+    status: "Upcoming",
+  },
+  {
+    id: 2,
+    nameOfPatient: "Franklin Chang",
+    docType: "Geriatric Doctor",
+    summaryTitle: "Second Opinion on scheduled Cancer surgery",
+    summaryText: "Second Opinion on scheduled Cancer surgery",
+    date: "1 Jul, 2023",
+    time: "1:00 PM GMT +1",
+    status: "Upcoming",
+  },
+  {
+    id: 3,
+    nameOfPatient: "Franklin Chang",
+    docType: "Geriatric Doctor",
+    summaryTitle: "Second Opinion on scheduled Cancer surgery",
+    summaryText: "Second Opinion on scheduled Cancer surgery",
+    date: "1 Jul, 2023",
+    time: "1:00 PM GMT +1",
+    status: "Upcoming",
+  },
+  {
+    id: 4,
+    nameOfPatient: "Franklin Chang",
+    docType: "Geriatric Doctor",
+    summaryTitle: "Second Opinion on scheduled Cancer surgery",
+    summaryText: "Second Opinion on scheduled Cancer surgery",
+    date: "1 Jul, 2023",
+    time: "1:00 PM GMT +1",
+    status: "Upcoming",
+  },
+  {
+    id: 5,
+    nameOfPatient: "Franklin Chang",
+    docType: "Geriatric Doctor",
+    summaryTitle: "Second Opinion on scheduled Cancer surgery",
+    summaryText: "Second Opinion on scheduled Cancer surgery",
+    date: "1 Jul, 2023",
+    time: "1:00 PM GMT +1",
+    status: "Upcoming",
+  },
+];

@@ -11,8 +11,21 @@ import Modal from "./Modal";
 import { AvailabilitySwitch } from "../modals/AvailabilitySwitch";
 import { useState } from "react";
 import { CircularDot } from "./CircularDot";
+import Breadcrumb from "./BreadCrumb";
 
-const DoctorDashboardHeader = () => {
+interface Prop {
+  name?: string;
+  ifBreadCrumb?: boolean;
+  Icon: React.ComponentType<{ className?: string }>;
+  routeName?: string;
+}
+
+const DoctorDashboardHeader = ({
+  name = "Hello 👋 Dr. Emmanuel",
+  ifBreadCrumb,
+  Icon,
+  routeName,
+}: Prop) => {
   const [modal, setModal] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
 
@@ -22,9 +35,17 @@ const DoctorDashboardHeader = () => {
   return (
     <Flex justify="between" className="bg-grass12 py-8 px-8">
       <Box>
-        <Text as="p" size="6" className="text-grass1 font-semibold w-[226px]">
-          Hello 👋 Dr. Emmanuel
+        {ifBreadCrumb && <Breadcrumb Icon={Icon} route={routeName} />}
+        <Text
+          as="p"
+          size="6"
+          className={`text-grass1 font-semibold w-[226px] ${
+            ifBreadCrumb && "pt-[10px]"
+          }`}
+        >
+          {name}
         </Text>
+
         <Text as="p" size="3" weight="regular" className="text-grass4 pt-1">
           You have <span className="font-semibold">4</span> upcoming sessions
           today
