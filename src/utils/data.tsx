@@ -278,12 +278,12 @@ export const daysOfTheWeek = [
     filled: false,
   },
   {
-    id: 5,
+    id: 6,
     name: "F",
     filled: true,
   },
   {
-    id: 5,
+    id: 7,
     name: "S",
     filled: true,
   },
@@ -339,5 +339,43 @@ export const doctorSampleData = [
     date: "1 Jul, 2023",
     time: "1:00 PM GMT +1",
     status: "Upcoming",
+  },
+];
+
+export const availableTimes = [
+  {
+    id: 1,
+    day: "Monday",
+    status: "5 availability periods",
+  },
+  {
+    id: 2,
+    day: "Tuesday",
+    status: "No availability periods",
+  },
+  {
+    id: 3,
+    day: "Wednesdays",
+    status: "No availability periods",
+  },
+  {
+    id: 4,
+    day: "Thursdays",
+    status: "No availability periods",
+  },
+  {
+    id: 5,
+    day: "Fridays",
+    status: "No availability periods",
+  },
+  {
+    id: 6,
+    day: "Saturdays",
+    status: "2 availability periods",
+  },
+  {
+    id: 7,
+    day: "Sundays",
+    status: "3 availability periods",
   },
 ];

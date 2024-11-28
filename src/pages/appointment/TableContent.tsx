@@ -7,16 +7,16 @@ import {
   Tabs,
   Text,
 } from "@radix-ui/themes";
-import { CustomText } from "../components/ui/CustomText";
-import { RootState } from "../lib/store";
+import { CustomText } from "../../components/ui/CustomText";
+import { RootState } from "../../lib/store";
 import { useSelector } from "react-redux";
-import Table from "../components/ui/Table";
+import Table from "../../components/ui/Table";
 import { createColumnHelper } from "@tanstack/react-table";
-import avatar from "../assets/avatar.svg";
+import avatar from "../../assets/avatar.svg";
 import { StarFilledIcon } from "@radix-ui/react-icons";
-import { appointmentSampleData, doctorSampleData } from "../utils/data";
+import { appointmentSampleData, doctorSampleData } from "../../utils/data";
 
-const AppointmentTableContent = () => {
+const TableContent = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   const columnHelper = createColumnHelper<any>();
@@ -238,4 +238,4 @@ const AppointmentTableContent = () => {
   );
 };
 
-export { AppointmentTableContent };
+export { TableContent };

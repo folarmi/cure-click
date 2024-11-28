@@ -7,7 +7,7 @@ export * from "./ForgotPassword";
 export * from "./Dashboard";
 export * from "./SingleDoctor";
 export * from "./Schedule";
-export * from "./Appointments";
+export * from "./appointment/Appointments";
 export * from "./AccountSettings";
 export * from "./AccountSettings";
 export * from "./SearchResultsDashboard";

@@ -4,7 +4,6 @@ import { UserType } from "../lib/features/authSlice";
 const applyUserTheme = (userType: UserType) => {
   if (typeof window !== "undefined") {
     document.documentElement.setAttribute("data-theme", userType);
-    console.log(`Theme set to: ${userType}`);
   }
 };
 

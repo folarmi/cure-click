@@ -1,19 +1,19 @@
 import { Box, Flex } from "@radix-ui/themes";
-import { CustomText } from "../components/ui/CustomText";
-import { MeetingCard } from "../components/cards/MeetingCard";
+import { CustomText } from "../../components/ui/CustomText";
+import { MeetingCard } from "../../components/cards/MeetingCard";
 
-import MeetingCardTwo from "../components/cards/MeetingCardTwo";
-import Modal from "../components/ui/Modal";
-import { RescheduleTwo } from "../components/modals/RescheduleTwo";
-import { Reschedule } from "../components/modals/Reschedule";
-import { CancelAppointmentTwo } from "../components/modals/CancelAppointmentTwo";
-import CancelAppointment from "../components/modals/CancelAppointment";
-import CompletedAppointment from "../components/modals/CompletedAppointment";
-import { MeetingTwoDetailsCard } from "../components/modals/MeetingTwoDetailsCard";
-import AppointmentDetails from "../components/modals/AppointmentDetails";
+import MeetingCardTwo from "../../components/cards/MeetingCardTwo";
+import Modal from "../../components/ui/Modal";
+import { RescheduleTwo } from "../../components/modals/RescheduleTwo";
+import { Reschedule } from "../../components/modals/Reschedule";
+import { CancelAppointmentTwo } from "../../components/modals/CancelAppointmentTwo";
+import CancelAppointment from "../../components/modals/CancelAppointment";
+import CompletedAppointment from "../../components/modals/CompletedAppointment";
+import { MeetingTwoDetailsCard } from "../../components/modals/MeetingTwoDetailsCard";
+import AppointmentDetails from "../../components/modals/AppointmentDetails";
 import { useState } from "react";
 
-const AppointmentModuleContent = () => {
+const ModuleContent = () => {
   const [modal, setModal] = useState(false);
   const [meetingCardTwoModal, setMeetingCardTwoModal] = useState(false);
   const [cancelAppointment, setCancelAppointment] = useState(false);
@@ -150,4 +150,4 @@ const AppointmentModuleContent = () => {
   );
 };
 
-export { AppointmentModuleContent };
+export { ModuleContent };

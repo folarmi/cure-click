@@ -1,17 +1,18 @@
 import { Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
-import DashboardLayout from "../components/layouts/DashboardLayout";
-import { DashboardHeader } from "../components/ui/DashboardHeader";
-import { daysOfTheWeek } from "../utils/data";
+import DashboardLayout from "../../components/layouts/DashboardLayout";
+import { DashboardHeader } from "../../components/ui/DashboardHeader";
+import { daysOfTheWeek } from "../../utils/data";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { RootState } from "../lib/store";
+import { RootState } from "../../lib/store";
 import { useSelector } from "react-redux";
-import { DoctorDashboardHeader } from "../components/ui/DoctorDashboardHeader";
-import medalOne from "../assets/medalOne.svg";
-import medalTwo from "../assets/medalTwo.svg";
-import medalFour from "../assets/medalFour.svg";
-import medalThree from "../assets/medalThree.svg";
-import { AppointmentModuleContent } from "./AppointmentModuleContent";
-import { AppointmentTableContent } from "./AppointmentTableContent";
+import { DoctorDashboardHeader } from "../../components/ui/DoctorDashboardHeader";
+import medalOne from "../../assets/medalOne.svg";
+import medalTwo from "../../assets/medalTwo.svg";
+import medalFour from "../../assets/medalFour.svg";
+import medalThree from "../../assets/medalThree.svg";
+import { ModuleContent } from "./ModuleContent";
+import { TableContent } from "./TableContent";
+import { Calendar } from "./calendar";
 
 const Appointments = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
@@ -35,7 +36,7 @@ const Appointments = () => {
 
       {/* Doctor */}
       {userType === "doctor" && (
-        <Tabs.Root className="px-12" defaultValue="appointmentHistory">
+        <Tabs.Root className="px-12" defaultValue="appointmentCalendar">
           <Tabs.List>
             <Tabs.Trigger value="appointmentHistory">
               Appointment History
@@ -100,7 +101,7 @@ const Appointments = () => {
                     Update Days Available
                   </Button>
                 </Box>
-                <AppointmentModuleContent />
+                <ModuleContent />
               </Box>
 
               <Box className="w-[72%] ml-6">
@@ -123,12 +124,12 @@ const Appointments = () => {
                     <img src={medalFour} />
                   </Flex>
                 </div>
-                <AppointmentTableContent />
+                <TableContent />
               </Box>
             </Flex>
           </Tabs.Content>
           <Tabs.Content className=" w-full" value="appointmentCalendar">
-            <p>kjhgf</p>
+            <Calendar />
           </Tabs.Content>
         </Tabs.Root>
       )}
@@ -137,11 +138,11 @@ const Appointments = () => {
       {userType === "patient" && (
         <Flex justify="center" className="px-10 mt-10">
           <Box className="w-[28%]">
-            <AppointmentModuleContent />
+            <ModuleContent />
           </Box>
 
           <Box className="w-[72%] ml-6">
-            <AppointmentTableContent />
+            <TableContent />
           </Box>
         </Flex>
       )}

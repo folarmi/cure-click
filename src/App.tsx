@@ -9,7 +9,7 @@ import ThemeSetter from "./components/ThemeSetter";
 function App() {
   return (
     <Provider store={store}>
-      <ThemeSetter userType="patient" />
+      <ThemeSetter userType="doctor" />
       <Theme>
         <Router>
           <RoutePage />
