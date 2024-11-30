@@ -6,6 +6,8 @@ import { Preferences } from "./Preferences";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { DashboardIcon } from "@radix-ui/react-icons";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
+import { useSelector } from "react-redux";
+import { RootState } from "../lib/store";
 
 // type Prop = {
 //   sectionHeader: string;
@@ -13,10 +15,10 @@ import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 // };
 
 const AccountSettings = () => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
   return (
     <DashboardLayout ifHeader={false}>
       <Tabs.Root defaultValue="accountProfile" className="">
-        {/* Background Section for Tabs List */}
         <BackgroundHeader>
           <Breadcrumb Icon={DashboardIcon} route="Account Settings" />
 
