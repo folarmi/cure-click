@@ -3,9 +3,13 @@ import { BiX } from "react-icons/bi";
 import { MeetingCard } from "../cards/MeetingCard";
 import { reasonsForCalling } from "../../utils/data";
 import { CustomTextarea } from "../ui/CustomTextArea";
+import { useSelector } from "react-redux";
+import { RootState } from "../../lib/store";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const CancelAppointment = ({ toggleModal }: any) => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
+
   return (
     <div className="rounded-lg p-4 bg-white w-[522px] overflow-scroll h-[700px]">
       <Flex justify="between" align="center" className="mb-4">
@@ -25,9 +29,11 @@ const CancelAppointment = ({ toggleModal }: any) => {
         date="Today"
         time="11:30PM GMT+1 ( In 30 min)"
         doctorName="Dr. Alison Ogaga"
+        patientName="Kemi Ukpong"
         speciality="General Practioner"
         onClick={toggleModal}
         ifButtons={false}
+        ifModal
       />
 
       <Flex className="my-4 px-10" align="center" justify="between">
@@ -39,7 +45,11 @@ const CancelAppointment = ({ toggleModal }: any) => {
         </Text>
       </Flex>
 
-      <Box className="bg-iris3 rounded py-3 px-4">
+      <Box
+        className={`${
+          userType === "patient" ? "bg-iris3" : "bg-grass3"
+        } rounded py-3 px-4`}
+      >
         <Text as="p" weight="medium" size="3">
           Cancellation Policy
         </Text>

@@ -13,6 +13,7 @@ type Props = {
   patientName?: string;
   speciality: string;
   ifButtons?: boolean;
+  ifModal?: boolean;
   onClick?: () => void;
   cancelOnClick?: () => void;
   rescheduleOnClick?: () => void;
@@ -26,6 +27,7 @@ const MeetingCard = ({
   patientName,
   speciality,
   ifButtons = true,
+  ifModal = false,
   onClick,
   cancelOnClick,
   rescheduleOnClick,
@@ -33,7 +35,11 @@ const MeetingCard = ({
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   return (
-    <div className="bg-[var(--color-primary)] rounded-xl border border-gray3 px-8 py-4 w-[366px]">
+    <div
+      className={`bg-[var(--color-primary)] rounded-xl border border-gray3 px-8 py-4 ${
+        ifModal ? "w-full" : "w-[366px]"
+      }`}
+    >
       <CustomText
         weight="medium"
         size="large"
@@ -44,24 +50,24 @@ const MeetingCard = ({
 
       <div className="flex items-center mb-3">
         <CalendarIcon className="text-[var(--meeting-card-date)]" />
-        <CustomText
+        <Text
+          size="2"
+          weight="regular"
           className="pl-3 text-[var(--meeting-card-date)]"
-          weight="normal"
-          size="small"
         >
           {date}
-        </CustomText>
+        </Text>
       </div>
 
       <div className="flex items-center mb-6">
         <ClockIcon className="text-[var(--meeting-card-date)]" />
-        <CustomText
+        <Text
+          size="2"
+          weight="regular"
           className="pl-3 text-[var(--meeting-card-date)]"
-          weight="normal"
-          size="small"
         >
           {time}
-        </CustomText>
+        </Text>
       </div>
 
       {userType === "patient" && (

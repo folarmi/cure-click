@@ -1,13 +1,16 @@
-import { Button, Separator } from "@radix-ui/themes";
+import { Box, Button, Separator, Text } from "@radix-ui/themes";
 import { CustomText } from "../ui/CustomText";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons";
 import avatar from "../../assets/avatar.svg";
+import { RootState } from "../../lib/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   title: string;
   date: string;
   time: string;
   doctorName?: string;
+  patientName?: string;
   onClick?: () => void;
   cancelOnClick?: () => void;
   ifButtons?: boolean;
@@ -21,6 +24,7 @@ const MeetingCardTwo = ({
   date,
   time,
   doctorName,
+  patientName,
   onClick,
   cancelOnClick,
   ifButtons,
@@ -28,6 +32,8 @@ const MeetingCardTwo = ({
   ifDocDetails = true,
   ifSpaceBetween = true,
 }: Props) => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
+
   return (
     <div className="py-4 px-6 border border-gray3 rounded-xl mt-4">
       <div className="flex justify-between">
@@ -51,8 +57,8 @@ const MeetingCardTwo = ({
       </div>
 
       <div
-        className={`mt-3 flex items-center ${
-          ifSpaceBetween && "justify-between"
+        className={`mt-3 flex items-center  ${
+          ifSpaceBetween ? "justify-between" : "space-x-3"
         }`}
       >
         <div className="flex items-center">
@@ -77,7 +83,18 @@ const MeetingCardTwo = ({
         </div>
       </div>
 
-      {ifDocDetails && (
+      {userType === "doctor" && (
+        <Box className="my-6">
+          <Text as="p" className="text-gray10" size="2" weight="regular">
+            Patient
+          </Text>
+          <Text as="p" className="text-gray11" size="3" weight="medium">
+            {patientName}
+          </Text>
+        </Box>
+      )}
+
+      {ifDocDetails && userType === "patient" && (
         <div className="flex items-center mt-6">
           <img src={avatar} />
           <div className="ml-2">
@@ -90,22 +107,33 @@ const MeetingCardTwo = ({
 
       {ifButtons && (
         <>
-          <Separator className="w-full bg-iris8 my-5" />
+          <Separator
+            className={`w-full my-5 ${
+              userType === "patient" ? "bg-iris8" : "bg-gray2"
+            }`}
+          />
 
           <div className="grid grid-cols-3 space-x-2 whitespace-nowrap">
             <Button
               size="3"
-              variant="outline"
+              style={{
+                border: "1px solid var(--meeting-card-two-border-color)",
+              }}
               onClick={cancelOnClick}
-              // onClick={() => console.log("sfs")}
-              className="text-iris9 border border-iris8 font-medium text-base cursor-pointer"
+              className={`font-medium text-base cursor-pointer bg-white ${
+                userType === "patient" ? "text-iris8" : "text-neutral_9"
+              }`}
             >
               Cancel
             </Button>
             <Button
               size="3"
-              variant="outline"
-              className="text-iris9 border border-iris8"
+              style={{
+                border: "1px solid var(--meeting-card-two-border-color)",
+              }}
+              className={`${
+                userType === "patient" ? "text-iris8" : "text-neutral_9"
+              } font-medium text-base cursor-pointer bg-white`}
             >
               Reschedule
             </Button>

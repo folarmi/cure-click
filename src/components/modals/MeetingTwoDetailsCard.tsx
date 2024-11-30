@@ -18,6 +18,7 @@ const MeetingTwoDetailsCard = ({
         doctorName="Dr. Alison Ogaga"
         ifButtons
         cancelOnClick={toggleMeetingTwoCancel}
+        ifSpaceBetween={false}
       />
 
       <AppointmentSubCard />

@@ -13,12 +13,18 @@ import { availableTimes } from "../../utils/data";
 
 const Calendar = () => {
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
+    useState(true);
   const [selectedID, setSelectedID] = useState(1);
-  const [selectedBlockOutDates, setSelectedBlockOutDates] = useState();
+  // const [selectedBlockOutDates, setSelectedBlockOutDates] = useState();
 
   const handleSwitchChange = (id: number) => {
     setIsSwitchEnabled((prevState) => !prevState);
     setSelectedID(id);
+  };
+
+  const handleBlockedOutSwitchChange = () => {
+    setIsBlockedOutDaysSwitchEnabled((prevState) => !prevState);
   };
 
   const selectData = Array.from({ length: 5 }, (_, index) => ({
@@ -209,10 +215,78 @@ const Calendar = () => {
                     <Switch
                       variant="soft"
                       size="2"
-                      checked={isSwitchEnabled && selectedID === id}
-                      onCheckedChange={() => handleSwitchChange(id)}
+                      checked={isBlockedOutDaysSwitchEnabled}
+                      onCheckedChange={handleBlockedOutSwitchChange}
                     />
                   </Flex>
+
+                  {isBlockedOutDaysSwitchEnabled && (
+                    <>
+                      <Flex align="center" justify="between" className="my-4">
+                        <Flex key={id} align="center">
+                          <Select.Root size="1">
+                            <Select.Trigger
+                              placeholder="Wed, 12 Dec 2024"
+                              className="w-[140px]"
+                            />
+                            <Select.Content variant="soft">
+                              <Select.Group>
+                                <Select.Label>Fruits</Select.Label>
+                                <Select.Item value="orange">Orange</Select.Item>
+                                <Select.Item value="apple">Apple</Select.Item>
+                                <Select.Item value="grape" disabled>
+                                  Grape
+                                </Select.Item>
+                              </Select.Group>
+                            </Select.Content>
+                          </Select.Root>
+                          <Text
+                            as="p"
+                            size="1"
+                            weight="regular"
+                            className="px-6"
+                          >
+                            To
+                          </Text>
+                          <Select.Root size="1">
+                            <Select.Trigger
+                              className="w-[140px]"
+                              placeholder="Mon, 17 Dec 2024"
+                            />
+                            <Select.Content>
+                              <Select.Group>
+                                <Select.Label>Fruits</Select.Label>
+                                <Select.Item value="orange">Orange</Select.Item>
+                                <Select.Item value="apple">Apple</Select.Item>
+                                <Select.Item value="grape" disabled>
+                                  Grape
+                                </Select.Item>
+                              </Select.Group>
+                            </Select.Content>
+                          </Select.Root>
+                        </Flex>
+
+                        <IconButton
+                          style={{
+                            border: "1px solid var(--border-gray)",
+                          }}
+                          className="bg-transparent text-neutral_11"
+                          size="1"
+                        >
+                          <TrashIcon />
+                        </IconButton>
+                      </Flex>
+                      <Button
+                        style={{
+                          border: "1px solid var(--border-gray)",
+                        }}
+                        size="1"
+                        className="text-sm font-medium bg-transparent text-neutral_11 mb-4"
+                      >
+                        <PlusIcon /> Add Blockout Dates
+                      </Button>
+                    </>
+                  )}
                 </Box>
               );
             })}

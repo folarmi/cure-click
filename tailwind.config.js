@@ -28,6 +28,8 @@ export default {
         gray_11: "#646464",
         gray_12: "#202020",
         alpha_3: "rgba(0, 71, 241, 0.07)",
+        suc_alpha_3: "rgba(0, 164, 51, 0.1)",
+        suc_alpha_11: "rgba(0, 113, 63, 0.87)",
         alpha_9: "#0009321F",
         gray_bg: "#fcfcfc",
         neutral_7: "#00062E32",

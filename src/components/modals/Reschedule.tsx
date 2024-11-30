@@ -1,9 +1,14 @@
-import { Box, Text } from "@radix-ui/themes";
+import { Box, Button, Text } from "@radix-ui/themes";
 import AppointmentModalHeader from "../ui/AppointmentModalHeader";
 import { MeetingCard } from "../cards/MeetingCard";
+import { useSelector } from "react-redux";
+import { RootState } from "../../lib/store";
+import { CustomTextarea } from "../ui/CustomTextArea";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const Reschedule = ({ toggleModal }: any) => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
+
   return (
     <div className="rounded-lg p-4 bg-white w-[522px]">
       <AppointmentModalHeader
@@ -16,15 +21,36 @@ const Reschedule = ({ toggleModal }: any) => {
           title="Second Opinion on scheduled Cancer surgery"
           date="Today"
           time="11:30PM GMT+1 ( In 30 min)"
+          patientName="Kemi Ukpong"
           doctorName="Dr. Alison Ogaga"
           speciality="General Practioner"
           onClick={toggleModal}
           ifButtons={false}
+          ifModal
         />
-        <Box className="mt-6 px-6">
-          <Text size="3" className="text-gray12">
-            Select New Date (24 Available Sessions)
-          </Text>
+        <Box className="mt-6">
+          {userType === "patient" ? (
+            <Text size="3" className="text-gray12 px-6">
+              Select New Date (24 Available Sessions)
+            </Text>
+          ) : (
+            <>
+              <CustomTextarea
+                label="Reason for rescheduling"
+                className=""
+                placeholder="Input your Reasons"
+              />
+
+              <Button
+                // onClick={toggleModal}
+                variant="solid"
+                size="3"
+                className="font-medium text-white text-base bg-grass_9 w-full my-6"
+              >
+                Schedule
+              </Button>
+            </>
+          )}
         </Box>
       </Box>
     </div>

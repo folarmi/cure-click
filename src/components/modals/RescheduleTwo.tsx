@@ -17,7 +17,9 @@ const RescheduleTwo = ({ toggleModal }: any) => {
           date="1 July 2023"
           time="11:30PM GMT+1"
           doctorName="Dr. Alison Ogaga"
+          patientName="Kemi Ukpong"
           ifView={false}
+          ifSpaceBetween={false}
         />
         <Box className="mt-6 px-6">
           <Text size="3" className="text-gray12">

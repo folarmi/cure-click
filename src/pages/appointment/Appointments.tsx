@@ -12,7 +12,7 @@ import medalFour from "../../assets/medalFour.svg";
 import medalThree from "../../assets/medalThree.svg";
 import { ModuleContent } from "./ModuleContent";
 import { TableContent } from "./TableContent";
-import { Calendar } from "./calendar";
+import { Calendar } from "./Calendar";
 
 const Appointments = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
@@ -36,7 +36,7 @@ const Appointments = () => {
 
       {/* Doctor */}
       {userType === "doctor" && (
-        <Tabs.Root className="px-12" defaultValue="appointmentCalendar">
+        <Tabs.Root className="px-12" defaultValue="appointmentHistory">
           <Tabs.List>
             <Tabs.Trigger value="appointmentHistory">
               Appointment History

@@ -17,6 +17,7 @@ const AppointmentDetails = ({ toggleModal }: any) => {
           time="11:30PM GMT+1 ( In 30 min)"
           doctorName="Dr. Alison Ogaga"
           speciality="General Practioner"
+          ifModal
           onClick={toggleModal}
         />
 

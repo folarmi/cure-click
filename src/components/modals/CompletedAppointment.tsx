@@ -20,8 +20,6 @@ const CompletedAppointment = ({ ifCompleted = true, toggleModal }: Prop) => {
         ifView={false}
       />
 
-      <AppointmentSubCard status={ifCompleted ? "Completed" : "Cancelled"} />
-
       <Box className="border border-gray3 rounded-lg p-4 mt-4">
         <Text as="p" weight="regular" size="3" className="text-gray11">
           {ifCompleted ? "Doctor Notes" : "Cancel Reason"}
@@ -33,6 +31,8 @@ const CompletedAppointment = ({ ifCompleted = true, toggleModal }: Prop) => {
           </Text>
         </Box>
       </Box>
+
+      <AppointmentSubCard status={ifCompleted ? "Completed" : "Cancelled"} />
     </div>
   );
 };
