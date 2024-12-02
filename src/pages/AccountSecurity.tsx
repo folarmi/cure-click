@@ -3,8 +3,11 @@ import { CustomInput } from "../components/ui/CustomInput";
 import { useState } from "react";
 import { CopyIcon } from "@radix-ui/react-icons";
 import UpperAndLowerText from "../components/atoms/UpperAndLowerText";
+import { useSelector } from "react-redux";
+import { RootState } from "../lib/store";
 
 const AccountSecurity = () => {
+  const userType = useSelector((state: RootState) => state.auth.userType);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
 
   const handleSwitchChange = () => {
@@ -12,6 +15,27 @@ const AccountSecurity = () => {
   };
   return (
     <Box className="p-6 max-w-[660px] mx-auto border border-gray3 rounded-lg">
+      {userType === "doctor" && (
+        <>
+          <UpperAndLowerText
+            superText="Change Transaction Pin"
+            subText="Update your transaction pin"
+          />
+
+          <CustomInput
+            label="New Pin"
+            placeholder="Input your pin"
+            type="password"
+            className="mt-6"
+          />
+          <CustomInput
+            label="Confirm Pin"
+            placeholder="re type new pin"
+            type="password"
+            className="mt-6 mb-10"
+          />
+        </>
+      )}
       <UpperAndLowerText
         superText="Change password"
         subText="Update your account password"
@@ -56,7 +80,9 @@ const AccountSecurity = () => {
               direction="column"
               justify="center"
               align="center"
-              className="bg-iris12 rounded-[10px] mx-auto h-[90px]"
+              className={`${
+                userType === "patient" ? "bg-iris12" : "bg-grass12"
+              } rounded-[10px] mx-auto h-[90px]`}
             >
               <Text size="2" className="text-gray4">
                 2FA Key

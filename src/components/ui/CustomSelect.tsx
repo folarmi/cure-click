@@ -2,6 +2,7 @@ import React from "react";
 import * as RadixSelect from "@radix-ui/react-select";
 import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import { clsx } from "clsx";
+import * as LabelPrimitive from "@radix-ui/react-label";
 
 interface SelectOption {
   value: string;
@@ -13,6 +14,7 @@ interface CustomSelectProps extends RadixSelect.SelectTriggerProps {
   placeholder?: string;
   disabled?: boolean;
   value?: string;
+  label?: string;
   onValueChange?: (value: string) => void;
   ifGrayBg?: boolean;
 }
@@ -24,62 +26,71 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   onValueChange,
   disabled = false,
   ifGrayBg = false,
+  label,
   ...rest
 }) => (
-  <RadixSelect.Root
-    value={value}
-    onValueChange={onValueChange}
-    disabled={disabled}
-  >
-    <RadixSelect.Trigger
-      className={clsx(
-        "inline-flex items-center justify-between w-full h-10 px-4 py-2 border rounded-md",
-        `border-gray-300 ${
-          ifGrayBg ? "bg-alpha_3" : "bg-white"
-        } text-sm text-gray-700 shadow-sm`,
-        "hover:bg-gray-100 focus:outline-none",
-        "disabled:opacity-50 disabled:cursor-not-allowed"
-      )}
-      {...rest}
+  <div className="w-full">
+    {label && (
+      <LabelPrimitive.Root className="block mb-1 text-sm font-medium text-gray-700">
+        {label}
+      </LabelPrimitive.Root>
+    )}
+
+    <RadixSelect.Root
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
     >
-      <RadixSelect.Value placeholder={placeholder} />
-      <RadixSelect.Icon>
-        <ChevronDownIcon />
-      </RadixSelect.Icon>
-    </RadixSelect.Trigger>
-
-    <RadixSelect.Portal>
-      <RadixSelect.Content
+      <RadixSelect.Trigger
         className={clsx(
-          "bg-white border border-gray-300 rounded-md shadow-lg w-full max-w-md",
-          "p-1 focus:outline-none"
+          "inline-flex items-center justify-between w-full h-10 px-4 py-2 border rounded-md",
+          `border-gray-300 ${
+            ifGrayBg ? "bg-alpha_3" : "bg-white"
+          } text-sm text-gray-700 shadow-sm`,
+          "hover:bg-gray-100 focus:outline-none",
+          "disabled:opacity-50 disabled:cursor-not-allowed"
         )}
+        {...rest}
       >
-        <RadixSelect.ScrollUpButton className="flex items-center justify-center h-6 text-gray-400">
-          <ChevronUpIcon />
-        </RadixSelect.ScrollUpButton>
-
-        <RadixSelect.Viewport>
-          {options.map((option) => (
-            <RadixSelect.Item
-              key={option.value}
-              value={option.value}
-              className={clsx(
-                "px-4 py-2 text-sm text-gray-700 rounded cursor-pointer",
-                "hover:bg-indigo-500 hover:text-white focus:bg-indigo-500 focus:text-white"
-              )}
-            >
-              <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
-            </RadixSelect.Item>
-          ))}
-        </RadixSelect.Viewport>
-
-        <RadixSelect.ScrollDownButton className="flex items-center justify-center h-6 text-gray-400">
+        <RadixSelect.Value placeholder={placeholder} />
+        <RadixSelect.Icon>
           <ChevronDownIcon />
-        </RadixSelect.ScrollDownButton>
-      </RadixSelect.Content>
-    </RadixSelect.Portal>
-  </RadixSelect.Root>
+        </RadixSelect.Icon>
+      </RadixSelect.Trigger>
+
+      <RadixSelect.Portal>
+        <RadixSelect.Content
+          className={clsx(
+            "bg-white border border-gray-300 rounded-md shadow-lg w-full max-w-md",
+            "p-1 focus:outline-none"
+          )}
+        >
+          <RadixSelect.ScrollUpButton className="flex items-center justify-center h-6 text-gray-400">
+            <ChevronUpIcon />
+          </RadixSelect.ScrollUpButton>
+
+          <RadixSelect.Viewport>
+            {options.map((option) => (
+              <RadixSelect.Item
+                key={option.value}
+                value={option.value}
+                className={clsx(
+                  "px-4 py-2 text-sm text-gray-700 rounded cursor-pointer",
+                  "hover:bg-indigo-500 hover:text-white focus:bg-indigo-500 focus:text-white"
+                )}
+              >
+                <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
+              </RadixSelect.Item>
+            ))}
+          </RadixSelect.Viewport>
+
+          <RadixSelect.ScrollDownButton className="flex items-center justify-center h-6 text-gray-400">
+            <ChevronDownIcon />
+          </RadixSelect.ScrollDownButton>
+        </RadixSelect.Content>
+      </RadixSelect.Portal>
+    </RadixSelect.Root>
+  </div>
 );
 
 export default CustomSelect;
