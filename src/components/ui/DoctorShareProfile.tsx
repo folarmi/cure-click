@@ -1,5 +1,7 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { Box, Button, Callout, Flex, Text } from "@radix-ui/themes";
+import { MyCalendar } from "./MyCalendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const DoctorShareProfile = () => {
   return (
@@ -55,6 +57,10 @@ const DoctorShareProfile = () => {
             profile links.
           </Callout.Text>
         </Callout.Root>
+      </Box>
+
+      <Box className="border border-gray3 rounded-xl px-4 py-3 mt-4">
+        <MyCalendar />
       </Box>
     </div>
   );

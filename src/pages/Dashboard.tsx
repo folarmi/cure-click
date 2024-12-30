@@ -12,12 +12,13 @@ import { DashboardIcon } from "@radix-ui/react-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../lib/store";
 import { DoctorDashboardHeader } from "../components/ui/DoctorDashboardHeader";
-import { Flex, Text } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import { GraphCard } from "../components/cards/GraphCard";
 import TopAndBottomText from "../components/atoms/TopAndBottomText";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
 import Review from "../components/cards/Review";
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
+import { countriesData } from "../utils/data";
 
 const Dashboard = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
@@ -179,7 +180,30 @@ const Dashboard = () => {
               <Flex className="space-x-6">
                 <GraphCard count="230 Minutes" text="Consultation Minutes" />
                 <GraphCard count="0 Bookings" text="Bookings" />
-                <GraphCard count="9 Countries" text="Patient Countries" />
+                <GraphCard count="9 Countries" text="Patient Countries">
+                  <div className="mt-4">
+                    {countriesData?.map(({ id, name, image, number }) => {
+                      return (
+                        <Flex
+                          key={id}
+                          className="mb-2"
+                          align="center"
+                          justify="between"
+                        >
+                          <Flex align="center">
+                            <img src={image} className="w-5 h-5" />
+                            <Text weight="regular" size="3">
+                              {name}
+                            </Text>
+                          </Flex>
+                          <Text weight="regular" size="2">
+                            {number}
+                          </Text>
+                        </Flex>
+                      );
+                    })}
+                  </div>
+                </GraphCard>
               </Flex>
 
               <div className="flex p-4 items-center justify-between w-full bg-iris3 my-6">
