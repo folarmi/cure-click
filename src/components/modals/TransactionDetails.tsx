@@ -4,7 +4,7 @@ import { BiX } from "react-icons/bi";
 
 const TransactionDetails = ({ toggleModal }: any) => {
   return (
-    <div className="bg-white w-[522px] p-4 rounded-lg">
+    <div className="bg-white w-auto md:w-[522px] p-4 rounded-lg">
       <Flex justify="between" align="center">
         <Text size="4" className="text-gray12 font-semibold">
           Transaction Details

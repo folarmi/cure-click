@@ -14,6 +14,8 @@ const Login = () => {
 
   return (
     <AuthTwoLayout
+      authQuestion="New On Cure Click?"
+      callToAction="Create an Account"
       mainText="Login to Your Account"
       subText="Provide the necessary details required to create your account"
     >

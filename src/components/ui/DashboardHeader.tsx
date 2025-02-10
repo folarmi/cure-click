@@ -44,16 +44,28 @@ const DashboardHeader = ({
 
           <div className="flex items-center border border-gray4 rounded-md p-[10px] space-x-3">
             <IoWalletOutline className="text-iris1" />
-            <CustomText size="medium" weight="medium" className="text-iris1">
+            <CustomText
+              size="medium"
+              weight="medium"
+              className="hidden md:block text-iris1"
+            >
               {" "}
               Wallet Balance N0.00
+            </CustomText>
+            <CustomText
+              size="medium"
+              weight="medium"
+              className=" md:hidden text-iris1"
+            >
+              {" "}
+              N0.00
             </CustomText>
           </div>
         </div>
       )}
 
       <div className="mt-6 bg-iris1 p-4 rounded-lg">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between">
           <section>
             <CustomText
               className="text-gray_12 pb-1"
@@ -70,16 +82,17 @@ const DashboardHeader = ({
               +2k Vetted doctors are waiting to have a conversation with you
             </CustomText>
           </section>
-          <img src={sampleImage} />
+          <img src={sampleImage} className="w-1/2 md:w-auto mt-4 md:mt-0" />
         </div>
 
-        <div className="mt-4 flex items-center space-x-4">
+        <div className="mt-4 hidden md:flex items-center space-x-4">
           <CustomSelect
             options={options}
             placeholder="Select Speciality"
             value={selectedValue}
             onValueChange={handleChange}
             ifGrayBg
+            // className="hidden md:block"
           />
           <CustomSelect
             options={options}
@@ -87,12 +100,13 @@ const DashboardHeader = ({
             value={selectedValue}
             onValueChange={handleChange}
             ifGrayBg
+            // className="hidden md:block"
           />
           <CustomInput
             label=""
             placeholder="Search by Availability"
             icon={<CalendarIcon />}
-            className="bg-alpha_3"
+            className="bg-alpha_3 hidden md:block"
             type="text"
             ifGrayBg
           />

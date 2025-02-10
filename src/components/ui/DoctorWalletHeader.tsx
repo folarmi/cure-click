@@ -3,9 +3,14 @@ import Breadcrumb from "./BreadCrumb";
 import { IoWalletOutline } from "react-icons/io5";
 import { WalletHeader } from "./WalletHeader";
 
+//
 const DoctorWalletHeader = () => {
   return (
-    <Flex direction="column" justify="between" className="bg-grass12 py-8 px-8">
+    <Flex
+      direction="column"
+      justify="between"
+      className="bg-grass12 py-8 px-8 "
+    >
       <Breadcrumb Icon={IoWalletOutline} route="Wallet" />
       <Text
         className="text-grass1 font-semibold pt-[10px] pb-1"
@@ -18,7 +23,7 @@ const DoctorWalletHeader = () => {
         View and manage your wallet
       </Text>
 
-      <Flex className="mt-[10px] bg-grass2 p-6 rounded-lg justify-between">
+      <Flex className="flex-col md:flex-row mt-2 md:mt-[10px] bg-grass2 p-6 rounded-lg justify-between">
         <WalletHeader
           balance="$ 0.00"
           title="Pending Wallet Balance"
@@ -31,10 +36,11 @@ const DoctorWalletHeader = () => {
           title="Wallet Balance"
           buttonText="Withdraw"
           ifFull
+          className="mt-4 md:mb-0"
         />
       </Flex>
 
-      <Box className="mt-6 bg-grass4 rounded p-4">
+      <Box className="hidden md:block mt-6 bg-grass4 rounded p-4">
         <Text size="2" as="p" weight="regular" className="text-grass12">
           Your pending wallet balance are funds paid for sessions still pending
           or funds held as a result of a conflict, these funds will reflect

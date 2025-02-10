@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { themeData } from "../utils/data";
 import UpperAndLowerText from "../components/atoms/UpperAndLowerText";
 import * as Slider from "@radix-ui/react-slider";
@@ -62,6 +62,13 @@ const Preferences = () => {
               <Slider.Thumb className="w-4 h-4 bg-blue-500 rounded-full shadow-md" />
             </Slider.Root>
           </Box>
+
+          <Button
+            size="3"
+            className="md:hidden bg-grass_9 font-medium text-base cursor-pointer mt-4 w-full"
+          >
+            Save
+          </Button>
         </Box>
       </Box>
     </Box>

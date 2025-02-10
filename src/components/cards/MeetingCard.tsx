@@ -37,7 +37,7 @@ const MeetingCard = ({
   return (
     <div
       className={`bg-[var(--color-primary)] rounded-xl border border-gray3 px-8 py-4 ${
-        ifModal ? "w-full" : "w-[366px]"
+        ifModal ? "w-full" : "w-auto md:w-[366px]"
       }`}
     >
       <CustomText

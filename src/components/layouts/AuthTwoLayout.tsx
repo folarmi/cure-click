@@ -3,7 +3,7 @@ import logo from "../../assets/icons/logo.svg";
 import bannerImage from "../../assets/banner.svg";
 import { CustomButton } from "../ui/CustomButton";
 import { useNavigate } from "react-router";
-import { Flex } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import logoTwo from "../../assets/icons/logoTwo.svg";
 import { CustomText } from "../ui/CustomText";
 
@@ -12,6 +12,8 @@ interface AuthTwoLayoutProps {
   mainText: string;
   subText: string;
   banner?: string;
+  authQuestion: string;
+  callToAction: string;
 }
 
 const AuthTwoLayout = ({
@@ -19,11 +21,13 @@ const AuthTwoLayout = ({
   mainText,
   subText,
   banner = bannerImage,
+  callToAction,
+  authQuestion,
 }: AuthTwoLayoutProps) => {
   const navigate = useNavigate();
   return (
     <main>
-      <nav className="bg-white py-5 px-16 flex items-center justify-between">
+      <nav className="bg-white py-5 px-4 md:px-16 hidden md:flex items-center justify-between">
         <img src={logo} alt="cureClick" />
         <CustomButton
           variant="primary"
@@ -58,11 +62,25 @@ const AuthTwoLayout = ({
               </CustomText>
             </Flex>
             {children}
+            <Flex
+              className="md:hidden px-4 my-6"
+              direction="column"
+              align="center"
+              justify="center"
+            >
+              <Text as="p" size="2" className="font-medium pb-4">
+                {authQuestion}
+                <span className="text-grass_9">{callToAction}</span>
+              </Text>
+              <Text className="text-gray_11 font-medium" size="2">
+                Copyrights CureClick 2024
+              </Text>
+            </Flex>
           </div>
         </div>
       </section>
     </main>
   );
 };
-// flex items-center justify-center
+
 export { AuthTwoLayout };

@@ -5,7 +5,7 @@ import MeetingCardTwo from "../cards/MeetingCardTwo";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const RescheduleTwo = ({ toggleModal }: any) => {
   return (
-    <div className="rounded-lg p-4 bg-white w-[522px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader
         text="Reschedule Session"
         toggleModal={toggleModal}

@@ -16,7 +16,7 @@ const Availability = ({ toggleModal }: any) => {
   };
 
   return (
-    <div className="bg-white py-6 px-10 rounded-lg">
+    <div className="bg-white py-6 px-4 md:px-10 rounded-lg">
       <Flex justify="between" align="center" className="px-4">
         <Text weight="medium" size="3" className="text-gray12">
           View Availability

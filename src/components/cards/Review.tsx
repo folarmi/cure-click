@@ -84,7 +84,7 @@ const Review = ({
 
       {ifResponse && (
         <div className="border-t border-t-gray3 pt-4 ">
-          <section className="pl-6">
+          <section className="pl-2 md:pl-6">
             <Text as="p" size="3" weight="regular" className="pt-2 text-gray11">
               After being forced to move twice within five years, our customers
               had a hard time finding us and our sales plummeted. The Lorem
@@ -94,7 +94,11 @@ const Review = ({
               listing.
             </Text>
 
-            <Flex align="center" justify="between" className={`mt-3`}>
+            <Flex
+              align="center"
+              justify="between"
+              className={`mt-3 flex-col md:flex-row`}
+            >
               <Flex align="center">
                 <img src={avatar} className="mr-3" />
                 <Text size="2" className="font-semibold text-gray12 pr-4">

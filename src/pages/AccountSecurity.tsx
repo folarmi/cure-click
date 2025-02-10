@@ -126,6 +126,13 @@ const AccountSecurity = () => {
             </Button>
           </Box>
         )}
+
+        <Button
+          size="3"
+          className="md:hidden bg-grass_9 font-medium text-base cursor-pointer w-full mt-4"
+        >
+          Save
+        </Button>
       </form>
     </Box>
   );

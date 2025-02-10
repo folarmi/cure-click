@@ -12,7 +12,7 @@ const Breadcrumb = ({ Icon, route }: Prop) => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center w-fit space-x-2 bg-iris2 py-2 px-3 rounded-lg"
+      className="hidden md:flex items-center w-fit space-x-2 bg-iris2 py-2 px-3 rounded-lg"
     >
       <Flex align="center">
         <Icon className="pr-1 w-5 h-5 " />

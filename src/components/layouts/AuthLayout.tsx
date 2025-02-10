@@ -1,11 +1,12 @@
 import React, { ReactNode } from "react";
 import { CustomText } from "../ui/CustomText";
-import { Box, Flex } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import logo from "../../assets/icons/logo.svg";
 import { onboardingSteps } from "../../utils/data";
 import { CustomButton } from "../ui/CustomButton";
 import { useLocation, useNavigate } from "react-router";
 import logoTwo from "../../assets/icons/logoTwo.svg";
+// import bannerImage from "../../assets/banner.svg";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -23,7 +24,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
 
   return (
     <Flex>
-      <Box className="w-[30%] bg-iris3 h-screen pl-16 pt-6">
+      <Box className="w-[30%] bg-iris3 h-screen pl-16 pt-6 hidden md:block">
         <img src={logo} className="w-28" />
 
         <section className="mt-24">
@@ -67,8 +68,8 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           Copyrights CureClick 2024
         </CustomText>
       </Box>
-      <Box className="w-[70%]">
-        <div className="flex w-full">
+      <Box className="w-full md:w-[70%]">
+        <div className="hidden md:flex w-full">
           <CustomButton
             variant="secondary"
             className="ml-auto flex w-[240px] mt-5 mr-16 cursor-pointer"
@@ -77,7 +78,11 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
             Have an Account? Login Here
           </CustomButton>
         </div>
-
+        {/* 
+        <section
+          className="relative bg-cover bg-center h-[345px]"
+          style={{ backgroundImage: `url(${bannerImage})` }}
+        > */}
         <Flex direction="column" align="center" className="mt-12">
           <img src={logoTwo} className="w-9 text-2xl" />
           <CustomText size="largeTwo" weight="semibold" className={`text-text`}>
@@ -92,6 +97,20 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           </CustomText>
         </Flex>
         {children}
+        <Flex
+          className="md:hidden px-4 my-6"
+          direction="column"
+          align="center"
+          justify="center"
+        >
+          <Text as="p" size="2" className="font-medium pb-4">
+            Have an Account? <span className="text-grass_9">Login Here</span>
+          </Text>
+          <Text className="text-gray_11 font-medium" size="2">
+            Copyrights CureClick 2024
+          </Text>
+        </Flex>
+        {/* </section> */}
       </Box>
     </Flex>
   );

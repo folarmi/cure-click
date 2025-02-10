@@ -7,7 +7,7 @@ import MeetingCardTwo from "../cards/MeetingCardTwo";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const CancelAppointmentTwo = ({ toggleModal }: any) => {
   return (
-    <div className="rounded-lg p-4 bg-white w-[522px] overflow-scroll h-[700px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px] overflow-scroll h-[700px]">
       <Flex justify="between" align="center" className="mb-4">
         <Box>
           <Text as="p" className="font-semibold text-gray12" size="4">

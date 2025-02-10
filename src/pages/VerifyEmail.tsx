@@ -9,7 +9,7 @@ const VerifyEmail = () => {
       mainText="Verify your Email"
       subText="we sent a code to ekpenyong2510@gmail.com"
     >
-      <form className="flex flex-col justify-center w-1/2 mx-auto">
+      <form className="flex flex-col justify-center w-full md:w-1/2 px-4 md:px-0 mx-auto">
         <Flex align="center" justify="center" className="space-x-6 rounded-md">
           <TextField.Root
             size="3"

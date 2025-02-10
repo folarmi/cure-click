@@ -25,7 +25,7 @@ const DoctorAccountProfile = () => {
   };
 
   return (
-    <Flex direction="column" className="px-12">
+    <Flex direction="column" className=" px-3 md:px-12">
       <Flex align="center" justify="between">
         <Box>
           <img
@@ -33,7 +33,12 @@ const DoctorAccountProfile = () => {
             className="w-[100px] h-[100px] object-cover rounded-lg"
           />
           <Flex align="center" className="mt-4">
-            <Text as="p" size="7" weight="medium" className="text-indigo_12">
+            <Text
+              as="p"
+              size="7"
+              weight="medium"
+              className="text-2xl md:text-4xl text-indigo_12 whitespace-nowrap"
+            >
               Dr Franklin Chang
             </Text>
             <img src={BadgeIcon} className="w-[34px] h-[34px]" />
@@ -58,8 +63,8 @@ const DoctorAccountProfile = () => {
             <Tabs.Trigger value="reviews">Reviews</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="overview">
-            <Flex>
-              <Box className="w-[70%] mt-5">
+            <Flex className="flex-col md:flex-row">
+              <Box className="w-full md:w-[70%] mt-5">
                 <Text size="3" className="text-gray9 w-[1002px] justify-start">
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry's
@@ -75,6 +80,7 @@ const DoctorAccountProfile = () => {
 
                 <Flex
                   align="center"
+                  wrap="wrap"
                   justify="between"
                   className="mt-5 bg-white border border-gray2 p-4 rounded-md"
                 >
@@ -109,13 +115,16 @@ const DoctorAccountProfile = () => {
                   </Badge>
                 </Flex>
 
-                <Flex justify="between" className="space-x-6 w-full">
+                <Flex
+                  justify="between"
+                  className="flex-col md:flex-row space-x-6 w-full"
+                >
                   <GraphCard count="230 Minutes" text="Consultation Minutes" />
                   <GraphCard count="0 Bookings" text="Bookings" />
                   <GraphCard count="9 Countries" text="Patient Countries" />
                 </Flex>
 
-                <div className="flex items-center justify-between w-full bg-iris3 rounded p-4 my-5">
+                <div className="flex flex-wrap md:flex-nowrap items-center justify-between w-full bg-iris3 rounded p-4 my-5">
                   <TopAndBottomText top="Completed Sessions" bottom="2,349" />
                   <TopAndBottomText top="Ratings" bottom="5" />
                   <TopAndBottomText top="Leaderboard" bottom="Top 10" />
@@ -157,7 +166,7 @@ const DoctorAccountProfile = () => {
                 </Box>
               </Box>
 
-              <Box className="w-[30%] ml-6 mt-10">
+              <Box className="w-full md:w-[30%] md:ml-6 mt-10">
                 <DoctorShareProfile />
               </Box>
             </Flex>

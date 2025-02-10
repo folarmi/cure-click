@@ -21,15 +21,22 @@ const WalletHeader = ({
     <Flex
       align="center"
       justify="between"
-      className={`${className} bg-iris12 rounded-lg p-6 ${
-        ifFull ? "w-full" : "w-[40%]"
+      className={`${className}  bg-iris12 rounded-lg p-6 ${
+        ifFull ? "w-full" : "w-full md:w-[40%]"
       }`}
     >
       <Box>
-        <Text size="3" as="p" weight="regular" className=" text-iris3 pb-1">
+        <Text
+          as="p"
+          weight="regular"
+          className="text-sm md:text-base text-iris3 pb-1"
+        >
           {title}
         </Text>
-        <Text size="7" as="p" className=" text-iris2 font-semibold">
+        <Text
+          as="p"
+          className=" text-iris2 font-semibold text-xl md:text-[28px] "
+        >
           {balance}
         </Text>
       </Box>

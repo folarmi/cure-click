@@ -3,11 +3,12 @@ import { Text } from "@radix-ui/themes";
 type Prop = {
   top: string;
   bottom: string;
+  className?: string;
 };
 
-const TopAndBottomText = ({ top, bottom }: Prop) => {
+const TopAndBottomText = ({ top, bottom, className }: Prop) => {
   return (
-    <div>
+    <div className={`${className}`}>
       <Text as="p" size="2" weight="medium">
         {top}
       </Text>

@@ -12,13 +12,14 @@ import { DashboardIcon } from "@radix-ui/react-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../lib/store";
 import { DoctorDashboardHeader } from "../components/ui/DoctorDashboardHeader";
-import { Box, Flex, Text } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import { GraphCard } from "../components/cards/GraphCard";
 import TopAndBottomText from "../components/atoms/TopAndBottomText";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
 import Review from "../components/cards/Review";
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
 import { countriesData } from "../utils/data";
+import MobileSlider from "../components/ui/MobileSlider";
 
 const Dashboard = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
@@ -50,7 +51,7 @@ const Dashboard = () => {
                 View your upcoming appointments.
               </CustomText>
             </div>
-            <div>
+            <div className="hidden md:block">
               <CustomText
                 className="text-gray_12"
                 size="large"
@@ -68,8 +69,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="flex">
-            <section className="flex flex-wrap w-[75%]">
+          <div className="md:flex">
+            <section className="flex flex-wrap w-full md:w-[75%] order-2 md:order-1">
               <DoctorCard
                 image={sampleDoctor}
                 doctorName="Dr Franklin Chang"
@@ -138,7 +139,7 @@ const Dashboard = () => {
               />
             </section>
 
-            <section className="w-[25%]">
+            <section className="w-full md:w-[25%] order-1 md:order-2">
               <MeetingCard
                 title="Second Opinion on scheduled Cancer surgery"
                 date="Today"
@@ -170,14 +171,22 @@ const Dashboard = () => {
       )}
 
       {userType === "doctor" && (
-        <section className="mt-7 px-12 bg-white">
-          <Flex>
-            <div className="w-[70%] bg-gray_bg">
-              <Text className="font-semibold" size="4">
+        <section className="mt-7 px-3 md:px-12 bg-white">
+          <Text size="3" weight="medium" className="md:hidden text-gray12 pb-3">
+            Upcoming Appointments
+          </Text>
+
+          <div className="md:hidden">
+            <MobileSlider />
+          </div>
+
+          <Flex className="flex-col md:flex-row">
+            <div className="w-full md:w-[70%] order-2 md:order-1 bg-gray_bg">
+              <Text className="hidden md:block font-semibold" size="4">
                 Your Analytics
               </Text>
 
-              <Flex className="space-x-6">
+              <Flex className="flex-col md:flex-row mx-auto md:space-x-6">
                 <GraphCard count="230 Minutes" text="Consultation Minutes" />
                 <GraphCard count="0 Bookings" text="Bookings" />
                 <GraphCard count="9 Countries" text="Patient Countries">
@@ -206,7 +215,7 @@ const Dashboard = () => {
                 </GraphCard>
               </Flex>
 
-              <div className="flex p-4 items-center justify-between w-full bg-iris3 my-6">
+              <div className="hidden md:flex p-4 items-center justify-between w-full bg-iris3 my-6">
                 <TopAndBottomText top="Completed Sessions" bottom="2,349" />
                 <TopAndBottomText top="Ratings" bottom="5" />
                 <TopAndBottomText top="Leaderboard" bottom="Top 10" />
@@ -216,31 +225,37 @@ const Dashboard = () => {
                 />
               </div>
 
-              <Text size="3" weight="medium" className="text-gray12 pb-3">
+              <Text
+                size="3"
+                weight="medium"
+                className="hidden md:block text-gray12 pb-3"
+              >
                 Upcoming Appointments
               </Text>
 
-              <MeetingCardTwo
-                title="Second Opinion on scheduled Cancer surge.."
-                date="1 July 2023"
-                time="11:30PM GMT+1"
-                ifDocDetails={false}
-                ifSpaceBetween={false}
-              />
-              <MeetingCardTwo
-                title="Second Opinion on scheduled Cancer surge.."
-                date="1 July 2023"
-                time="11:30PM GMT+1"
-                ifDocDetails={false}
-                ifSpaceBetween={false}
-              />
-              <MeetingCardTwo
-                title="Second Opinion on scheduled Cancer surge.."
-                date="1 July 2023"
-                time="11:30PM GMT+1"
-                ifDocDetails={false}
-                ifSpaceBetween={false}
-              />
+              <div className="hidden md:block">
+                <MeetingCardTwo
+                  title="Second Opinion on scheduled Cancer surge.."
+                  date="1 July 2023"
+                  time="11:30PM GMT+1"
+                  ifDocDetails={false}
+                  ifSpaceBetween={false}
+                />
+                <MeetingCardTwo
+                  title="Second Opinion on scheduled Cancer surge.."
+                  date="1 July 2023"
+                  time="11:30PM GMT+1"
+                  ifDocDetails={false}
+                  ifSpaceBetween={false}
+                />
+                <MeetingCardTwo
+                  title="Second Opinion on scheduled Cancer surge.."
+                  date="1 July 2023"
+                  time="11:30PM GMT+1"
+                  ifDocDetails={false}
+                  ifSpaceBetween={false}
+                />
+              </div>
 
               <NumberOfReview />
 
@@ -301,7 +316,7 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="w-[30%] ml-6">
+            <div className="w-full md:w-[30%] order-1 md:order-2 md:ml-6">
               <DoctorShareProfile />
             </div>
           </Flex>

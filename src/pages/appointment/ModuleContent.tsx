@@ -54,7 +54,7 @@ const ModuleContent = () => {
   };
 
   return (
-    <Flex>
+    <Flex className="flex-col md:flex-row">
       <Box>
         <div>
           <CustomText className="text-gray_12" size="large" weight="semibold">

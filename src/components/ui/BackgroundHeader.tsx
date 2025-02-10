@@ -9,7 +9,7 @@ interface Prop {
 const BackgroundHeader = ({ children, className }: Prop) => {
   return (
     <div
-      className={`bg-cover bg-center px-12 py-8 h-fit ${className}`}
+      className={`bg-cover bg-center px-4 md:px-12 py-8 h-fit ${className}`}
       style={{ backgroundImage: `url(${headerBg})` }}
     >
       {children}

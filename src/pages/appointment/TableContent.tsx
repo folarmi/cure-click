@@ -199,7 +199,11 @@ const TableContent = () => {
 
   return (
     <div>
-      <CustomText className="text-gray_12" size="large" weight="semibold">
+      <CustomText
+        className="text-gray_12 mt-6 md:mt-0"
+        size="large"
+        weight="semibold"
+      >
         Appointment History
       </CustomText>
       <CustomText className="text-gray_11 pb-4" size="medium" weight="normal">

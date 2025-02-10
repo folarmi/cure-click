@@ -9,7 +9,7 @@ const Register = () => {
       mainText="Create Your Account"
       subText="Provide the necessary details required to create your account"
     >
-      <form className="flex flex-col justify-center w-1/2 mx-auto">
+      <form className="flex flex-col justify-center w-full md:w-1/2 mx-auto px-4 md:px-0">
         <CustomInput
           label="First name"
           placeholder="Input your first name"

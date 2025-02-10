@@ -9,12 +9,16 @@ const DocAchievement = ({ awardTitle, date, img }: Prop) => {
   return (
     <Flex justify="between" align="center" className="mb-5">
       <Flex align="center">
-        <img src={img} className="w-14 h-14" />
-        <Text size="4" weight="medium" className="text-gray11 pl-2">
+        <img src={img} className="w-10 md:w-14 h-10 md:h-14" />
+        <Text
+          size="4"
+          weight="medium"
+          className="text-sm md:text-lg text-gray11 pl-2"
+        >
           {awardTitle}
         </Text>
       </Flex>
-      <Text size="2" weight="regular" className="text-gray11">
+      <Text size="2" weight="regular" className="text-gray11 ">
         {date}
       </Text>
     </Flex>

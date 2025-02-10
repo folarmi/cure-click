@@ -39,19 +39,34 @@ const DoctorDashboardHeader = ({
     setModal(!modal);
   };
   return (
-    <div className="bg-grass12 px-8">
-      <Flex justify="between" className="pt-8">
+    <div className="bg-grass12 px-4 md:px-8">
+      <Flex justify="between" className="pt-4 md:pt-8">
         <Box>
           {ifBreadCrumb && <Breadcrumb Icon={Icon} route={routeName} />}
-          <Text
-            as="p"
-            size="6"
-            className={`text-grass1 font-semibold w-[226px] ${
-              ifBreadCrumb && "pt-[10px]"
-            }`}
-          >
-            {name}
-          </Text>
+
+          <div className="flex items-center mb-4 md:mb-0 w-full">
+            <Text
+              as="p"
+              size="6"
+              className={`text-grass1 font-semibold text-sm md:text-2xl w-auto md:w-[226px] ${
+                ifBreadCrumb && "pt-[10px]"
+              }`}
+            >
+              {name}
+            </Text>
+
+            <Flex
+              align="center"
+              className="space-x-1 border px-2 border-gray4 h-11 rounded md:hidden"
+            >
+              <IoWalletOutline className="text-iris1" />
+
+              <Text as="p" size="3" className="text-iris2" weight="bold">
+                $340,000.00
+              </Text>
+              <ChevronRightIcon className="w-5 h-5 text-iris1" />
+            </Flex>
+          </div>
 
           {ifString ? (
             <Text as="p" size="3" weight="regular" className="text-grass4 pt-1">
@@ -65,18 +80,22 @@ const DoctorDashboardHeader = ({
           )}
         </Box>
 
-        <Flex align="center">
+        <Flex className="mt-16 mb-8" align="center">
           <Flex
             align="center"
-            className="bg-grass1 rounded-md py-[10px] px-4 mr-6"
+            className="md:bg-grass1 rounded-md py-[10px] px-4 mr-6"
           >
-            <Text className="text-gray11 pr-2 " weight="medium" size="3">
+            <Text
+              className="hidden md:block text-gray11 pr-2 "
+              weight="medium"
+              size="3"
+            >
               Availability
             </Text>
 
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
-                <Flex>
+                <Flex className="">
                   <Flex align="center">
                     <CircularDot
                       bgColor={`${
@@ -84,19 +103,19 @@ const DoctorDashboardHeader = ({
                       }`}
                     />
                     <Text
-                      className={`${
+                      className={`hidden md:block ${
                         isAvailable ? "text-grass9" : "text-gray11"
                       } px-1 font-semibold`}
                       size="3"
                     >
                       {isAvailable ? "Available" : "Currently Unavailable"}
                     </Text>
-                    <ChevronDownIcon className="cursor-pointer" />
+                    <ChevronDownIcon className="cursor-pointer ml-2 md:ml-0 text-white md:text-black" />
                   </Flex>
                 </Flex>
               </DropdownMenu.Trigger>
 
-              <DropdownMenu.Content className="mt-4">
+              <DropdownMenu.Content className="mt-4 md:mt-0">
                 <DropdownMenu.Item
                   className="hover:bg-grassA3"
                   onClick={() => setIsAvailable(true)}
@@ -125,7 +144,7 @@ const DoctorDashboardHeader = ({
 
           <Flex
             align="center"
-            className="space-x-3 border border-gray4 h-11 px-2 rounded"
+            className="space-x-3 border border-gray4 h-11 px-2 rounded hidden md:flex"
           >
             <IoWalletOutline className="text-iris1" />
             <Text as="p" size="3" weight="medium" className="text-iris1">

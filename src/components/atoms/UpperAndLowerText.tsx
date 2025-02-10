@@ -10,7 +10,12 @@ const UpperAndLowerText = ({ subText, superText }: Prop) => {
       <Text as="p" size="4" className="font-semibold text-gray12">
         {superText}
       </Text>
-      <Text as="p" size="3" weight="regular" className="text-gray11 pt-1">
+      <Text
+        as="p"
+        size="3"
+        weight="regular"
+        className="text-gray11 pt-1 text-sm md:text-base"
+      >
         {subText}
       </Text>
     </div>

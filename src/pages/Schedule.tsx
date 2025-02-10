@@ -11,11 +11,19 @@ import { PaymentBox } from "../components/ui/PaymentBox";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import doctors from "../assets/doctors.svg";
+import Modal from "../components/ui/Modal";
+import Availability from "../components/modals/Availability";
+import { useState } from "react";
 
 const Schedule = () => {
+  const [modal, setModal] = useState(false);
+
+  const toggleModal = () => {
+    setModal(!modal);
+  };
   return (
     <DashboardLayout ifHeader={false}>
-      <BackgroundHeader className="relative h-full">
+      <BackgroundHeader className="hidden md:relative h-full ">
         <Breadcrumb
           Icon={DashboardIcon}
           route="Dashboard / Find a Specialist / Dr Franklin Chang / Schedule"
@@ -24,12 +32,15 @@ const Schedule = () => {
           <img src={doctors} className="h-auto object-cover -mr-6" />
         </Flex>
       </BackgroundHeader>
-      <Flex className="w-full px-12 bg-gray_bg" justify="end">
+      <Flex
+        className="w-full px-4 md:px-12 bg-gray_bg flex-col md:flex-row"
+        justify="end"
+      >
         <Box className="flex flex-col items-center ml-auto ">
           <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
-              className="w-[100px] h-[100px] top-40 object-cover rounded-lg absolute"
+              className="w-[100px] h-[100px] md:top-24 object-cover rounded-lg absolute"
             />
           </Box>
 
@@ -37,7 +48,7 @@ const Schedule = () => {
             Dr Franklin Chang
           </Text>
 
-          <Flex className="space-x-2 mt-3">
+          <Flex className="space-x-2 mt-3 flex-wrap md:flex-nowrap justify-center">
             <Badge variant="soft" size="2" className="text-accent_alpha_11">
               <IoBriefcaseOutline className="w-4 h-4 " />
               Geriatric
@@ -46,7 +57,11 @@ const Schedule = () => {
               <HiOutlineTranslate className="w-4 h-4 " />
               English, French, Dutch, German
             </Badge>
-            <Badge variant="soft" size="2" className="text-cyanA11 bg-cyanA3">
+            <Badge
+              variant="soft"
+              size="2"
+              className="text-cyanA11 bg-cyanA3 mt-4 md:mt-0"
+            >
               <HiOutlineTranslate className="w-4 h-4 " />
               Aberdeen Royal Infirmary Abe.., UK
             </Badge>
@@ -83,8 +98,18 @@ const Schedule = () => {
               Appointment Date
             </Text>
 
-            <Flex align="center" justify="between" className="mt-2 ">
-              <Box className="bg-irisA2 border border-irisA3 py-2 w-[261px] mr-4">
+            <Text
+              as="p"
+              weight="regular"
+              size="2"
+              align="center"
+              className="text-accent_alpha_11 md:hidden"
+            >
+              Change
+            </Text>
+
+            <Flex className="mt-2 flex-col md:flex-row md:justify-between md:items-center">
+              <Box className="bg-irisA2 border border-irisA3 py-2 w-auto md:w-[261px] md:mr-4">
                 <Text
                   as="p"
                   weight="medium"
@@ -95,7 +120,7 @@ const Schedule = () => {
                   Thursday , 5th February 2024
                 </Text>
               </Box>
-              <Box className="bg-irisA2 border border-irisA3 py-2 w-[261px]">
+              <Box className="bg-irisA2 border border-irisA3 py-2 md:w-[261px] mt-3 md:mt-0">
                 <Text
                   as="p"
                   weight="medium"
@@ -112,7 +137,7 @@ const Schedule = () => {
                 weight="regular"
                 size="2"
                 align="center"
-                className="text-accent_alpha_11"
+                className="text-accent_alpha_11 hidden md:block"
               >
                 Change
               </Text>
@@ -166,12 +191,28 @@ const Schedule = () => {
               Upload
             </Button>
           </Flex>
+
+          <Button
+            size="3"
+            variant="solid"
+            radius="medium"
+            onClick={toggleModal}
+            className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer md:hidden mx-6"
+          >
+            Proceed to Pay
+          </Button>
         </Box>
 
         <Box className="">
-          <PaymentBox />
+          <PaymentBox toggleModal={toggleModal} className="hidden md:block" />
         </Box>
       </Flex>
+
+      <Modal show={modal} toggleModal={toggleModal}>
+        <div className="p-4">
+          <Availability toggleModal={toggleModal} />
+        </div>
+      </Modal>
     </DashboardLayout>
   );
 };

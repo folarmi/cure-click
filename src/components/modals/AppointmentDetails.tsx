@@ -7,7 +7,7 @@ import AppointmentModalHeader from "../ui/AppointmentModalHeader";
 
 const AppointmentDetails = ({ toggleModal }: any) => {
   return (
-    <div className="rounded-lg p-4 bg-white w-[522px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />
 
       <Box className="mt-4">

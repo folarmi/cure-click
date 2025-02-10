@@ -5,6 +5,8 @@ import { CustomInput } from "../components/ui/CustomInput";
 const ResetPassword = () => {
   return (
     <AuthTwoLayout
+      callToAction="Create an Account"
+      authQuestion="New On Cure Click?"
       mainText="Reset your password"
       subText="Provide the necessary details required to create your account"
     >

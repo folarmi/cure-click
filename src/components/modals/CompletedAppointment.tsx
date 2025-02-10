@@ -10,7 +10,7 @@ type Prop = {
 
 const CompletedAppointment = ({ ifCompleted = true, toggleModal }: Prop) => {
   return (
-    <div className="rounded-lg p-4 bg-white w-[522px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />
       <MeetingCardTwo
         title="Second Opinion on scheduled Cancer surge.."

@@ -28,7 +28,7 @@ const AccountSettings = () => {
           <BackgroundHeader>
             <Breadcrumb Icon={DashboardIcon} route="Account Settings" />
 
-            <Tabs.List className="w-1/2">
+            <Tabs.List className="w-full md:w-1/2">
               <Tabs.Trigger value="accountProfile">
                 Account Profile
               </Tabs.Trigger>
@@ -49,7 +49,7 @@ const AccountSettings = () => {
               ifString={true}
               subText="Manage your account settings from here"
             >
-              <Tabs.List className="w-1/2 flex space-x-4">
+              <Tabs.List className="md:w-1/2 flex space-x-4">
                 {Object.entries(tabs).map(([value, label]) => (
                   <Tabs.Trigger
                     key={value}
@@ -71,7 +71,7 @@ const AccountSettings = () => {
           <Flex
             justify="between"
             align="center"
-            className="mt-10 px-12 border-b border-gray3 pb-4"
+            className="mt-10 px-12 border-b border-gray3 pb-4 hidden md:flex"
           >
             <Box>
               <Text

@@ -11,7 +11,7 @@ const CancelAppointment = ({ toggleModal }: any) => {
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   return (
-    <div className="rounded-lg p-4 bg-white w-[522px] overflow-scroll h-[700px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px] overflow-scroll h-[700px]">
       <Flex justify="between" align="center" className="mb-4">
         <Box>
           <Text as="p" className="font-semibold text-gray12" size="4">

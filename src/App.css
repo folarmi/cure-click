@@ -34,3 +34,13 @@
   --meeting-card-button-color: var(--grass-3);
   --meeting-card-two-border-color: #b9bbc6;
 }
+
+.swiper-pagination-bullet {
+  background-color: gray; /* Replace with your desired color */
+  opacity: 1; /* Ensure the color is visible */
+}
+
+/* Change the color of the active dot */
+.swiper-pagination-bullet-active {
+  background-color: #106d44; /* Your green color */
+}

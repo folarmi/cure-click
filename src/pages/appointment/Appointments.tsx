@@ -36,7 +36,7 @@ const Appointments = () => {
 
       {/* Doctor */}
       {userType === "doctor" && (
-        <Tabs.Root className="px-12" defaultValue="appointmentHistory">
+        <Tabs.Root className="px-6 md:px-12" defaultValue="appointmentHistory">
           <Tabs.List>
             <Tabs.Trigger value="appointmentHistory">
               Appointment History
@@ -136,12 +136,15 @@ const Appointments = () => {
 
       {/* Patient */}
       {userType === "patient" && (
-        <Flex justify="center" className="px-10 mt-10">
+        <Flex
+          justify="center"
+          className="flex-col md:flex-row px-4 md:px-10 mt-10"
+        >
           <Box className="w-[28%]">
             <ModuleContent />
           </Box>
 
-          <Box className="w-[72%] ml-6">
+          <Box className="w-full md:w-[72%] md:ml-6">
             <TableContent />
           </Box>
         </Flex>

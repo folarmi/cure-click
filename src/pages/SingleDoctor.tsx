@@ -26,24 +26,25 @@ const SingleDoctor = () => {
   const toggleModal = () => {
     setModal(!modal);
   };
+
   return (
     <DashboardLayout ifHeader={false}>
-      <BackgroundHeader className="relative h-full">
+      <BackgroundHeader className="relative h-full hidden">
         <Breadcrumb
           Icon={DashboardIcon}
           route="Find a Specialist / Dr Franklin Chang"
         />
-        <Flex justify="end" className="absolute right-0 bottom-0">
+        <Flex justify="end" className="md:absolute right-0 bottom-0">
           <img src={doctors} className="h-auto object-cover -mr-6" />
         </Flex>
       </BackgroundHeader>
 
-      <div className="flex space-x-4 px-[50px] bg-gray_bg">
-        <section className="w-[25%]">
+      <div className="md:flex gap-x-4 md:space-x-0 md:px-[50px] bg-gray_bg">
+        <section className="w-full px-4 md:px-0 md:w-[25%]">
           <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
-              className="w-[100px] h-[100px] object-cover rounded-lg absolute top-40"
+              className="w-[100px] h-[100px] object-cover rounded-lg absolute md:top-40"
             />
           </Box>
 
@@ -101,7 +102,7 @@ const SingleDoctor = () => {
           </Text>
         </section>
 
-        <section className="w-[50%] mt-20">
+        <section className="hidden md:block w-[50%] mt-20">
           <Box className="bg-iris3 p-4">
             <Text size="3" weight="medium" className="text-gray12">
               Analytics
@@ -135,8 +136,30 @@ const SingleDoctor = () => {
           />
         </section>
 
-        <section className="w-[25%] mt-20">
-          <PaymentBox toggleModal={toggleModal} />
+        <section className="md:hidden px-4">
+          <Flex className="gap-4 my-4">
+            <Badge size="3">Availability</Badge>
+            <Badge size="3" className="text-gray9 bg-neutral_alpha_3">
+              Reviews
+            </Badge>
+            <Badge className="text-gray9 bg-neutral_alpha_3" size="3">
+              Analytics
+            </Badge>
+          </Flex>
+
+          <Text className="text-gray12" size="3" weight="medium">
+            Availability
+          </Text>
+
+          <TopAndBottomText
+            className="bg-iris3 p-4 my-4"
+            top="Available Sessions"
+            bottom="24"
+          />
+        </section>
+
+        <section className="w-full md:w-[25%] md:mt-20 px-4 md:px-0">
+          <PaymentBox toggleModal={toggleModal} className="hidden md:block" />
 
           <Box className="bg-white p-4 border border-gray3 mt-4">
             <Text weight="medium" size="3">
@@ -154,6 +177,60 @@ const SingleDoctor = () => {
               <img src={medalFour} />
             </Flex>
           </Box>
+        </section>
+
+        <section className="md:hidden px-4 mt-4">
+          <Text className="text-gray12" size="3" weight="medium">
+            Availability
+          </Text>
+
+          <Flex wrap="wrap" className="gap-y-4">
+            <TopAndBottomText
+              className="bg-iris3 w-1/2 p-4 mr-4"
+              top="Completed Sessions"
+              bottom="2,349"
+            />
+            <TopAndBottomText
+              className="bg-iris3 w-1/2 p-4"
+              top="Ratings"
+              bottom="5"
+            />
+            <TopAndBottomText
+              className="bg-iris3 w-1/2 p-4"
+              top="Leaderboard"
+              bottom="Top 5"
+            />
+            <TopAndBottomText
+              className="bg-iris3 w-1/2 p-4"
+              top="Mostly Requested By"
+              bottom="Nigerians"
+            />
+          </Flex>
+
+          <Text className="text-gray12" size="3" weight="medium">
+            Reviews
+          </Text>
+
+          <NumberOfReview />
+          <Review
+            title="Review Title"
+            numberOfRating={4}
+            paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
+            name="John Doe"
+            date="25/10/2023"
+            time="10:59 am"
+          />
+
+          <Review
+            title="Review Title"
+            numberOfRating={4}
+            paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
+            name="John Doe"
+            date="25/10/2023"
+            time="10:59 am"
+          />
+
+          <PaymentBox toggleModal={toggleModal} className=" md:hidden" />
         </section>
       </div>
 

@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Text } from "@radix-ui/themes";
+type Prop = {
+  toggleModal: any;
+  className?: string;
+};
 
-const PaymentBox = ({ toggleModal }: any) => {
+const PaymentBox = ({ toggleModal, className }: Prop) => {
   return (
-    <Box className="bg-white p-4 border border-gray3 w-[318px] h-[124px">
+    <Box
+      className={`bg-white p-4 border border-gray3 w-auto md:w-[318px] h-[124px] ${className}`}
+    >
       <Text as="p" className="font-semibold" size="6">
         $750
         <Text weight="regular" size="4" className="pl-2">

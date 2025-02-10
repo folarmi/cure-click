@@ -8,7 +8,7 @@ const MeetingTwoDetailsCard = ({
   toggleMeetingTwoCancel,
 }: any) => {
   return (
-    <div className="rounded-lg p-4 bg-white w-[522px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />
 
       <MeetingCardTwo
