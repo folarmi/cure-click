@@ -30,7 +30,7 @@ const ProtectedRoute: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />; // Render nested routes
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -7,7 +7,7 @@ import React, {
   useState,
   ReactNode,
 } from "react";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 //   import { logout as reduxLogout } from "../lib/features/auth/authSlice";
 
 type AuthContextType = {
@@ -32,12 +32,14 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const dispatch = useDispatch();
+  //   const dispatch = useDispatch();
+  const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     setIsAuthenticated(!!token);
+    setLoading(false);
   }, []);
 
   const loginFromContext = (token: string, refreshToken: string) => {
@@ -52,6 +54,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsAuthenticated(false);
   };
   //   dispatch(reduxLogout());
+
+  if (loading) {
+    return <div>Loading...</div>; // Or a spinner component
+  }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, loginFromContext, logout }}>

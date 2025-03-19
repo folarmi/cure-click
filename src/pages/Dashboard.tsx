@@ -23,7 +23,7 @@ import MobileSlider from "../components/ui/MobileSlider";
 
 const Dashboard = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
-
+  console.log(userType);
   return (
     <DashboardLayout ifHeader={false}>
       {userType === "patient" ? (

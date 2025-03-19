@@ -18,7 +18,7 @@ function App() {
               <RoutePage />
             </Router>
           </Theme>
-          <ThemeSetter userType="patient" />
+          <ThemeSetter />
           <ToastContainer />
         </AuthProvider>
       </QueryClientContextProvider>

@@ -15,7 +15,7 @@ const Login = () => {
   const { loginFromContext } = useAuth();
 
   const loginMutation = useCustomMutation({
-    endpoint: `/realms/cureClick/protocol/openid-connect/token`,
+    endpoint: `${import.meta.env.VITE_KEY_CLOAK}/token/auth`,
     contentType: "application/x-www-form-urlencoded",
     successMessage: () => "Login Successful",
     errorMessage: (error: any) => error?.response?.data?.remark,

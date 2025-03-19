@@ -10,6 +10,7 @@ import { CustomInput } from "./CustomInput";
 import { useNavigate } from "react-router";
 import { BackgroundHeader } from "./BackgroundHeader";
 import Breadcrumb from "./BreadCrumb";
+import { useForm } from "react-hook-form";
 
 type Prop = {
   ifNameAndWalletBalance?: boolean;
@@ -24,6 +25,7 @@ const DashboardHeader = ({
 }: Prop) => {
   const [selectedValue, setSelectedValue] = useState<string | undefined>();
   const navigate = useNavigate();
+  const { control } = useForm();
 
   const handleChange = (value: string) => {
     setSelectedValue(value);
@@ -109,6 +111,8 @@ const DashboardHeader = ({
             className="bg-alpha_3 hidden md:block"
             type="text"
             ifGrayBg
+            control={control}
+            name="availability"
           />
           <CustomInput
             icon={<MagnifyingGlassIcon />}
@@ -117,6 +121,8 @@ const DashboardHeader = ({
             type="text"
             className="bg-alpha_3"
             ifGrayBg
+            control={control}
+            name="workplace"
           />
           <CustomButton
             icon={<MagnifyingGlassIcon />}
