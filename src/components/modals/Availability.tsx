@@ -3,17 +3,14 @@ import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { BiX } from "react-icons/bi";
 import CustomSelect from "../ui/CustomSelect";
 import { options, sampleTime } from "../../utils/data";
-import { useState } from "react";
+
 import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const Availability = ({ toggleModal }: any) => {
+  const { control } = useForm();
   const navigate = useNavigate();
-  const [selectedValue, setSelectedValue] = useState<string | undefined>();
-
-  const handleChange = (value: string) => {
-    setSelectedValue(value);
-  };
 
   return (
     <div className="bg-white py-6 px-4 md:px-10 rounded-lg">
@@ -30,8 +27,8 @@ const Availability = ({ toggleModal }: any) => {
           <CustomSelect
             options={options}
             placeholder="Thursday , 5th February 2024"
-            value={selectedValue}
-            onValueChange={handleChange}
+            name="availabilityStatus"
+            control={control}
           />
           <ChevronRightIcon className="w-6 h-6" />
         </Flex>

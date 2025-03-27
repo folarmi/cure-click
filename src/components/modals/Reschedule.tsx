@@ -4,9 +4,11 @@ import { MeetingCard } from "../cards/MeetingCard";
 import { useSelector } from "react-redux";
 import { RootState } from "../../lib/store";
 import { CustomTextarea } from "../ui/CustomTextArea";
+import { useForm } from "react-hook-form";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const Reschedule = ({ toggleModal }: any) => {
+  const { control } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   return (
@@ -39,6 +41,8 @@ const Reschedule = ({ toggleModal }: any) => {
                 label="Reason for rescheduling"
                 className=""
                 placeholder="Input your Reasons"
+                control={control}
+                name="biography"
               />
 
               <Button

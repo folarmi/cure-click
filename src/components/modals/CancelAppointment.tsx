@@ -5,9 +5,11 @@ import { reasonsForCalling } from "../../utils/data";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import { useSelector } from "react-redux";
 import { RootState } from "../../lib/store";
+import { useForm } from "react-hook-form";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const CancelAppointment = ({ toggleModal }: any) => {
+  const { control } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   return (
@@ -98,6 +100,8 @@ const CancelAppointment = ({ toggleModal }: any) => {
                   label="Input Reason*"
                   className="mt-2"
                   placeholder="Input your Reasons"
+                  control={control}
+                  name="biography"
                 />
               )}
             </>

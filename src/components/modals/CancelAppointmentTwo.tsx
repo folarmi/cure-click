@@ -3,9 +3,11 @@ import { BiX } from "react-icons/bi";
 import { reasonsForCalling } from "../../utils/data";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import MeetingCardTwo from "../cards/MeetingCardTwo";
+import { useForm } from "react-hook-form";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const CancelAppointmentTwo = ({ toggleModal }: any) => {
+  const { control } = useForm();
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px] overflow-scroll h-[700px]">
       <Flex justify="between" align="center" className="mb-4">
@@ -88,6 +90,8 @@ const CancelAppointmentTwo = ({ toggleModal }: any) => {
                   label="Input Reason*"
                   className="mt-2"
                   placeholder="Input your Reasons"
+                  control={control}
+                  name="biography"
                 />
               )}
             </>

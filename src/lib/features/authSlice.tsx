@@ -4,29 +4,25 @@ export type UserType = "doctor" | "patient" | "";
 
 interface AuthState {
   userType: UserType;
-  value: 0;
+  // registrationUserType: UserType
 }
 
 const initialState: AuthState = {
-  userType: "doctor",
-  value: 0,
+  userType: "patient",
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    setUserType: (state, action: PayloadAction<UserType>) => {
+      state.userType = action.payload;
     },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
+    logout: () => {
+      return initialState;
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } = authSlice.actions;
+export const { setUserType, logout } = authSlice.actions;
 export default authSlice.reducer;

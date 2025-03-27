@@ -2,7 +2,7 @@ import { Badge } from "@radix-ui/themes";
 import { CustomText } from "../ui/CustomText";
 import { CustomButton } from "../ui/CustomButton";
 import { StarFilledIcon } from "@radix-ui/react-icons";
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 type DoctorCardProp = {
   image: string;
@@ -13,8 +13,9 @@ type DoctorCardProp = {
   cost: string;
   time: string;
   review: string;
-  link: string;
+  link?: string;
   cardWidth?: string;
+  id?: string;
 };
 
 const DoctorCard = ({
@@ -27,8 +28,8 @@ const DoctorCard = ({
   time,
   review,
   cardWidth = "318",
+  id,
 }: DoctorCardProp) => {
-  const navigate = useNavigate();
   return (
     <div className={`mb-6 mr-6`} style={{ width: `${cardWidth}px` }}>
       <img src={image} />
@@ -76,13 +77,11 @@ const DoctorCard = ({
           </div>
         </div>
       </div>
-      <CustomButton
-        onClick={() => navigate("/dashboard/single-doctor/123")}
-        variant="primary"
-        className="mt-3 w-full"
-      >
-        View Specialist
-      </CustomButton>
+      <Link to={`/dashboard/single-doctor/${id}`}>
+        <CustomButton variant="primary" className="mt-3 w-full">
+          View Specialist
+        </CustomButton>
+      </Link>
     </div>
   );
 };

@@ -1,11 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import DoctorCard from "../components/cards/DoctorCard";
 import DashboardLayout from "../components/layouts/DashboardLayout";
 import { CustomText } from "../components/ui/CustomText";
 import { DashboardHeader } from "../components/ui/DashboardHeader";
 import sampleDoctor from "../assets/sampleDoctorOne.svg";
-import sampleDoctorTwo from "../assets/sampleDoctorTwo.svg";
-import sampleDoctorThree from "../assets/sampleDoctorThree.svg";
-import sampleDoctorFour from "../assets/sampleDoctorFour.svg";
 import { MeetingCard } from "../components/cards/MeetingCard";
 import MeetingCardTwo from "../components/cards/MeetingCardTwo";
 import { DashboardIcon } from "@radix-ui/react-icons";
@@ -20,9 +18,18 @@ import Review from "../components/cards/Review";
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
 import { countriesData } from "../utils/data";
 import MobileSlider from "../components/ui/MobileSlider";
+import { useGetData } from "../lib/apiCalls";
+import { getFullName } from "../utils/util";
+import { Loader } from "../components/ui/Loader";
+// import { decodeLogin } from "../utils/util";
 
 const Dashboard = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
+  const { data: doctorData, isLoading: doctorDataIsLoading } = useGetData({
+    url: `appointment/api/doctors?page=0&size=20`,
+    queryKey: ["GetAllDoctors"],
+    enabled: userType === "patient",
+  });
 
   return (
     <DashboardLayout ifHeader={false}>
@@ -33,141 +40,101 @@ const Dashboard = () => {
       )}
 
       {userType === "patient" && (
-        <section className="px-6 mt-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <CustomText
-                className="text-gray_12"
-                size="large"
-                weight="semibold"
-              >
-                Upcoming Appointments
-              </CustomText>
-              <CustomText
-                className="text-gray_11 pb-4"
-                size="medium"
-                weight="normal"
-              >
-                View your upcoming appointments.
-              </CustomText>
-            </div>
-            <div className="hidden md:block">
-              <CustomText
-                className="text-gray_12"
-                size="large"
-                weight="semibold"
-              >
-                Upcoming Appointments
-              </CustomText>
-              <CustomText
-                className="text-gray_11 pb-4"
-                size="medium"
-                weight="normal"
-              >
-                View your upcoming appointments.
-              </CustomText>
-            </div>
-          </div>
+        <>
+          {doctorDataIsLoading ? (
+            <Loader />
+          ) : (
+            <section className="px-6 mt-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CustomText
+                    className="text-gray_12"
+                    size="large"
+                    weight="semibold"
+                  >
+                    Upcoming Appointments
+                  </CustomText>
+                  <CustomText
+                    className="text-gray_11 pb-4"
+                    size="medium"
+                    weight="normal"
+                  >
+                    View your upcoming appointments.
+                  </CustomText>
+                </div>
+                <div className="hidden md:block">
+                  <CustomText
+                    className="text-gray_12"
+                    size="large"
+                    weight="semibold"
+                  >
+                    Upcoming Appointments
+                  </CustomText>
+                  <CustomText
+                    className="text-gray_11 pb-4"
+                    size="medium"
+                    weight="normal"
+                  >
+                    View your upcoming appointments.
+                  </CustomText>
+                </div>
+              </div>
 
-          <div className="md:flex">
-            <section className="flex flex-wrap w-full md:w-[75%] order-2 md:order-1">
-              <DoctorCard
-                image={sampleDoctor}
-                doctorName="Dr Franklin Chang"
-                doctorType="Geriatric Doctor"
-                desc="Aberdeen Royal Infirmary Aberdeen UK"
-                noOfSessions={3}
-                cost="$35 Per Session"
-                time="Today at 2:30pm"
-                review="5 (13 reviews)"
-                link="/dashboard/single-doctor/123"
-              />
-              <DoctorCard
-                image={sampleDoctorTwo}
-                doctorName="Dr Franklin Chang "
-                doctorType="Geriatric Doctor"
-                desc="Aberdeen Royal Infirmary Aberdeen UK"
-                noOfSessions={3}
-                cost="$35 Per Session"
-                time="Today at 2:30pm"
-                review="5 (13 reviews)"
-                link="/dashboard/single-doctor/123"
-              />
-              <DoctorCard
-                image={sampleDoctorThree}
-                doctorName="Dr Franklin Chang "
-                doctorType="Geriatric Doctor"
-                desc="Aberdeen Royal Infirmary Aberdeen UK"
-                noOfSessions={3}
-                cost="$35 Per Session"
-                time="Today at 2:30pm"
-                review="5 (13 reviews)"
-                link="/dashboard/single-doctor/123"
-              />
-              <DoctorCard
-                image={sampleDoctorFour}
-                doctorName="Dr Franklin Chang "
-                doctorType="Geriatric Doctor"
-                desc="Aberdeen Royal Infirmary Aberdeen UK"
-                noOfSessions={3}
-                cost="$35 Per Session"
-                time="Today at 2:30pm"
-                review="5 (13 reviews)"
-                link="/dashboard/single-doctor/123"
-              />
-              <DoctorCard
-                image={sampleDoctorThree}
-                doctorName="Dr Franklin Chang "
-                doctorType="Geriatric Doctor"
-                desc="Aberdeen Royal Infirmary Aberdeen UK"
-                noOfSessions={3}
-                cost="$35 Per Session"
-                time="Today at 2:30pm"
-                review="5 (13 reviews)"
-                link="/dashboard/single-doctor/123"
-              />
-              <DoctorCard
-                image={sampleDoctorThree}
-                doctorName="Dr Franklin Chang "
-                doctorType="Geriatric Doctor"
-                desc="Aberdeen Royal Infirmary Aberdeen UK"
-                noOfSessions={3}
-                cost="$35 Per Session"
-                time="Today at 2:30pm"
-                review="5 (13 reviews)"
-                link="/dashboard/single-doctor/123"
-              />
-            </section>
+              <div className="md:flex">
+                <section className="flex flex-wrap w-full md:w-[75%] order-2 md:order-1">
+                  {doctorData?.data?.content?.map((item: any) => {
+                    return (
+                      <>
+                        <DoctorCard
+                          image={sampleDoctor}
+                          doctorName={`${getFullName(
+                            item?.firstname,
+                            item?.lastname
+                          )}$`}
+                          doctorType="Geriatric Doctor"
+                          desc="Aberdeen Royal Infirmary Aberdeen UK"
+                          noOfSessions={3}
+                          cost="$35 Per Session"
+                          time="Today at 2:30pm"
+                          review="5 (13 reviews)"
+                          id={item?.publicId}
+                        />
+                      </>
+                    );
+                  })}
+                </section>
 
-            <section className="w-full md:w-[25%] order-1 md:order-2">
-              <MeetingCard
-                title="Second Opinion on scheduled Cancer surgery"
-                date="Today"
-                time="11:30PM GMT+1 ( In 30 min)"
-                doctorName="Dr. Alison Ogaga"
-                speciality="General Practioner"
-              />
-              <MeetingCardTwo
-                title="Second Opinion on scheduled Cancer surge.."
-                date="1 July 2023"
-                time="11:30PM GMT+1"
-                doctorName="Dr. Alison Ogaga"
-              />
-              <MeetingCardTwo
-                title="Second Opinion on scheduled Cancer surge.."
-                date="1 July 2023"
-                time="11:30PM GMT+1"
-                doctorName="Dr. Alison Ogaga"
-              />
-              <MeetingCardTwo
-                title="Second Opinion on scheduled Cancer surge.."
-                date="1 July 2023"
-                time="11:30PM GMT+1"
-                doctorName="Dr. Alison Ogaga"
-              />
+                <section className="w-full md:w-[25%] order-1 md:order-2">
+                  <MeetingCard
+                    title="Second Opinion on scheduled Cancer surgery"
+                    date="Today"
+                    time="11:30PM GMT+1 ( In 30 min)"
+                    doctorName="Dr. Alison Ogaga"
+                    speciality="General Practioner"
+                  />
+                  <MeetingCardTwo
+                    title="Second Opinion on scheduled Cancer surge.."
+                    date="1 July 2023"
+                    time="11:30PM GMT+1"
+                    doctorName="Dr. Alison Ogaga"
+                  />
+                  <MeetingCardTwo
+                    title="Second Opinion on scheduled Cancer surge.."
+                    date="1 July 2023"
+                    time="11:30PM GMT+1"
+                    doctorName="Dr. Alison Ogaga"
+                  />
+                  <MeetingCardTwo
+                    title="Second Opinion on scheduled Cancer surge.."
+                    date="1 July 2023"
+                    time="11:30PM GMT+1"
+                    doctorName="Dr. Alison Ogaga"
+                  />
+                </section>
+              </div>
             </section>
-          </div>
-        </section>
+          )}
+        </>
       )}
 
       {userType === "doctor" && (

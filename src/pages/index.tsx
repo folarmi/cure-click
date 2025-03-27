@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 export * from "./Register";
 export * from "./VerifyEmail";
+export * from "./LandingPage";
 export * from "./Login";
 export * from "./ResetPassword";
 export * from "./ForgotPassword";
