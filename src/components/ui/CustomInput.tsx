@@ -58,12 +58,14 @@ import * as React from "react";
 import { useController, UseControllerProps } from "react-hook-form";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { clsx } from "clsx";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
   control: any;
   rules?: UseControllerProps["rules"];
   label: string;
+  type?: string;
   icon?: React.ReactNode;
   ifGrayBg?: boolean;
   onlyNumbers?: boolean;
@@ -82,6 +84,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   className,
   rightIcon,
   ifRightIcon,
+  type,
   ...props
 }) => {
   const {
@@ -92,6 +95,12 @@ const CustomInput: React.FC<CustomInputProps> = ({
     control,
     rules,
   });
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -120,16 +129,36 @@ const CustomInput: React.FC<CustomInputProps> = ({
               ifGrayBg ? "bg-alpha_3" : "bg-white/90"
             } transition-all placeholder:text-alpha_9 placeholder:pl-2`,
             error
-              ? "focus:ring-red-500 focus:outline-primary focus:outline-offset-4"
+              ? "focus:ring-red-500 focus:outline-[#ed9b9d] focus:outline-offset-4"
               : "border-gray-300"
           )}
           {...field}
           {...props}
           value={field.value || ""}
+          type={
+            onlyNumbers
+              ? "number"
+              : type === "password" && showPassword
+              ? "text"
+              : type
+          }
           onChange={handleChange}
           inputMode={onlyNumbers ? "numeric" : "text"}
           pattern={onlyNumbers ? "[0-9]*" : undefined}
         />
+
+        {type === "password" && !onlyNumbers && (
+          <div
+            className="absolute left-[90%] top-3 cursor-pointer"
+            onClick={togglePassword}
+          >
+            {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+            {/* <img
+              src={showPassword ? "/eyeOpened.svg" : "/eyesClosed.svg"}
+              alt="eyeOpened"
+            /> */}
+          </div>
+        )}
 
         {ifRightIcon && (
           <div className="absolute pointer-events-none right-0 pr-3">

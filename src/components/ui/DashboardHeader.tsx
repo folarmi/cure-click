@@ -3,7 +3,6 @@ import { CustomText } from "./CustomText";
 import sampleImage from "../../assets/sampleImage.svg";
 import CustomSelect from "./CustomSelect";
 import { options } from "../../utils/data";
-import { useState } from "react";
 import { CustomButton } from "./CustomButton";
 import { CalendarIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { CustomInput } from "./CustomInput";
@@ -11,6 +10,7 @@ import { useNavigate } from "react-router";
 import { BackgroundHeader } from "./BackgroundHeader";
 import Breadcrumb from "./BreadCrumb";
 import { useForm } from "react-hook-form";
+import { decodeLogin } from "../../utils/util";
 
 type Prop = {
   ifNameAndWalletBalance?: boolean;
@@ -23,13 +23,10 @@ const DashboardHeader = ({
   routeName,
   Icon,
 }: Prop) => {
-  const [selectedValue, setSelectedValue] = useState<string | undefined>();
+  // console.log("userTypeffffff", userType);
+
   const navigate = useNavigate();
   const { control } = useForm();
-
-  const handleChange = (value: string) => {
-    setSelectedValue(value);
-  };
 
   return (
     <BackgroundHeader>
@@ -41,7 +38,7 @@ const DashboardHeader = ({
             size="extraLarge"
             weight="semibold"
           >
-            Hello 👋 Emmanuel
+            {` Hello 👋 ${decodeLogin()?.name.split(" ")[0]}`}
           </CustomText>
 
           <div className="flex items-center border border-gray4 rounded-md p-[10px] space-x-3">
@@ -91,16 +88,16 @@ const DashboardHeader = ({
           <CustomSelect
             options={options}
             placeholder="Select Speciality"
-            value={selectedValue}
-            onValueChange={handleChange}
+            name="availabilityStatus"
+            control={control}
             ifGrayBg
             // className="hidden md:block"
           />
           <CustomSelect
             options={options}
             placeholder="Select Country"
-            value={selectedValue}
-            onValueChange={handleChange}
+            name="availabilityStatus"
+            control={control}
             ifGrayBg
             // className="hidden md:block"
           />

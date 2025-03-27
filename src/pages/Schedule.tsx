@@ -14,8 +14,10 @@ import doctors from "../assets/doctors.svg";
 import Modal from "../components/ui/Modal";
 import Availability from "../components/modals/Availability";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Schedule = () => {
+  const { control } = useForm();
   const [modal, setModal] = useState(false);
 
   const toggleModal = () => {
@@ -154,11 +156,15 @@ const Schedule = () => {
                 label="Appointment Topic*"
                 placeholder="Geriatric"
                 type="text"
+                control={control}
+                name="firstname"
               />
               <CustomTextarea
                 label="Reason for Appointment*"
                 placeholder="Brief summary of what the doctor should expect"
                 className="mt-3 mb-4"
+                control={control}
+                name="biography"
               />
             </Box>
           </Box>

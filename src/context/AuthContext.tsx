@@ -8,7 +8,8 @@ import React, {
   ReactNode,
 } from "react";
 // import { useDispatch } from "react-redux";
-//   import { logout as reduxLogout } from "../lib/features/auth/authSlice";
+import { logout as reduxLogout } from "../lib/features/authSlice";
+import { useDispatch } from "react-redux";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -32,7 +33,7 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
@@ -49,14 +50,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    sessionStorage.removeItem("token");
     sessionStorage.clear();
     setIsAuthenticated(false);
+    dispatch(reduxLogout());
   };
-  //   dispatch(reduxLogout());
 
   if (loading) {
-    return <div>Loading...</div>; // Or a spinner component
+    return <div>Loading...</div>;
   }
 
   return (

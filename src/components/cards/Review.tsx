@@ -4,6 +4,7 @@ import { DotsVerticalIcon, TrashIcon } from "@radix-ui/react-icons";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import { BiSend } from "react-icons/bi";
 import avatar from "../../assets/avatar.svg";
+import { useForm } from "react-hook-form";
 
 type Prop = {
   title: string;
@@ -31,6 +32,7 @@ const Review = ({
   ifReply = false,
   ifResponse = false,
 }: Prop) => {
+  const { control } = useForm();
   return (
     <Flex direction="column" className="bg-white p-4 mt-4">
       <Flex align="center" justify="between">
@@ -60,7 +62,12 @@ const Review = ({
 
       {ifInput && (
         <Flex className="mt-5">
-          <CustomTextarea label="" placeholder="input reply here" />
+          <CustomTextarea
+            control={control}
+            name="biography"
+            label=""
+            placeholder="input reply here"
+          />
           <Flex
             align="center"
             className="bg-grass9 p-[10px] w-11 h-11 rounded-lg ml-3"

@@ -1,20 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { AxiosInstance } from "axios";
-// import { toast } from "react-toastify";
-
-// import { decodeLogin } from "./utils";
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  // headers: {
-  //   "Content-Type": "x-www-form-urlencoded",
-  // },
 });
 
 api.interceptors.request.use(
   async (config) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (token) {
         const headers = { ...config };
         headers.headers.Authorization = `Bearer ${token}`;
@@ -40,8 +34,8 @@ api.interceptors.response.use(
       // console.log("axiosss", error);
       // Handle unauthorized errors (e.g., redirect to login)
       // console.log("Unauthorized, logging out...");
-      localStorage.removeItem("token");
-      // window.location.href = "/sign-in";
+      sessionStorage.removeItem("token");
+      window.location.href = "/login";
     }
     // else if (error?.response?.status === 403) {
     //   toast.error("Your account is restricted from accessing this feature", {

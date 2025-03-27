@@ -2,14 +2,16 @@
 import {
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
   useMutation,
+  useQuery,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 import api from "../lib/axios";
-import { Callout } from "@radix-ui/themes";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+// import { Callout } from "@radix-ui/themes";
+// import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 interface MutationResponse {
   status: number;
@@ -17,6 +19,13 @@ interface MutationResponse {
     remark: string;
     [key: string]: any;
   };
+}
+
+interface UseDataOptions
+  extends Omit<UseQueryOptions<any, any>, "queryKey" | "queryFn"> {
+  url: string;
+  queryKey: string[];
+  enabled?: any;
 }
 
 interface CustomMutationOptions<TData, TError, TVariables, TContext>
@@ -56,32 +65,32 @@ export const useCustomMutation = <
       const response = await api[method]<TData>(endpoint, variables, {
         headers: {
           "Content-Type": contentType,
-          Accept: "application/json",
+          // Accept: "application/json",
         },
       });
       return response.data;
     },
     onSuccess: (data: any) => {
-      if (data?.access_token) {
+      if (data?.access_token || data?.data) {
         if (successMessage) {
-          // toast.success(successMessage(data), {
-          //   style: {
-          //     backgroundColor: "#4CAF50", // Green color for success
-          //     color: "#fff", // White text color
-          //     padding: "10px", // Optional: Adjust padding for better appearance
-          //     borderRadius: "5px", // Optional: Rounded corners
-          //   },
-          // });
+          toast.success(successMessage(data), {
+            style: {
+              backgroundColor: "#4CAF50", // Green color for success
+              color: "#fff", // White text color
+              padding: "10px", // Optional: Adjust padding for better appearance
+              borderRadius: "5px", // Optional: Rounded corners
+            },
+          });
 
-          <Callout.Root>
-            <Callout.Icon>
-              <InfoCircledIcon />
-            </Callout.Icon>
-            <Callout.Text>
-              You will need admin privileges to install and access this
-              application.
-            </Callout.Text>
-          </Callout.Root>;
+          // <Callout.Root>
+          //   <Callout.Icon>
+          //     <InfoCircledIcon />
+          //   </Callout.Icon>
+          //   <Callout.Text>
+          //     You will need admin privileges to install and access this
+          //     application.
+          //   </Callout.Text>
+          // </Callout.Root>;
         }
         if (onSuccessCallback) {
           onSuccessCallback(data);
@@ -95,5 +104,27 @@ export const useCustomMutation = <
       toast.error(message);
     },
     ...mutationOptions,
+  });
+};
+
+export const useGetData = ({
+  url,
+  queryKey,
+  enabled,
+  ...rest
+}: UseDataOptions) => {
+  return useQuery<any>({
+    queryKey,
+    queryFn: async () => {
+      const response = await api.get(url);
+      return response?.data;
+    },
+    enabled,
+    retry: false,
+    // retry: true,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    ...rest,
   });
 };

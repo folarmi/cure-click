@@ -12,8 +12,8 @@ interface AuthTwoLayoutProps {
   mainText: string;
   subText: string;
   banner?: string;
-  authQuestion: string;
-  callToAction: string;
+  authQuestion?: string;
+  callToAction?: string;
 }
 
 const AuthTwoLayout = ({

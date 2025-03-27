@@ -15,8 +15,12 @@ import { BiMenu, BiX } from "react-icons/bi";
 
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { useAuth } from "../../context/AuthContext";
+import { decodeLogin } from "../../utils/util";
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedValue, setSelectedValue] = useState("unread");
@@ -189,7 +193,7 @@ const Sidebar = () => {
           className="text-gray12 px-2 hidden md:block"
           weight="medium"
         >
-          Emmanuel Ekpenyong
+          {decodeLogin()?.name}
         </Text>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
@@ -201,7 +205,7 @@ const Sidebar = () => {
             <DropdownMenu.Item>
               <Link to="/dashboard/account-settings">Account Settings</Link>{" "}
             </DropdownMenu.Item>
-            <DropdownMenu.Item>
+            <DropdownMenu.Item onClick={logout} className="cursor-pointer">
               <Text size="2" className="text-error_alpha_9">
                 Logout
               </Text>

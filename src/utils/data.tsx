@@ -74,6 +74,11 @@ export const options = [
   { value: "option3", label: "Option 3" },
 ];
 
+export const availability = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+];
+
 export const sampleTime = [
   {
     id: 1,

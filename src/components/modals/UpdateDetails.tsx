@@ -2,22 +2,44 @@
 
 import { Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
 import { BiX } from "react-icons/bi";
-import sampleImage from "../../assets/avatar.svg";
 import { CustomInput } from "../ui/CustomInput";
 import CustomSelect from "../ui/CustomSelect";
-import { options } from "../../utils/data";
-import { useState } from "react";
+import avatar from "../../assets/avatar.svg";
+import { availability } from "../../utils/data";
+// import { useState } from "react";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import CallOut from "../atoms/CallOut";
+import { useForm } from "react-hook-form";
+import { useCustomMutation, useGetData } from "../../lib/apiCalls";
+import FileUploader from "../FileUploader";
+import { useState } from "react";
 
 const UpdateDetails = ({ toggleModal }: any) => {
-  const [selectedValue, setSelectedValue] = useState<string | undefined>();
+  const { control, handleSubmit } = useForm();
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  const handleChange = (value: string) => {
-    setSelectedValue(value);
+  const { data: singleDoctorData, isLoading: singleDoctorDataIsLoading } =
+    useGetData({
+      // url: `appointment/api/doctors/${id}`,
+      url: `appointment/api/doctors/dbfjj`,
+      queryKey: ["GetSingleDoctor"],
+    });
+
+  const updateDoctorProfileMutation = useCustomMutation({
+    endpoint: `appointment/api/doctors/sdsjfdsfsdf`,
+    successMessage: () => "Registration successful!",
+    errorMessage: (error: any) => error?.response?.data?.remark,
+    onSuccessCallback: () => {
+      // navigate("/login");
+    },
+  });
+
+  const submitForm = (data: any) => {
+    console.log(data);
   };
+
   return (
-    <div className="bg-white w-[525px] p-4">
+    <div className="bg-white w-[525px] p-4 overflow-scroll max-h-screen my-8">
       <Flex justify="between" align="center">
         <Text as="p" className="font-semibold text-gray12" size="4">
           Update your details
@@ -40,8 +62,14 @@ const UpdateDetails = ({ toggleModal }: any) => {
             bgColor="bg-grass4"
           />
 
-          <Flex align="center">
-            <img src={sampleImage} className="w-16 h-16" />
+          <FileUploader
+            maxSizeMB={1}
+            acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
+            onFileUpload={setUploadedFile}
+            // defaultFile={defaultValues?.image}
+          />
+          <Flex align="center" className="mt-8">
+            <img src={avatar} className="w-16 h-16" />
             <Box className="ml-4">
               <Button
                 size="2"
@@ -58,22 +86,80 @@ const UpdateDetails = ({ toggleModal }: any) => {
             </Box>
           </Flex>
 
-          <CustomInput
-            label="Full name"
-            placeholder="Input your email"
-            className="my-4 w-full"
-          />
+          <form
+            className="gap-y-4 flex flex-col"
+            onSubmit={handleSubmit(submitForm)}
+          >
+            <CustomInput
+              label="First name"
+              placeholder="Input your firstname"
+              className=" w-full"
+              control={control}
+              name="firstname"
+            />
+            <CustomInput
+              label="Last name"
+              placeholder="Input your lastname"
+              className=" w-full"
+              control={control}
+              name="lastname"
+            />
+            <CustomInput
+              label="Username"
+              placeholder="Input your username"
+              className=" w-full"
+              control={control}
+              name="firstname"
+            />
 
-          <CustomSelect
-            options={options}
-            placeholder="Select Speciality"
-            value={selectedValue}
-            label="Gender"
-            onValueChange={handleChange}
-            // className="mb-4"
-          />
+            <CustomInput
+              label="Years of Experience"
+              placeholder="0"
+              className=" w-full"
+              control={control}
+              name="yearsOfExperience"
+            />
 
-          <div className="mt-4">
+            <CustomInput
+              label="Gender"
+              placeholder="Input your gender"
+              className=" w-full"
+              control={control}
+              name="firstname"
+            />
+            <CustomInput
+              label="Country"
+              placeholder="Input your country"
+              className=" w-full"
+              control={control}
+              name="firstname"
+            />
+            <CustomInput
+              label="Languages"
+              placeholder="What language do you speak"
+              className=" w-full"
+              control={control}
+              name="firstname"
+            />
+            <CustomInput
+              label="Current Workplace"
+              placeholder="What hospital do you work in?"
+              className=" w-full"
+              control={control}
+              name="hospitalWorkPlace"
+            />
+
+            <CustomSelect
+              options={availability}
+              placeholder="Availability"
+              label="Availability"
+              ifGrayBg={false}
+              name="availabilityStatus"
+              control={control}
+              // className="mb-4"
+            />
+
+            {/* <div className="mt-4">
             <CustomSelect
               options={options}
               placeholder="Country"
@@ -91,11 +177,19 @@ const UpdateDetails = ({ toggleModal }: any) => {
               label="Languages you speak"
               onValueChange={handleChange}
             />
-          </div>
+          </div> */}
 
-          <CustomTextarea label="Your Bio" className="mt-4" />
+            <CustomTextarea
+              control={control}
+              name="biography"
+              label="Your Bio"
+              className="mt-4"
+            />
 
-          <Button className="mt-4 bg-grass9 w-full font-medium">Update</Button>
+            <Button className="mt-4 bg-grass9 w-full font-medium">
+              Update
+            </Button>
+          </form>
         </Tabs.Content>
         <Tabs.Content value="pricingInformation">
           <CallOut
@@ -107,6 +201,8 @@ const UpdateDetails = ({ toggleModal }: any) => {
             label="Pricing Per Session"
             placeholder="Input your email"
             className="my-4 w-full "
+            control={control}
+            name="pricing"
           />
 
           <CallOut

@@ -18,8 +18,10 @@ import { CustomButton } from "../components/ui/CustomButton";
 import { CustomText } from "../components/ui/CustomText";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
+import { useForm } from "react-hook-form";
 
 const SearchResultsDashboard = () => {
+  const { control } = useForm();
   return (
     <DashboardLayout ifHeader={false}>
       <BackgroundHeader className="relative">
@@ -45,11 +47,19 @@ const SearchResultsDashboard = () => {
           align="center"
           justify="center"
         >
-          <CustomSelect options={options} placeholder="Geriatric" ifGrayBg />
+          <CustomSelect
+            name="availabilityStatus"
+            control={control}
+            options={options}
+            placeholder="Geriatric"
+            ifGrayBg
+          />
           <CustomSelect
             options={options}
             placeholder="United Kingdom"
             ifGrayBg
+            name="availabilityStatus"
+            control={control}
           />
           <CustomInput
             label=""
@@ -58,6 +68,8 @@ const SearchResultsDashboard = () => {
             className="bg-alpha_3"
             type="text"
             ifGrayBg
+            control={control}
+            name="firstname"
           />
           <CustomInput
             icon={<MagnifyingGlassIcon />}
@@ -66,6 +78,8 @@ const SearchResultsDashboard = () => {
             type="text"
             className="bg-alpha_3"
             ifGrayBg
+            control={control}
+            name="firstname"
           />
           <CustomButton
             icon={<MagnifyingGlassIcon />}
@@ -82,9 +96,24 @@ const SearchResultsDashboard = () => {
         justify="center"
         className="mt-7 mb-10 mx-auto max-w-4xl space-x-6"
       >
-        <CustomSelect options={options} placeholder="Ratings" />
-        <CustomSelect options={options} placeholder="Price Range" />
-        <CustomSelect options={options} placeholder="Workplace" />
+        <CustomSelect
+          options={options}
+          placeholder="Ratings"
+          name="availabilityStatus"
+          control={control}
+        />
+        <CustomSelect
+          options={options}
+          placeholder="Price Range"
+          name="availabilityStatus"
+          control={control}
+        />
+        <CustomSelect
+          options={options}
+          placeholder="Workplace"
+          name="availabilityStatus"
+          control={control}
+        />
       </Flex>
 
       <section className="flex flex-wrap mx-4">

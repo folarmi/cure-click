@@ -5,8 +5,10 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import UpperAndLowerText from "../components/atoms/UpperAndLowerText";
 import { useSelector } from "react-redux";
 import { RootState } from "../lib/store";
+import { useForm } from "react-hook-form";
 
 const AccountSecurity = () => {
+  const { control } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
 
@@ -27,12 +29,16 @@ const AccountSecurity = () => {
             placeholder="Input your pin"
             type="password"
             className="mt-6"
+            control={control}
+            name="firstname"
           />
           <CustomInput
             label="Confirm Pin"
             placeholder="re type new pin"
             type="password"
             className="mt-6 mb-10"
+            control={control}
+            name="firstname"
           />
         </>
       )}
@@ -46,12 +52,16 @@ const AccountSecurity = () => {
           label="Password"
           placeholder="Input your password"
           type="password"
+          control={control}
+          name="firstname"
         />
         <CustomInput
           label="Confirm Password"
           placeholder="re type new password"
           type="password"
           className="mt-6"
+          control={control}
+          name="firstname"
         />
 
         <Flex className="mt-10" align="center" justify="between">
@@ -119,6 +129,8 @@ const AccountSecurity = () => {
               placeholder="code"
               type="text"
               className="mt-5"
+              control={control}
+              name="firstname"
             />
 
             <Button className="mt-10 bg-grass9 w-full font-medium">
