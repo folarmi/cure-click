@@ -46,19 +46,44 @@ const Sidebar = () => {
       <div className="hidden md:flex items-center space-x-4">
         {navBarItems.map(({ icon: Icon, id, name, path }) => {
           return (
-            <NavLink end to={path} className={`flex items-center`} key={id}>
+            // <NavLink end to={path} className={`flex items-center`} key={id}>
+            //   <Icon
+            //     className={`${
+            //       pathName.startsWith(path)
+            //         ? "text-[var(--color-primary)] fill-current"
+            //         : "text-neutral_11"
+            //     }`}
+            //   />
+
+            //   <Text
+            //     size="3"
+            //     className={`pl-2 ${
+            //       pathName.startsWith(path)
+            //         ? "text-[var(--color-primary)] font-medium"
+            //         : "text-neutral_11 font-normal"
+            //     }`}
+            //   >
+            //     {name}
+            //   </Text>
+            // </NavLink>
+            <NavLink to={path} className={`flex items-center`} key={id}>
               <Icon
-                className={`${
-                  pathName.startsWith(path)
+                className={
+                  // For dashboard-like parent routes that should highlight for all subroutes
+                  path === "/dashboard" && pathName.startsWith(path)
+                    ? "text-[var(--color-primary)] fill-current"
+                    : pathName === path // For exact matches on other routes
                     ? "text-[var(--color-primary)] fill-current"
                     : "text-neutral_11"
-                }`}
+                }
               />
 
               <Text
                 size="3"
                 className={`pl-2 ${
-                  pathName.startsWith(path)
+                  path === "/dashboard" && pathName.startsWith(path)
+                    ? "text-[var(--color-primary)] font-medium"
+                    : pathName === path
                     ? "text-[var(--color-primary)] font-medium"
                     : "text-neutral_11 font-normal"
                 }`}

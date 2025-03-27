@@ -1,58 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import * as React from "react";
-// import * as LabelPrimitive from "@radix-ui/react-label";
-// import { clsx } from "clsx"; // optional for handling conditional classes
-// // import { TextField } from "@radix-ui/themes";
-
-// interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-//   label: string;
-//   error?: string;
-//   className?: string;
-//   icon?: React.ReactNode;
-//   ifGrayBg?: boolean;
-// }
-
-// const CustomInput: React.FC<InputProps> = ({
-//   label,
-//   error,
-//   className,
-//   icon,
-//   ifGrayBg,
-//   ...props
-// }) => {
-//   return (
-//     <div className={`flex flex-col  w-full ${className}`}>
-//       {/* Label Component */}
-//       <LabelPrimitive.Root
-//         // htmlFor={id}
-//         className="text-base font-medium text-text"
-//       >
-//         {label}
-//       </LabelPrimitive.Root>
-
-//       <div className="relative flex items-center">
-//         {icon && (
-//           <div className="absolute pointer-events-none pl-2">{icon}</div>
-//         )}
-
-//         <input
-//           className={clsx(
-//             `w-full p-2 text-sm outline-none border rounded-md border-alpha_9/[12.6%] ${
-//               ifGrayBg ? "bg-alpha_3" : "bg-white/90"
-//             } transition-all placeholder:text-alpha_9 placeholder:pl-6`,
-//             error ? "border-red-500 focus:ring-red-500" : "border-gray-300"
-//           )}
-//           {...props}
-//         />
-//       </div>
-
-//       {/* Error Message */}
-//       {error && <span className="text-xs text-red-500">{error}</span>}
-//     </div>
-//   );
-// };
-
-// export { CustomInput };
 
 import * as React from "react";
 import { useController, UseControllerProps } from "react-hook-form";
@@ -71,6 +17,7 @@ interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onlyNumbers?: boolean;
   rightIcon?: React.ReactNode;
   ifRightIcon?: boolean;
+  disabled?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -85,6 +32,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   rightIcon,
   ifRightIcon,
   type,
+  disabled = false,
   ...props
 }) => {
   const {
@@ -127,13 +75,19 @@ const CustomInput: React.FC<CustomInputProps> = ({
           className={clsx(
             `w-full p-2 text-sm outline-none border rounded-md border-alpha_9/[12.6%] ${
               ifGrayBg ? "bg-alpha_3" : "bg-white/90"
-            } transition-all placeholder:text-alpha_9 placeholder:pl-2`,
+            } transition-all placeholder:text-alpha_9 ${
+              ifRightIcon && "placeholder:pl-6"
+            } placeholder:text-sm placeholder:font-normal ${
+              disabled &&
+              "disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-70 disabled:text-gray-500 disabled:hover:bg-gray-100"
+            }  `,
             error
               ? "focus:ring-red-500 focus:outline-[#ed9b9d] focus:outline-offset-4"
               : "border-gray-300"
           )}
           {...field}
           {...props}
+          disabled={disabled}
           value={field.value || ""}
           type={
             onlyNumbers
@@ -153,10 +107,6 @@ const CustomInput: React.FC<CustomInputProps> = ({
             onClick={togglePassword}
           >
             {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-            {/* <img
-              src={showPassword ? "/eyeOpened.svg" : "/eyesClosed.svg"}
-              alt="eyeOpened"
-            /> */}
           </div>
         )}
 

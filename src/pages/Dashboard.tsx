@@ -90,7 +90,7 @@ const Dashboard = () => {
                           doctorName={`${getFullName(
                             item?.firstname,
                             item?.lastname
-                          )}$`}
+                          )}`}
                           doctorType="Geriatric Doctor"
                           desc="Aberdeen Royal Infirmary Aberdeen UK"
                           noOfSessions={3}

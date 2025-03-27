@@ -47,7 +47,7 @@ api.interceptors.response.use(
         return Promise.reject(error);
       } else {
         sessionStorage.removeItem("token");
-        // window.location.href = "/login";
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
