@@ -1,5 +1,5 @@
 import DashboardLayout from "../components/layouts/DashboardLayout";
-import { Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
+import { Box, Flex, Tabs, Text } from "@radix-ui/themes";
 import AccountProfile from "./AccountProfile";
 import AccountSecurity from "./AccountSecurity";
 import { Preferences } from "./Preferences";
@@ -91,12 +91,12 @@ const AccountSettings = () => {
               </Text>
             </Box>
 
-            <Button
+            {/* <Button
               size="3"
               className="bg-grass_9 font-medium text-base cursor-pointer"
             >
               Save
-            </Button>
+            </Button> */}
           </Flex>
         )}
 

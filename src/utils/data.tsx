@@ -267,7 +267,6 @@ export const sampleSpecializations = [
 //   { value: "PEN - PERUVIAN SOL", label: "PEN - Peruvian Sol" },
 //   { value: "KWD - KUWAITI DINAR", label: "KWD - Kuwaiti Dinar" },
 // ];
-// DOLLAR, NAIRA, EURO
 
 export const sampleCurrencies = [
   { value: "DOLLAR", label: "DOLLAR" },

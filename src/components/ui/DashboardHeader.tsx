@@ -2,7 +2,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { CustomText } from "./CustomText";
 import sampleImage from "../../assets/sampleImage.svg";
 import CustomSelect from "./CustomSelect";
-import { options } from "../../utils/data";
+import { sampleSpecializations } from "../../utils/data";
 import { CustomButton } from "./CustomButton";
 import { CalendarIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { CustomInput } from "./CustomInput";
@@ -10,7 +10,8 @@ import { useNavigate } from "react-router";
 import { BackgroundHeader } from "./BackgroundHeader";
 import Breadcrumb from "./BreadCrumb";
 import { useForm } from "react-hook-form";
-import { decodeLogin } from "../../utils/util";
+import { decodeLogin, getAllCountryOptions } from "../../utils/util";
+import { useMemo } from "react";
 
 type Prop = {
   ifNameAndWalletBalance?: boolean;
@@ -23,10 +24,9 @@ const DashboardHeader = ({
   routeName,
   Icon,
 }: Prop) => {
-  // console.log("userTypeffffff", userType);
-
   const navigate = useNavigate();
   const { control } = useForm();
+  const countryOptions = useMemo(() => getAllCountryOptions(), []);
 
   return (
     <BackgroundHeader>
@@ -86,17 +86,17 @@ const DashboardHeader = ({
 
         <div className="mt-4 hidden md:flex items-center space-x-4">
           <CustomSelect
-            options={options}
+            options={sampleSpecializations}
             placeholder="Select Speciality"
-            name="availabilityStatus"
+            name="specialization"
             control={control}
             ifGrayBg
             // className="hidden md:block"
           />
           <CustomSelect
-            options={options}
+            options={countryOptions}
             placeholder="Select Country"
-            name="availabilityStatus"
+            name="country"
             control={control}
             ifGrayBg
             // className="hidden md:block"

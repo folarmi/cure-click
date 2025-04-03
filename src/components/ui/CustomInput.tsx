@@ -76,7 +76,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
             `w-full p-2 text-sm outline-none border rounded-md border-alpha_9/[12.6%] ${
               ifGrayBg ? "bg-alpha_3" : "bg-white/90"
             } transition-all placeholder:text-alpha_9 ${
-              ifRightIcon && "placeholder:pl-6"
+              icon && "placeholder:pl-6"
             } placeholder:text-sm placeholder:font-normal ${
               disabled &&
               "disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-70 disabled:text-gray-500 disabled:hover:bg-gray-100"

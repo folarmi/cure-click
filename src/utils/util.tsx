@@ -52,7 +52,7 @@ export const decodeLogin = (): DecodedToken | null => {
 
 export function capitalize(str: string) {
   if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export const getFullName = (firstname = "", lastname = "") =>
@@ -127,3 +127,11 @@ function applyNumberOptions(
 
   return result;
 }
+
+export const keysToRemove = [
+  "publicId",
+  "createdDate",
+  "lastModifiedDate",
+  "createdBy",
+  "modifiedBy",
+];

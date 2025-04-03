@@ -91,8 +91,8 @@ const Dashboard = () => {
                             item?.firstname,
                             item?.lastname
                           )}`}
-                          doctorType="Geriatric Doctor"
-                          desc="Aberdeen Royal Infirmary Aberdeen UK"
+                          doctorType={item?.specialization || "N/A"}
+                          desc={item?.hospitalWorkPlace || "N/A"}
                           noOfSessions={3}
                           cost="$35 Per Session"
                           time="Today at 2:30pm"

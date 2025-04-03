@@ -29,7 +29,8 @@ const SingleDoctor = () => {
   const [modal, setModal] = useState(false);
   const { data: singleDoctorData, isLoading: singleDoctorDataIsLoading } =
     useGetData({
-      url: `appointment/api/doctors/${id}`,
+      // url: `appointment/api/doctors/${id}`,
+      url: `appointment/api/doctors/hijacimuw`,
       queryKey: ["GetSingleDoctor"],
     });
 

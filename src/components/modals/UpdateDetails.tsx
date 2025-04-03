@@ -25,6 +25,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   filterObject,
   getAllCountryOptions,
+  keysToRemove,
   stringToNumber,
 } from "../../utils/util";
 import { Loader } from "../ui/Loader";
@@ -36,13 +37,8 @@ const UpdateDetails = ({ toggleModal }: any) => {
   const { mutate: uploadFile, isPending } = useFileUpload({
     successToast: () => `File uploaded successfully!`,
     errorToast: (error) => error.response?.data?.message || "Upload failed",
-    // errorToast: (error) => {
-    //   console.log(error?.response?.data?.message);
-    // },
-    onSuccess: (data) => {
-      console.log("Upload complete:", data);
+    onSuccess: () => {
       toggleModal();
-      // Update your state here
     },
   });
 
@@ -57,6 +53,12 @@ const UpdateDetails = ({ toggleModal }: any) => {
     defaultValues: doctorProfile?.data,
   });
 
+  const {
+    control: pricingControl,
+    handleSubmit: handlePricingSubmit,
+    reset: resetPricing,
+  } = useForm();
+
   const updateDoctorProfileMutation = useCustomMutation({
     endpoint: `appointment/api/doctors/profile`,
     successMessage: () => "Profile Updated sucessfully",
@@ -67,14 +69,17 @@ const UpdateDetails = ({ toggleModal }: any) => {
     },
   });
 
+  const updateDoctorPricingMutation = useCustomMutation({
+    endpoint: `appointment/api/doctors/pricing`,
+    successMessage: () => "Pricing Updated sucessfully",
+    errorMessage: (error: any) => error?.response?.data?.remark,
+    method: "patch",
+    onSuccessCallback: () => {
+      toggleModal();
+    },
+  });
+
   const submitForm = (data: any) => {
-    const keysToRemove = [
-      "publicId",
-      "createdDate",
-      "lastModifiedDate",
-      "createdBy",
-      "modifiedBy",
-    ];
     let formData = filterObject(data, keysToRemove);
 
     formData = {
@@ -83,6 +88,10 @@ const UpdateDetails = ({ toggleModal }: any) => {
     };
 
     updateDoctorProfileMutation.mutate(formData);
+  };
+
+  const submitPricingForm = (data: any) => {
+    updateDoctorPricingMutation.mutate(data?.pricing);
   };
 
   const updateProfilePicture = () => {
@@ -273,22 +282,28 @@ const UpdateDetails = ({ toggleModal }: any) => {
                 bgColor="bg-grass4"
               />
 
-              <CustomInput
-                label="Pricing Per Session"
-                placeholder="Input your email"
-                className="my-4 w-full "
-                control={control}
-                name="pricing"
-              />
+              <form onSubmit={handlePricingSubmit(submitPricingForm)}>
+                <CustomInput
+                  label="Pricing Per Session"
+                  placeholder="Input your email"
+                  className="my-4 w-full "
+                  control={pricingControl}
+                  name="pricing"
+                />
 
-              <CallOut
-                text="CureClick charges you 0.3% for every session you hold"
-                bgColor="bg-alpha_3"
-              />
+                <CallOut
+                  text="CureClick charges you 0.3% for every session you hold"
+                  bgColor="bg-alpha_3"
+                />
 
-              <Button className="mt-4 bg-grass9 w-full font-medium">
-                Update
-              </Button>
+                <Button
+                  loading={updateDoctorPricingMutation.isPending}
+                  disabled={updateDoctorPricingMutation.isPending}
+                  className="mt-4 bg-grass9 w-full font-medium"
+                >
+                  Update
+                </Button>
+              </form>
             </Tabs.Content>
           </Tabs.Root>
         </div>

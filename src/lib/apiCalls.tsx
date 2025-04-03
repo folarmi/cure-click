@@ -31,7 +31,7 @@ interface UseDataOptions
 interface CustomMutationOptions<TData, TError, TVariables, TContext>
   extends UseMutationOptions<TData, TError, TVariables, TContext> {
   endpoint: string;
-  method?: "get" | "post" | "put" | "delete";
+  method?: "get" | "post" | "put" | "patch" | "delete";
   successMessage?: (data: TData) => string;
   errorMessage?: (error: TError) => string | void;
   onSuccessCallback?: (data: TData) => void;
