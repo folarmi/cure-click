@@ -36,7 +36,8 @@ const Appointments = () => {
 
       {/* Doctor */}
       {userType === "doctor" && (
-        <Tabs.Root className="px-6 md:px-12" defaultValue="appointmentHistory">
+        // <Tabs.Root className="px-6 md:px-12" defaultValue="appointmentHistory">
+        <Tabs.Root className="px-6 md:px-12" defaultValue="appointmentCalendar">
           <Tabs.List>
             <Tabs.Trigger value="appointmentHistory">
               Appointment History

@@ -127,3 +127,34 @@ function applyNumberOptions(
 
   return result;
 }
+
+const generateTimeSlots = () => {
+  const slots: {
+    value: string;
+    label: string;
+    hour: number;
+    minute: number;
+  }[] = [];
+
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const period = hour >= 12 ? "PM" : "AM";
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const timeLabel = `${displayHour}:${
+        minute === 0 ? "00" : minute
+      } ${period}`;
+      const timeValue = `${hour}:${minute}`;
+
+      slots.push({
+        value: timeValue,
+        label: timeLabel,
+        hour, // Store hour as number (0-23)
+        minute, // Store minute as number (0 or 30)
+      });
+    }
+  }
+
+  return slots;
+};
+
+export const timeSlots = generateTimeSlots();
