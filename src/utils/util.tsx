@@ -128,7 +128,6 @@ function applyNumberOptions(
   return result;
 }
 
-<<<<<<< HEAD
 export const keysToRemove = [
   "publicId",
   "createdDate",
@@ -136,7 +135,7 @@ export const keysToRemove = [
   "createdBy",
   "modifiedBy",
 ];
-=======
+
 const generateTimeSlots = () => {
   const slots: {
     value: string;
@@ -167,4 +166,96 @@ const generateTimeSlots = () => {
 };
 
 export const timeSlots = generateTimeSlots();
->>>>>>> 8aa167e1293950a21b677961696eb9a54d909f7b
+
+export const getEndTimeOptions = (index: number, startTimes: any) => {
+  const startTime = startTimes?.[index]?.startTime;
+  if (!startTime) return timeSlots;
+
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  const startTotalMinutes = startHour * 60 + startMinute;
+
+  return timeSlots.filter((slot) => {
+    const slotTotalMinutes = slot.hour * 60 + slot.minute;
+    return slotTotalMinutes >= startTotalMinutes + 60; // 1 hour later
+  });
+};
+
+/**
+ * Converts a day number (1-7) to the corresponding weekday in all caps
+ * @param {number} dayNumber - Number representing the day (1 = Monday, 7 = Sunday)
+ * @returns {string} The weekday in all caps
+ * @throws {Error} If input is not a number between 1-7
+ */
+export function numberToWeekday(dayNumber: number) {
+  const days = [
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+    "SUNDAY",
+  ];
+
+  if (typeof dayNumber !== "number" || dayNumber < 1 || dayNumber > 7) {
+    throw new Error("Input must be a number between 1-7");
+  }
+
+  return days[dayNumber - 1];
+}
+
+export function convertToBackendTimeFormat(timeString: string) {
+  // Default values (1073741824 represents unset/placeholder)
+  const result = {
+    hour: 1073741824,
+    minute: 1073741824,
+    second: 1073741824,
+    nano: 1073741824,
+  };
+
+  if (!timeString) return result;
+
+  // Convert '0.30' to '00:30:00.000' format
+  const [hoursStr, minutesStr] = timeString.split(".");
+  const hours = parseInt(hoursStr || "0", 10);
+  const minutes = parseInt(minutesStr || "0", 10);
+
+  // Only set values if they're valid numbers
+  if (!isNaN(hours)) result.hour = hours;
+  if (!isNaN(minutes)) result.minute = minutes;
+
+  return result;
+}
+
+// Usage
+// const backendTime = convertToBackendTimeFormat('0.30');
+// console.log(backendTime);
+// Output: { hour: 0, minute: 30, second: 1073741824, nano: 1073741824 }
+
+export function convertToLocalTimeFormat(timeString: string): string {
+  // Handle empty/undefined input
+  if (!timeString) return "00:00:00";
+
+  // Handle both '.' and ':' separators
+  const separator = timeString.includes(".") ? "." : ":";
+  const [hoursStr = "0", minutesStr = "0"] = timeString.split(separator);
+
+  // Parse components (with NaN protection)
+  const hours = Math.min(23, Math.max(0, parseInt(hoursStr, 10) || 0));
+  const minutes = Math.min(59, Math.max(0, parseInt(minutesStr, 10) || 0));
+
+  // Format with leading zeros
+  return [
+    hours.toString().padStart(2, "0"),
+    minutes.toString().padStart(2, "0"),
+    "00", // Static seconds
+  ].join(":");
+}
+
+// {
+//   "publicId": "2219177UVTL227336",
+//   "doctorPublicId": "221917ZP92YX27336",
+//   "dayOfTheWeek": "SUNDAY",
+//   "localTimes": [],
+//   "available": null
+// }

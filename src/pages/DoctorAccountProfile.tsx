@@ -95,11 +95,11 @@ const DoctorAccountProfile = () => {
                       className="mt-5 bg-white border border-gray2 p-4 rounded-md"
                     >
                       <Text size="2" className="text-gray11">
-                        {doctorProfile?.data?.yearsOfExperience} years
+                        {doctorProfile?.data?.yearsOfExperience || "-"} years
                         Experience
                       </Text>
                       <Text size="2" className="text-gray11">
-                        {capitalize(doctorProfile?.data?.gender)}
+                        {capitalize(doctorProfile?.data?.gender) || "N/A"}
                       </Text>
                       <Text size="2" className="text-gray11">
                         {doctorProfile?.data?.gender === "MALE"
