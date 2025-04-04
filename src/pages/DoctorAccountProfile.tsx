@@ -20,7 +20,7 @@ import { capitalize, getFullName } from "../utils/util";
 import { useGetDoctorProfile } from "../lib/apiCalls";
 
 const DoctorAccountProfile = () => {
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
 
@@ -59,8 +59,8 @@ const DoctorAccountProfile = () => {
                 </Box>
                 <Button
                   size="4"
-                  onClick={toggleModal}
-                  className="bg-white text-neutral_11 font-medium text-lg"
+                  onClick={() => toggleModal()}
+                  className="bg-white text-neutral_11 font-medium text-lg cursor-pointer"
                   style={{
                     border: "1px solid var(--border-gray)",
                   }}

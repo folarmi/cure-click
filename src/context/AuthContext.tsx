@@ -10,6 +10,7 @@ import React, {
 // import { useDispatch } from "react-redux";
 import { logout as reduxLogout } from "../lib/features/authSlice";
 import { useDispatch } from "react-redux";
+import { Loader } from "../components/ui/Loader";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -56,7 +57,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        {" "}
+        <Loader />
+      </div>
+    );
   }
 
   return (

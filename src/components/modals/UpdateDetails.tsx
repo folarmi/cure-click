@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Box, Button, Flex, Text } from "@radix-ui/themes";
-import { BiX } from "react-icons/bi";
+import { Button, Flex, Text } from "@radix-ui/themes";
 import { CustomInput } from "../ui/CustomInput";
 import CustomSelect from "../ui/CustomSelect";
-import avatar from "../../assets/avatar.svg";
+// import avatar from "../../assets/avatar.svg";
 import {
   availability,
   gender,
@@ -18,10 +17,9 @@ import { useForm } from "react-hook-form";
 import {
   useCustomMutation,
   useFileUpload,
-  useGetData,
   useGetDoctorProfile,
 } from "../../lib/apiCalls";
-import FileUploader from "../FileUploader";
+// import FileUploader from "../FileUploader";
 import { useEffect, useMemo, useState } from "react";
 import {
   filterObject,
@@ -30,8 +28,7 @@ import {
   stringToNumber,
 } from "../../utils/util";
 import { Loader } from "../ui/Loader";
-import Breadcrumb from "../ui/BreadCrumb";
-import { DashboardIcon } from "@radix-ui/react-icons";
+import { DashboardIcon as DashboardFilled } from "@radix-ui/react-icons";
 
 const UpdateDetails = ({ toggleModal }: any) => {
   const countryOptions = useMemo(() => getAllCountryOptions(), []);
@@ -112,7 +109,22 @@ const UpdateDetails = ({ toggleModal }: any) => {
         <Loader />
       ) : (
         <form className="mb-8" onSubmit={handleSubmit(submitForm)}>
-          <Breadcrumb Icon={DashboardIcon} route="Account Settings" />
+          <div
+            onClick={() => toggleModal()}
+            className="flex items-center cursor-pointer"
+          >
+            <DashboardFilled
+              fill="#838383"
+              className="text-gray10 w-5 h-5 pr-1"
+            />
+            <Text as="p" weight="medium" className=" text-gray10" size="2">
+              Account Settings / Account Profile
+            </Text>
+            <Text as="p" weight="medium" className=" text-gray12 pl-2" size="2">
+              Update Profile
+            </Text>
+          </div>
+
           <Flex
             justify="between"
             align="center"
@@ -134,7 +146,6 @@ const UpdateDetails = ({ toggleModal }: any) => {
             >
               Save
             </Button>
-            {/* <BiX onClick={toggleModal} className="cursor-pointer" /> */}
           </Flex>
 
           {/* <FileUploader

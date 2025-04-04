@@ -24,7 +24,7 @@ interface Prop {
 }
 
 const DoctorDashboardHeader = ({
-  name = "Hello 👋 Dr. Emmanuel",
+  name = "Dr. Emmanuel",
   ifBreadCrumb,
   Icon,
   routeName,
@@ -38,6 +38,7 @@ const DoctorDashboardHeader = ({
   const toggleModal = () => {
     setModal(!modal);
   };
+  console.log("sdfsdfdff", name);
   return (
     <div className="bg-grass12 px-4 md:px-8">
       <Flex justify="between" className="pt-4 md:pt-8">
@@ -52,7 +53,7 @@ const DoctorDashboardHeader = ({
                 ifBreadCrumb && "pt-[10px]"
               }`}
             >
-              {name}
+              {`Hello 👋 ${name}`}
             </Text>
 
             <Flex

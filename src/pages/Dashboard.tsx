@@ -18,13 +18,15 @@ import Review from "../components/cards/Review";
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
 import { countriesData } from "../utils/data";
 import MobileSlider from "../components/ui/MobileSlider";
-import { useGetData } from "../lib/apiCalls";
+import { useGetData, useGetDoctorProfile } from "../lib/apiCalls";
 import { getFullName } from "../utils/util";
 import { Loader } from "../components/ui/Loader";
 // import { decodeLogin } from "../utils/util";
 
 const Dashboard = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
+  const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
+    useGetDoctorProfile();
   const { data: doctorData, isLoading: doctorDataIsLoading } = useGetData({
     url: `appointment/api/doctors?page=0&size=20`,
     queryKey: ["GetAllDoctors"],
@@ -36,7 +38,12 @@ const Dashboard = () => {
       {userType === "patient" ? (
         <DashboardHeader Icon={DashboardIcon} routeName="Dashboard" />
       ) : (
-        <DoctorDashboardHeader />
+        <DoctorDashboardHeader
+          name={getFullName(
+            doctorProfile?.data?.firstname,
+            doctorProfile?.data?.lastname
+          )}
+        />
       )}
 
       {userType === "patient" && (
