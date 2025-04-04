@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { BiX } from "react-icons/bi";
 import { CustomInput } from "../ui/CustomInput";
 import CustomSelect from "../ui/CustomSelect";
@@ -19,6 +19,7 @@ import {
   useCustomMutation,
   useFileUpload,
   useGetData,
+  useGetDoctorProfile,
 } from "../../lib/apiCalls";
 import FileUploader from "../FileUploader";
 import { useEffect, useMemo, useState } from "react";
@@ -29,10 +30,14 @@ import {
   stringToNumber,
 } from "../../utils/util";
 import { Loader } from "../ui/Loader";
+import Breadcrumb from "../ui/BreadCrumb";
+import { DashboardIcon } from "@radix-ui/react-icons";
 
 const UpdateDetails = ({ toggleModal }: any) => {
   const countryOptions = useMemo(() => getAllCountryOptions(), []);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
+    useGetDoctorProfile();
 
   const { mutate: uploadFile, isPending } = useFileUpload({
     successToast: () => `File uploaded successfully!`,
@@ -42,22 +47,9 @@ const UpdateDetails = ({ toggleModal }: any) => {
     },
   });
 
-  const { data: doctorProfile, isLoading: doctorProfileIsLoading } = useGetData(
-    {
-      url: `appointment/api/doctors/profile`,
-      queryKey: ["GetSingleDoctorProfile"],
-    }
-  );
-
   const { control, handleSubmit, reset } = useForm({
     defaultValues: doctorProfile?.data,
   });
-
-  const {
-    control: pricingControl,
-    handleSubmit: handlePricingSubmit,
-    reset: resetPricing,
-  } = useForm();
 
   const updateDoctorProfileMutation = useCustomMutation({
     endpoint: `appointment/api/doctors/profile`,
@@ -119,194 +111,192 @@ const UpdateDetails = ({ toggleModal }: any) => {
       {doctorProfileIsLoading ? (
         <Loader />
       ) : (
-        <div className="bg-white w-[525px] p-4 overflow-scroll max-h-screen my-8">
-          <Flex justify="between" align="center">
-            <Text as="p" className="font-semibold text-gray12" size="4">
-              Update your details
-            </Text>
-            <BiX onClick={toggleModal} className="cursor-pointer" />
+        <form className="mb-8" onSubmit={handleSubmit(submitForm)}>
+          <Breadcrumb Icon={DashboardIcon} route="Account Settings" />
+          <Flex
+            justify="between"
+            align="center"
+            className="border-b border-gray_3 pb-2 mt-8"
+          >
+            <div className="">
+              <Text as="p" className="font-semibold text-gray12" size="4">
+                Update your details
+              </Text>
+              <Text as="p" className="font-normal text-gray11" size="3">
+                Update your account profile details
+              </Text>
+            </div>
+
+            <Button
+              disabled={updateDoctorProfileMutation.isPending}
+              loading={updateDoctorProfileMutation.isPending}
+              className="bg-grass9 font-medium"
+            >
+              Save
+            </Button>
+            {/* <BiX onClick={toggleModal} className="cursor-pointer" /> */}
           </Flex>
-          <Tabs.Root defaultValue="basicInformation">
-            <Tabs.List className="border-b">
-              <Tabs.Trigger value="basicInformation">
-                Basic Information
-              </Tabs.Trigger>
-              <Tabs.Trigger value="pricingInformation">
-                Pricing Information
-              </Tabs.Trigger>
-            </Tabs.List>
 
-            <Tabs.Content value="basicInformation" className="">
-              <CallOut
-                text="Make changes to your profile information"
-                bgColor="bg-grass4"
-              />
-
-              <FileUploader
-                maxSizeMB={1}
-                acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
-                onFileUpload={setUploadedFile}
-                // defaultFile={defaultValues?.image}
-              />
-              <Flex align="center" className="mt-8">
-                <img src={avatar} className="w-16 h-16" />
-                <Box className="ml-4">
-                  <Button
-                    size="2"
-                    className="bg-white text-neutral_11 font-medium text-sm"
-                    style={{
-                      border: "1px solid #00083046",
-                    }}
-                    onClick={() => updateProfilePicture()}
-                    loading={isPending}
-                  >
-                    Update Image
-                  </Button>
-                  <Text as="p" size="1" className="text-gray10 pt-1">
-                    Profile image should be less than 5mb
-                  </Text>
-                </Box>
-              </Flex>
-
-              <form
-                className="gap-y-4 flex flex-col mt-8"
-                onSubmit={handleSubmit(submitForm)}
+          {/* <FileUploader
+            maxSizeMB={1}
+            acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
+            onFileUpload={setUploadedFile}
+            // defaultFile={defaultValues?.image}
+          /> */}
+          {/* <Flex align="center" className="mt-8">
+            <img src={avatar} className="w-16 h-16" />
+            <Box className="ml-4">
+              <Button
+                size="2"
+                className="bg-white text-neutral_11 font-medium text-sm"
+                style={{
+                  border: "1px solid #00083046",
+                }}
+                onClick={() => updateProfilePicture()}
+                loading={isPending}
               >
-                <CustomInput
-                  label="First name"
-                  placeholder="Input your firstname"
-                  control={control}
-                  name="firstname"
-                  disabled
-                />
-                <CustomInput
-                  label="Last name"
-                  placeholder="Input your lastname"
-                  control={control}
-                  name="lastname"
-                  disabled
-                />
-                <CustomInput
-                  label="Username"
-                  placeholder="Input your username"
-                  control={control}
-                  name="username"
-                  disabled
-                />
+                Update Image
+              </Button>
+              <Text as="p" size="1" className="text-gray10 pt-1">
+                Profile image should be less than 5mb
+              </Text>
+            </Box>
+          </Flex> */}
 
-                <CustomInput
-                  label="Years of Experience"
-                  placeholder="0"
-                  control={control}
-                  name="yearsOfExperience"
-                />
+          <div className="mt-8 mx-auto w-[66%]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border border-gray_3 rounded-lg p-6">
+              <Text
+                as="p"
+                className="font-semibold text-gray12 col-span-2"
+                size="4"
+              >
+                Basic Information
+              </Text>
 
-                <CustomSelect
-                  options={gender}
-                  placeholder="Select your Gender"
-                  label="Gender"
-                  ifGrayBg={false}
-                  name="gender"
-                  control={control}
-                />
-                <CustomSelect
-                  options={countryOptions}
-                  placeholder="Select your country"
-                  label="Country"
-                  ifGrayBg={false}
-                  name="country"
-                  control={control}
-                />
-                <CustomSelect
-                  options={sampleCurrencies}
-                  placeholder="Select your currency"
-                  label="Currency"
-                  ifGrayBg={false}
-                  name="currency"
-                  control={control}
-                />
-                <CustomSelect
-                  options={sampleLanguages}
-                  placeholder="What language(s) do you speak"
-                  label="Language(s)"
-                  ifGrayBg={false}
-                  name="languages"
-                  control={control}
-                  isMulti
-                />
-
-                <CustomSelect
-                  options={sampleSpecializations}
-                  placeholder="What is your speciality"
-                  label="Speciality?"
-                  ifGrayBg={false}
-                  name="specialization"
-                  control={control}
-                />
-
-                <CustomInput
-                  label="Current Workplace"
-                  placeholder="What hospital do you work in?"
-                  control={control}
-                  name="hospitalWorkPlace"
-                />
-
-                <CustomSelect
-                  options={availability}
-                  placeholder="Availability"
-                  label="Availability"
-                  ifGrayBg={false}
-                  name="availabilityStatus"
-                  control={control}
-                />
-
-                <CustomTextarea
-                  control={control}
-                  name="biography"
-                  label="Your Bio"
-                  className="mt-4"
-                />
-
-                <Button
-                  disabled={updateDoctorProfileMutation.isPending}
-                  loading={updateDoctorProfileMutation.isPending}
-                  className="mt-4 bg-grass9 w-full font-medium"
-                >
-                  Update
-                </Button>
-              </form>
-            </Tabs.Content>
-            <Tabs.Content value="pricingInformation">
-              <CallOut
-                text="Make changes to your profile information"
-                bgColor="bg-grass4"
+              <CustomInput
+                label="First name"
+                placeholder="Input your firstname"
+                control={control}
+                name="firstname"
+                disabled
+              />
+              <CustomInput
+                label="Last name"
+                placeholder="Input your lastname"
+                control={control}
+                name="lastname"
+                disabled
+              />
+              <CustomInput
+                label="Email"
+                placeholder="test@email.com"
+                control={control}
+                name="email"
+                disabled
+              />
+              <CustomSelect
+                options={countryOptions}
+                placeholder="Select your country"
+                label="Country"
+                ifGrayBg={false}
+                name="country"
+                control={control}
+              />
+              <CustomSelect
+                options={gender}
+                placeholder="Select your Gender"
+                label="Gender"
+                ifGrayBg={false}
+                name="gender"
+                control={control}
+              />
+              <CustomInput
+                label="Username"
+                placeholder="Input your username"
+                control={control}
+                name="username"
+                disabled
               />
 
-              <form onSubmit={handlePricingSubmit(submitPricingForm)}>
-                <CustomInput
-                  label="Pricing Per Session"
-                  placeholder="Input your email"
-                  className="my-4 w-full "
-                  control={pricingControl}
-                  name="pricing"
-                />
+              <CustomInput
+                label="Years of Experience"
+                placeholder="0"
+                control={control}
+                name="yearsOfExperience"
+              />
 
-                <CallOut
-                  text="CureClick charges you 0.3% for every session you hold"
-                  bgColor="bg-alpha_3"
-                />
+              <CustomSelect
+                options={sampleCurrencies}
+                placeholder="Select your currency"
+                label="Currency"
+                ifGrayBg={false}
+                name="currency"
+                control={control}
+              />
 
-                <Button
-                  loading={updateDoctorPricingMutation.isPending}
-                  disabled={updateDoctorPricingMutation.isPending}
-                  className="mt-4 bg-grass9 w-full font-medium"
-                >
-                  Update
-                </Button>
-              </form>
-            </Tabs.Content>
-          </Tabs.Root>
-        </div>
+              <CustomSelect
+                options={sampleSpecializations}
+                placeholder="What is your speciality"
+                label="Speciality?"
+                ifGrayBg={false}
+                name="specialization"
+                control={control}
+              />
+
+              <CustomInput
+                label="Current Workplace"
+                placeholder="What hospital do you work in?"
+                control={control}
+                name="hospitalWorkPlace"
+              />
+
+              <CustomSelect
+                options={availability}
+                placeholder="Availability"
+                label="Availability"
+                ifGrayBg={false}
+                name="availabilityStatus"
+                control={control}
+              />
+
+              <CustomSelect
+                options={sampleLanguages}
+                placeholder="What language(s) do you speak"
+                label="Language(s)"
+                ifGrayBg={false}
+                name="languages"
+                control={control}
+                isMulti
+                className="col-span-2"
+              />
+
+              <CustomTextarea
+                control={control}
+                name="biography"
+                label="Your Bio"
+                className="col-span-2"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 border border-gray_3 rounded-lg p-6 mt-6">
+              <Text as="p" className="font-semibold text-gray12" size="4">
+                Pricing Information
+              </Text>
+
+              <CustomInput
+                label="Pricing Per Session"
+                placeholder="$1300"
+                className="mt-6"
+                control={control}
+                name="pricing"
+              />
+              <CallOut
+                text="CureClick charges you 0.3% for every session you hold"
+                bgColor="bg-neutral_alpha_3"
+              />
+            </div>
+          </div>
+        </form>
       )}
     </>
   );

@@ -20,7 +20,11 @@ import {
   numberToWeekday,
   timeSlots,
 } from "../../utils/util";
-import { useCustomMutation, useGetData } from "../../lib/apiCalls";
+import {
+  useCustomMutation,
+  useGetData,
+  useGetDoctorProfile,
+} from "../../lib/apiCalls";
 import { Loader } from "../../components/ui/Loader";
 
 const Calendar = () => {
@@ -33,13 +37,8 @@ const Calendar = () => {
   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
     useState(true);
   const [selectedID, setSelectedID] = useState(1);
-
-  const { data: doctorProfile, isLoading: doctorProfileIsLoading } = useGetData(
-    {
-      url: `appointment/api/doctors/profile`,
-      queryKey: ["GetSingleDoctorProfile"],
-    }
-  );
+  const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
+    useGetDoctorProfile();
 
   const {
     data: doctorAvailableSessions,

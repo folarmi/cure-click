@@ -171,6 +171,7 @@ interface CustomSelectProps {
   rules?: UseControllerProps["rules"];
   customOnChange?: (value: any, name: string) => void;
   isMulti?: boolean;
+  className?: string;
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -184,6 +185,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   rules,
   customOnChange,
   isMulti = false,
+  className,
 }) => {
   const {
     field,
@@ -220,7 +222,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   };
 
   return (
-    <div className="w-full">
+    <div className={`w-full ${className}`}>
       {label && (
         <LabelPrimitive.Root className="block mb-1 text-sm font-medium text-gray-700">
           {label}

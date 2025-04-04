@@ -177,3 +177,17 @@ export const useFileUpload = ({
     },
   });
 };
+
+export const useGetDoctorProfile = () => {
+  return useQuery<any>({
+    queryKey: ["GetDoctorProfile"],
+    queryFn: async () => {
+      const response = await api.get("appointment/api/doctors/profile");
+      return response?.data;
+    },
+    retry: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+  });
+};
