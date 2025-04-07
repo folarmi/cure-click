@@ -1,4 +1,6 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
+import fileUploadIcon from "../assets/icons/fileUploadIcon.svg";
+import { Text } from "@radix-ui/themes";
 
 interface FileUploaderProps {
   maxSizeMB: number;
@@ -56,12 +58,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center">
       <label
         htmlFor="dropzone-file"
-        className="flex flex-col items-center justify-center w-full px-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
+        className="flex flex-col items-center rounded-[4px] cursor-pointer bg-alpha_3"
       >
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+        <div className="flex items-center py-2 px-3">
           {preview ? (
             <img
               src={preview}
@@ -72,7 +74,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
             />
           ) : (
             <>
-              <svg
+              {/* <svg
                 className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +98,17 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {`Max file size: ${maxSizeMB} MB`}
-              </p>
+              </p> */}
+
+              <img src={fileUploadIcon} className="w-4 h-4" />
+              <Text
+                as="p"
+                weight="medium"
+                size="2"
+                className="text-accent_alpha_11 pl-2"
+              >
+                Upload
+              </Text>
             </>
           )}
         </div>

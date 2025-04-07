@@ -14,6 +14,7 @@ import { useState } from "react";
 const AccountSettings = () => {
   const [activeTab, setActiveTab] = useState("Account Settings");
   const userType = useSelector((state: RootState) => state.auth.userType);
+
   const tabs = {
     accountProfile: "Account Profile",
     security: "Security",

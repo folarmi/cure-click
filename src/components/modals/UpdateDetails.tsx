@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Button, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { CustomInput } from "../ui/CustomInput";
 import CustomSelect from "../ui/CustomSelect";
-// import avatar from "../../assets/avatar.svg";
+import avatar from "../../assets/avatar.svg";
 import {
   availability,
   gender,
@@ -19,7 +19,7 @@ import {
   useFileUpload,
   useGetDoctorProfile,
 } from "../../lib/apiCalls";
-// import FileUploader from "../FileUploader";
+import FileUploader from "../FileUploader";
 import { useEffect, useMemo, useState } from "react";
 import {
   filterObject,
@@ -33,14 +33,15 @@ import { DashboardIcon as DashboardFilled } from "@radix-ui/react-icons";
 const UpdateDetails = ({ toggleModal }: any) => {
   const countryOptions = useMemo(() => getAllCountryOptions(), []);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [backendFileUrl, setBackendFileUrl] = useState("");
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
 
   const { mutate: uploadFile, isPending } = useFileUpload({
     successToast: () => `File uploaded successfully!`,
     errorToast: (error) => error.response?.data?.message || "Upload failed",
-    onSuccess: () => {
-      toggleModal();
+    onSuccess: (data) => {
+      setBackendFileUrl(data?.data?.url);
     },
   });
 
@@ -64,6 +65,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
     formData = {
       ...formData,
       yearsOfExperience: stringToNumber(data?.yearsOfExperience),
+      profilePictureUrl: backendFileUrl,
     };
 
     updateDoctorProfileMutation.mutate(formData);
@@ -73,11 +75,6 @@ const UpdateDetails = ({ toggleModal }: any) => {
     if (uploadedFile) {
       const formData = new FormData();
       formData.append("file", uploadedFile);
-
-      // // Append additional data
-      // Object.entries(additionalData).forEach(([key, value]) => {
-      //   formData.append(key, value);
-      // });
 
       uploadFile({ file: uploadedFile });
     }
@@ -134,32 +131,6 @@ const UpdateDetails = ({ toggleModal }: any) => {
             </Button>
           </Flex>
 
-          {/* <FileUploader
-            maxSizeMB={1}
-            acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
-            onFileUpload={setUploadedFile}
-            // defaultFile={defaultValues?.image}
-          /> */}
-          {/* <Flex align="center" className="mt-8">
-            <img src={avatar} className="w-16 h-16" />
-            <Box className="ml-4">
-              <Button
-                size="2"
-                className="bg-white text-neutral_11 font-medium text-sm"
-                style={{
-                  border: "1px solid #00083046",
-                }}
-                onClick={() => updateProfilePicture()}
-                loading={isPending}
-              >
-                Update Image
-              </Button>
-              <Text as="p" size="1" className="text-gray10 pt-1">
-                Profile image should be less than 5mb
-              </Text>
-            </Box>
-          </Flex> */}
-
           <div className="mt-8 mx-auto w-[66%]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border border-gray_3 rounded-lg p-6">
               <Text
@@ -169,6 +140,33 @@ const UpdateDetails = ({ toggleModal }: any) => {
               >
                 Basic Information
               </Text>
+
+              <Flex align="center" className="col-span-2">
+                <img src={avatar} className="w-16 h-16" />
+                <Box className="ml-4">
+                  <FileUploader
+                    maxSizeMB={5}
+                    acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
+                    onFileUpload={setUploadedFile}
+                    // defaultFile={defaultValues?.image}
+                  />
+
+                  <Button
+                    size="2"
+                    className="bg-white text-neutral_11 font-medium text-sm mt-4"
+                    style={{
+                      border: "1px solid #00083046",
+                    }}
+                    onClick={() => updateProfilePicture()}
+                    loading={isPending}
+                  >
+                    Update Image
+                  </Button>
+                  <Text as="p" size="1" className="text-gray10 pt-1">
+                    Profile image should be less than 5mb
+                  </Text>
+                </Box>
+              </Flex>
 
               <CustomInput
                 label="First name"
@@ -283,7 +281,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
               <CustomInput
                 label="Pricing Per Session"
                 placeholder="$1300"
-                className="mt-6"
+                className="mt-6 mb-10"
                 control={control}
                 name="pricing"
               />

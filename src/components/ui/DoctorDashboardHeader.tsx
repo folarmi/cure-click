@@ -58,7 +58,7 @@ const DoctorDashboardHeader = ({
                 ifBreadCrumb && "pt-[10px]"
               }`}
             >
-              {`Hello 👋 ${name}`}
+              {`${name}`}
             </Text>
 
             <Flex

@@ -58,6 +58,8 @@ const Calendar = () => {
     },
   });
 
+  console.log(doctorAvailableSessions?.data);
+
   const handleSwitchChange = (id: number) => {
     setIsSwitchEnabled(!isSwitchEnabled);
     setSelectedID(id);

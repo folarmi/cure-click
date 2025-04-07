@@ -145,7 +145,7 @@ export const useFileUpload = ({
       }
 
       const response = await api[method](
-        "appointment/api/files/uploadd",
+        "appointment/api/files/upload",
         formData,
         {
           headers: {

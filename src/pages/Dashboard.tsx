@@ -39,10 +39,10 @@ const Dashboard = () => {
         <DashboardHeader Icon={DashboardIcon} routeName="Dashboard" />
       ) : (
         <DoctorDashboardHeader
-          name={getFullName(
+          name={`Hello 👋  ${getFullName(
             doctorProfile?.data?.firstname,
             doctorProfile?.data?.lastname
-          )}
+          )}`}
         />
       )}
 

@@ -20,7 +20,7 @@ import { capitalize, getFullName } from "../utils/util";
 import { useGetDoctorProfile } from "../lib/apiCalls";
 
 const DoctorAccountProfile = () => {
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(true);
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
 
