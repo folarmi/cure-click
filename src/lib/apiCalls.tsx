@@ -178,7 +178,7 @@ export const useFileUpload = ({
   });
 };
 
-export const useGetDoctorProfile = () => {
+export const useGetDoctorProfile = (enabled: boolean = true) => {
   return useQuery<any>({
     queryKey: ["GetDoctorProfile"],
     queryFn: async () => {
@@ -189,5 +189,6 @@ export const useGetDoctorProfile = () => {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     staleTime: 0,
+    enabled,
   });
 };

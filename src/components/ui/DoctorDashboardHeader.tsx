@@ -12,6 +12,8 @@ import { AvailabilitySwitch } from "../modals/AvailabilitySwitch";
 import { ReactNode, useState } from "react";
 import { CircularDot } from "./CircularDot";
 import Breadcrumb from "./BreadCrumb";
+import { useGetDoctorProfile } from "../../lib/apiCalls";
+import { isAvailable } from "../../utils/util";
 
 interface Prop {
   name?: string;
@@ -33,12 +35,15 @@ const DoctorDashboardHeader = ({
   children,
 }: Prop) => {
   const [modal, setModal] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(true);
+  const { data: doctorProfile } = useGetDoctorProfile();
+  const [selected, setSelected] = useState(
+    doctorProfile?.data?.availabilityStatus
+  );
 
   const toggleModal = () => {
     setModal(!modal);
   };
-  console.log("sdfsdfdff", name);
+
   return (
     <div className="bg-grass12 px-4 md:px-8">
       <Flex justify="between" className="pt-4 md:pt-8">
@@ -100,16 +105,22 @@ const DoctorDashboardHeader = ({
                   <Flex align="center">
                     <CircularDot
                       bgColor={`${
-                        isAvailable ? "var(--grass9)" : "var(--gray11)"
+                        isAvailable(doctorProfile?.data?.availabilityStatus)
+                          ? "var(--grass9)"
+                          : "var(--gray11)"
                       }`}
                     />
                     <Text
                       className={`hidden md:block ${
-                        isAvailable ? "text-grass9" : "text-gray11"
+                        isAvailable(doctorProfile?.data?.availabilityStatus)
+                          ? "text-grass9"
+                          : "text-gray11"
                       } px-1 font-semibold`}
                       size="3"
                     >
-                      {isAvailable ? "Available" : "Currently Unavailable"}
+                      {isAvailable(doctorProfile?.data?.availabilityStatus)
+                        ? "Available"
+                        : "Currently Unavailable"}
                     </Text>
                     <ChevronDownIcon className="cursor-pointer ml-2 md:ml-0 text-white md:text-black" />
                   </Flex>
@@ -119,7 +130,10 @@ const DoctorDashboardHeader = ({
               <DropdownMenu.Content className="mt-4 md:mt-0">
                 <DropdownMenu.Item
                   className="hover:bg-grassA3"
-                  onClick={() => setIsAvailable(true)}
+                  onClick={() => {
+                    setSelected("Available");
+                    toggleModal();
+                  }}
                 >
                   <Flex align="center">
                     <CircularDot bgColor="var(--grass9)" />
@@ -130,7 +144,10 @@ const DoctorDashboardHeader = ({
                 </DropdownMenu.Item>
                 <DropdownMenu.Item
                   className="hover:bg-neutral_alpha_3"
-                  onClick={() => setIsAvailable(false)}
+                  onClick={() => {
+                    setSelected("Unavailable");
+                    toggleModal();
+                  }}
                 >
                   <Flex align="center">
                     <CircularDot bgColor="var(--gray11)" />
@@ -161,8 +178,9 @@ const DoctorDashboardHeader = ({
         <Modal show={modal} toggleModal={toggleModal}>
           <div className="p-4">
             <AvailabilitySwitch
-              isAvailable={isAvailable}
+              isAvailable={isAvailable(doctorProfile?.data?.availabilityStatus)}
               toggleModal={toggleModal}
+              selected={selected}
             />
           </div>
         </Modal>

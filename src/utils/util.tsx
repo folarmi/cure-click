@@ -252,10 +252,20 @@ export function convertToLocalTimeFormat(timeString: string): string {
   ].join(":");
 }
 
-// {
-//   "publicId": "2219177UVTL227336",
-//   "doctorPublicId": "221917ZP92YX27336",
-//   "dayOfTheWeek": "SUNDAY",
-//   "localTimes": [],
-//   "available": null
-// }
+export const getCurrencySymbol = (currency: string): string => {
+  const currencySymbols: Record<string, string> = {
+    DOLLAR: "$",
+    NAIRA: "₦",
+    EURO: "€",
+    POUND: "£",
+    YEN: "¥",
+    RUPEES: "₹",
+    // Add more currencies as needed
+  };
+
+  return currencySymbols[currency.toUpperCase()] || currency;
+};
+
+export const isAvailable = (status: string): boolean => {
+  return status === "AVAILABLE";
+};

@@ -2,8 +2,20 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { Box, Button, Callout, Flex, Text } from "@radix-ui/themes";
 import { MyCalendar } from "./MyCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useGetDoctorProfile } from "../../lib/apiCalls";
+import { getCurrencySymbol } from "../../utils/util";
+import Modal from "./Modal";
+import { useState } from "react";
+import { PricingModal } from "../modals/PricingModal";
 
 const DoctorShareProfile = () => {
+  const [pricingModal, setPricingmodal] = useState(false);
+  const { data: doctorProfile } = useGetDoctorProfile();
+
+  const toggleModal = () => {
+    setPricingmodal(!pricingModal);
+  };
+
   return (
     <div>
       <Box className="border border-gray3 rounded-xl px-4 py-3">
@@ -13,7 +25,9 @@ const DoctorShareProfile = () => {
 
         <Flex justify="between" className="mt-4">
           <Text as="p" className="font-semibold" size="6">
-            $75
+            {`${getCurrencySymbol(doctorProfile?.data?.currency || "NAIRA")} ${
+              doctorProfile?.data?.pricing || "0"
+            }`}
             <Text weight="regular" size="4" className="pl-2">
               Per session
             </Text>
@@ -24,7 +38,8 @@ const DoctorShareProfile = () => {
             style={{
               border: "1px solid var(--border-gray)",
             }}
-            className="font-medium text-sm text-black_contrast bg-white rounded"
+            onClick={toggleModal}
+            className="font-medium text-sm text-black_contrast bg-white rounded cursor-pointer"
           >
             Update
           </Button>
@@ -62,6 +77,12 @@ const DoctorShareProfile = () => {
       <Box className="border border-gray3 rounded-xl px-4 py-3 mt-4">
         <MyCalendar />
       </Box>
+
+      <Modal show={pricingModal} toggleModal={toggleModal}>
+        <div className="p-4">
+          <PricingModal toggleModal={toggleModal} />
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -58,16 +58,6 @@ const UpdateDetails = ({ toggleModal }: any) => {
     },
   });
 
-  const updateDoctorPricingMutation = useCustomMutation({
-    endpoint: `appointment/api/doctors/pricing`,
-    successMessage: () => "Pricing Updated sucessfully",
-    errorMessage: (error: any) => error?.response?.data?.remark,
-    method: "patch",
-    onSuccessCallback: () => {
-      toggleModal();
-    },
-  });
-
   const submitForm = (data: any) => {
     let formData = filterObject(data, keysToRemove);
 
@@ -77,10 +67,6 @@ const UpdateDetails = ({ toggleModal }: any) => {
     };
 
     updateDoctorProfileMutation.mutate(formData);
-  };
-
-  const submitPricingForm = (data: any) => {
-    updateDoctorPricingMutation.mutate(data?.pricing);
   };
 
   const updateProfilePicture = () => {
