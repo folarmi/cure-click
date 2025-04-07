@@ -895,3 +895,15 @@ export const countriesData = [
     number: 4,
   },
 ];
+
+// {
+//   "publicId": "2219174CSQ0327336",
+//   "doctorPublicId": "221917ZP92YX27336",
+//   "dayOfTheWeek": "MONDAY",
+//   "availableTimes": 0,
+//   "localTimes": [
+//       "11:30:00"
+//   ],
+//   "available": null,
+//   "recurring": false
+// }

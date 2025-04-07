@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
@@ -12,11 +13,9 @@ import {
 import { useEffect, useState } from "react";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { availableTimes } from "../../utils/data";
-import CustomSelect from "../../components/ui/CustomSelect";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   convertToLocalTimeFormat,
-  getEndTimeOptions,
   numberToWeekday,
   timeSlots,
 } from "../../utils/util";
@@ -26,17 +25,18 @@ import {
   useGetDoctorProfile,
 } from "../../lib/apiCalls";
 import { Loader } from "../../components/ui/Loader";
+import { FormValues, TimePeriod } from "../../utils/types";
+import { DayScheduleItem } from "./DaySchedule";
 
 const Calendar = () => {
-  const { control, setValue, watch, getValues } = useForm();
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "addPeriod",
-  });
+  // const { fields, append, remove } = useFieldArray({
+  //   name: "addPeriod",
+  // });
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  const [expandedDay, setExpandedDay] = useState<string | null>(null);
   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
     useState(true);
-  const [selectedID, setSelectedID] = useState(1);
+  const [selectedID, setSelectedID] = useState("");
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
 
@@ -48,6 +48,8 @@ const Calendar = () => {
     queryKey: ["GetDoctorAvailableSessions"],
   });
 
+  const { control, setValue, watch, getValues, reset } = useForm<FormValues>();
+
   const updateDoctorAvailableSessionMutation = useCustomMutation({
     endpoint: `appointment/api/doctors/available-sessions`,
     successMessage: () => "Available Sessions Updated sucessfully",
@@ -58,11 +60,13 @@ const Calendar = () => {
     },
   });
 
-  console.log(doctorAvailableSessions?.data);
+  // const handleSwitchChange = (id: string) => {
+  //   setIsSwitchEnabled(!isSwitchEnabled);
+  //   setSelectedID(id);
+  // };
 
-  const handleSwitchChange = (id: number) => {
-    setIsSwitchEnabled(!isSwitchEnabled);
-    setSelectedID(id);
+  const handleToggleDay = (publicId: string) => {
+    setExpandedDay((prev) => (prev === publicId ? null : publicId));
   };
 
   const handleBlockedOutSwitchChange = () => {
@@ -72,9 +76,37 @@ const Calendar = () => {
   const startTimes = watch("addPeriod");
 
   // Auto-update end time when start time changes
+  // useEffect(() => {
+  //   if (startTimes && Array.isArray(startTimes)) {
+  //     startTimes.forEach((period, index) => {
+  //       if (period?.startTime) {
+  //         const [startHour, startMinute] = period.startTime
+  //           .split(":")
+  //           .map(Number);
+  //         const endHour = startHour + 1;
+  //         const endTime = `${endHour}:${startMinute}`;
+
+  //         // Check if end time exists in available slots
+  //         const isValidEndTime = timeSlots.some(
+  //           (slot) => slot.value === endTime
+  //         );
+
+  //         if (isValidEndTime) {
+  //           setValue(`addPeriod.${index}.endTime`, endTime);
+  //         }
+  //       }
+  //     });
+  //   }
+  // }, [startTimes, setValue]);
+
   useEffect(() => {
-    if (startTimes && Array.isArray(startTimes)) {
-      startTimes.forEach((period, index) => {
+    if (!doctorAvailableSessions?.data || !expandedDay) return;
+
+    // Get the current day's periods
+    const dayPeriods = watch(`schedule.${expandedDay}.periods`);
+
+    if (dayPeriods && Array.isArray(dayPeriods)) {
+      dayPeriods.forEach((period, index) => {
         if (period?.startTime) {
           const [startHour, startMinute] = period.startTime
             .split(":")
@@ -88,12 +120,31 @@ const Calendar = () => {
           );
 
           if (isValidEndTime) {
-            setValue(`addPeriod.${index}.endTime`, endTime);
+            setValue(
+              `schedule.${expandedDay}.periods.${index}.endTime`,
+              endTime
+            );
           }
         }
       });
     }
-  }, [startTimes, setValue]);
+  }, [expandedDay, watch, setValue, timeSlots, doctorAvailableSessions?.data]);
+
+  useEffect(() => {
+    if (doctorAvailableSessions?.data) {
+      const defaultValues = doctorAvailableSessions.data.reduce((acc, day) => {
+        acc[day.publicId] = {
+          periods: day.localTimes.map((time) => ({
+            ...time,
+            id: time.id,
+          })),
+        };
+        return acc;
+      }, {} as Record<string, { periods: TimePeriod[] }>);
+
+      reset({ schedule: defaultValues });
+    }
+  }, [doctorAvailableSessions?.data, reset]);
 
   const submitAvailableSessions = () => {
     updateDoctorAvailableSessionMutation.mutate({
@@ -126,21 +177,155 @@ const Calendar = () => {
             </Text>
 
             <Box className="mt-4 border border-gray3  w-[564px]">
-              <div className="py">
-                {availableTimes?.map(({ day, id, status }) => {
+              {/* <div className="py">
+                {doctorAvailableSessions?.data?.map(
+                  ({
+                    dayOfTheWeek,
+                    publicId,
+                    localTimes,
+                  }: AvailableSessions) => {
+                    return (
+                      <Box
+                        className="cursor-pointer"
+                        onClick={() => handleSwitchChange(publicId)}
+                        key={publicId}
+                      >
+                        <Flex
+                          key={publicId}
+                          align="center"
+                          justify="between"
+                          className="py-3 border-b border-gray3 px-4"
+                        >
+                          <Text as="p" weight="medium" size="2">
+                            {capitalize(dayOfTheWeek)}
+                          </Text>
+                          <Text
+                            as="p"
+                            weight="regular"
+                            size="2"
+                            className="text-left"
+                          >
+                            {`${localTimes.length} availability periods`}
+                          </Text>
+                          <Switch
+                            variant="soft"
+                            size="2"
+                            // checked={isSwitchEnabled && selectedID === id}
+                            // onCheckedChange={() => handleSwitchChange(id)}
+                          />
+                        </Flex>
+
+                        {selectedID === publicId && (
+                          <>
+                            <div className="px-4">
+                              {fields?.map((item, index: number) => {
+                                const endTimeOptions = getEndTimeOptions(
+                                  index,
+                                  startTimes
+                                );
+                                return (
+                                  <Flex
+                                    align="center"
+                                    justify="between"
+                                    className="my-4"
+                                    key={item?.id}
+                                  >
+                                    <Flex
+                                      key={publicId}
+                                      align="center"
+                                      className=" w-full"
+                                    >
+                                      <div className="w-1/3">
+                                        <CustomSelect
+                                          options={timeSlots}
+                                          placeholder="9:00am"
+                                          ifGrayBg={false}
+                                          name={`addPeriod.${index}.startTime`}
+                                          control={control}
+                                        />
+                                      </div>
+
+                                      <Text
+                                        as="p"
+                                        size="1"
+                                        weight="regular"
+                                        className="px-6"
+                                      >
+                                        To
+                                      </Text>
+
+                                      <div className="w-1/3">
+                                        <CustomSelect
+                                          options={endTimeOptions}
+                                          placeholder={
+                                            endTimeOptions[0]?.label ||
+                                            "10:00 AM"
+                                          }
+                                          name={`addPeriod.${index}.endTime`}
+                                          control={control}
+                                          disabled
+                                        />
+                                      </div>
+                                    </Flex>
+
+                                    <IconButton
+                                      style={{
+                                        border: "1px solid var(--border-gray)",
+                                      }}
+                                      className="bg-transparent text-neutral_11 cursor-pointer"
+                                      size="1"
+                                      onClick={() => remove(index)}
+                                    >
+                                      <TrashIcon />
+                                    </IconButton>
+                                  </Flex>
+                                );
+                              })}
+                            </div>
+
+                            <Button
+                              style={{
+                                border: "1px solid var(--border-gray)",
+                              }}
+                              onClick={() => {
+                                append({
+                                  startTime: "",
+                                  endTime: "",
+                                });
+                              }}
+                              size="1"
+                              className="text-sm font-medium bg-transparent text-neutral_11 my-2 mx-4 cursor-pointer"
+                            >
+                              <PlusIcon /> Add Period
+                            </Button>
+                          </>
+                        )}
+                      </Box>
+                    );
+                  }
+                )}
+              </div> */}
+
+              {/* {doctorAvailableSessions?.data?.map(
+                ({ dayOfTheWeek, publicId, localTimes }: AvailableSessions) => {
+                  const { fields, append, remove } = useFieldArray({
+                    control,
+                    name: `schedule.${publicId}.periods`,
+                  });
+
                   return (
                     <Box
+                      key={publicId}
                       className="cursor-pointer"
-                      onClick={() => handleSwitchChange(id)}
+                      onClick={() => handleSwitchChange(publicId)}
                     >
                       <Flex
-                        key={id}
                         align="center"
                         justify="between"
                         className="py-3 border-b border-gray3 px-4"
                       >
                         <Text as="p" weight="medium" size="2">
-                          {day}
+                          {capitalize(dayOfTheWeek)}
                         </Text>
                         <Text
                           as="p"
@@ -148,104 +333,101 @@ const Calendar = () => {
                           size="2"
                           className="text-left"
                         >
-                          {status}
+                          {`${fields.length} availability periods`}
                         </Text>
-                        <Switch
-                          variant="soft"
-                          size="2"
-                          // checked={isSwitchEnabled && selectedID === id}
-                          // onCheckedChange={() => handleSwitchChange(id)}
-                        />
+                        <Switch variant="soft" size="2" />
                       </Flex>
 
-                      {selectedID === id && (
-                        <>
-                          <div className="px-4">
-                            {fields?.map((item, index: number) => {
-                              const endTimeOptions = getEndTimeOptions(
-                                index,
-                                startTimes
-                              );
-                              return (
-                                <Flex
-                                  align="center"
-                                  justify="between"
-                                  className="my-4"
-                                  key={item?.id}
-                                >
-                                  <Flex
-                                    key={id}
-                                    align="center"
-                                    className=" w-full"
-                                  >
-                                    <div className="w-1/3">
-                                      <CustomSelect
-                                        options={timeSlots}
-                                        placeholder="9:00am"
-                                        ifGrayBg={false}
-                                        name={`addPeriod.${index}.startTime`}
-                                        control={control}
-                                      />
-                                    </div>
+                      {selectedID === publicId && (
+                        <div className="px-4">
+                          {fields.map((item, index) => {
+                            const endTimeOptions = getEndTimeOptions(
+                              index,
+                              watch(
+                                `schedule.${publicId}.periods.${index}.startTime`
+                              )
+                            );
 
-                                    <Text
-                                      as="p"
-                                      size="1"
-                                      weight="regular"
-                                      className="px-6"
-                                    >
-                                      To
-                                    </Text>
-
-                                    <div className="w-1/3">
-                                      <CustomSelect
-                                        options={endTimeOptions}
-                                        placeholder={
-                                          endTimeOptions[0]?.label || "10:00 AM"
-                                        }
-                                        name={`addPeriod.${index}.endTime`}
-                                        control={control}
-                                        disabled
-                                      />
-                                    </div>
-                                  </Flex>
-
-                                  <IconButton
-                                    style={{
-                                      border: "1px solid var(--border-gray)",
-                                    }}
-                                    className="bg-transparent text-neutral_11 cursor-pointer"
+                            return (
+                              <Flex
+                                key={item.id}
+                                align="center"
+                                justify="between"
+                                className="my-4"
+                              >
+                                <Flex align="center" className="w-full">
+                                  <div className="w-1/3">
+                                    <CustomSelect
+                                      options={timeSlots}
+                                      placeholder="9:00am"
+                                      ifGrayBg={false}
+                                      name={`schedule.${publicId}.periods.${index}.startTime`}
+                                      control={control}
+                                    />
+                                  </div>
+                                  <Text
+                                    as="p"
                                     size="1"
-                                    onClick={() => remove(index)}
+                                    weight="regular"
+                                    className="px-6"
                                   >
-                                    <TrashIcon />
-                                  </IconButton>
+                                    To
+                                  </Text>
+                                  <div className="w-1/3">
+                                    <CustomSelect
+                                      options={endTimeOptions}
+                                      placeholder={
+                                        endTimeOptions[0]?.label || "10:00 AM"
+                                      }
+                                      name={`schedule.${publicId}.periods.${index}.endTime`}
+                                      control={control}
+                                    />
+                                  </div>
                                 </Flex>
-                              );
-                            })}
-                          </div>
-
+                                <IconButton
+                                  style={{
+                                    border: "1px solid var(--border-gray)",
+                                  }}
+                                  className="bg-transparent text-neutral_11 cursor-pointer"
+                                  size="1"
+                                  onClick={() => remove(index)}
+                                >
+                                  <TrashIcon />
+                                </IconButton>
+                              </Flex>
+                            );
+                          })}
                           <Button
-                            style={{
-                              border: "1px solid var(--border-gray)",
-                            }}
-                            onClick={() => {
-                              append({
-                                startTime: "",
-                                endTime: "",
-                              });
-                            }}
+                            style={{ border: "1px solid var(--border-gray)" }}
+                            onClick={() =>
+                              append({ startTime: "", endTime: "" })
+                            }
                             size="1"
                             className="text-sm font-medium bg-transparent text-neutral_11 my-2 mx-4 cursor-pointer"
                           >
                             <PlusIcon /> Add Period
                           </Button>
-                        </>
+                        </div>
                       )}
                     </Box>
                   );
-                })}
-              </div>
+                }
+              )} */}
+
+              {doctorAvailableSessions?.data?.map(
+                ({ dayOfTheWeek, publicId, localTimes }) => (
+                  <DayScheduleItem
+                    key={publicId}
+                    dayOfTheWeek={dayOfTheWeek}
+                    publicId={publicId}
+                    defaultPeriods={localTimes}
+                    isExpanded={expandedDay === publicId}
+                    onToggle={handleToggleDay}
+                    control={control}
+                    watch={watch}
+                  />
+                )
+              )}
             </Box>
 
             <div className="flex items-center my-4">
