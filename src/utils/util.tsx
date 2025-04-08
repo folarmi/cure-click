@@ -300,22 +300,53 @@ export const formatTimeForBackend = (displayTime: string): string => {
     .padStart(2, "0")}:00`;
 };
 
-export const timeSlots = Array.from({ length: 24 }, (_, i) => {
-  const hour = i + 1;
-  const period = hour >= 12 ? "PM" : "AM";
-  const displayHour = hour > 12 ? hour - 12 : hour;
-  return {
-    label: `${displayHour}:00 ${period}`,
-    value: `${hour}:00`,
-  };
-});
+interface TimeSlotOption {
+  value: string; // "HH:MM" format
+  label: string; // "H:MM AM/PM" format
+}
 
-export const getEndTimeOptions = (startTime: string) => {
+export const generateTimeSlots = (): TimeSlotOption[] => {
+  const slots: TimeSlotOption[] = [];
+
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const period = hour >= 12 ? "PM" : "AM";
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const timeLabel = `${displayHour}:${
+        minute === 0 ? "00" : minute
+      } ${period}`;
+      const timeValue = `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`;
+
+      slots.push({ value: timeValue, label: timeLabel });
+    }
+  }
+
+  return slots;
+};
+
+export const timeSlots = generateTimeSlots();
+
+export const getEndTimeOptions = (startTime: string): TimeSlotOption[] => {
   if (!startTime) return [];
 
-  const [startHour] = startTime.split(":").map(Number);
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  const startTotalMinutes = startHour * 60 + startMinute;
+
   return timeSlots.filter((slot) => {
-    const [slotHour] = slot.value.split(":").map(Number);
-    return slotHour > startHour;
+    const [slotHour, slotMinute] = slot.value.split(":").map(Number);
+    const slotTotalMinutes = slotHour * 60 + slotMinute;
+    return slotTotalMinutes > startTotalMinutes;
   });
+};
+
+export const calculateEndTime = (startTime: string): string => {
+  if (!startTime) return "";
+
+  const [hour, minute] = startTime.split(":").map(Number);
+  const endHour = hour + 1;
+  return `${endHour.toString().padStart(2, "0")}:${minute
+    .toString()
+    .padStart(2, "0")}`;
 };

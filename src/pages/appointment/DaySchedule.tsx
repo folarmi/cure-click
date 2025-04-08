@@ -1,130 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { Box, Button, Flex, IconButton, Switch, Text } from "@radix-ui/themes";
-// import { useFieldArray } from "react-hook-form";
-// import { TimePeriod } from "../../utils/types";
-// import { capitalize, getEndTimeOptions, timeSlots } from "../../utils/util";
-// import CustomSelect from "../../components/ui/CustomSelect";
-// import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-// import { useEffect } from "react";
-
-// // DayScheduleItem.tsx
-// const DayScheduleItem = ({
-//   dayOfTheWeek,
-//   publicId,
-//   defaultPeriods,
-//   control,
-//   watch,
-//   isExpanded,
-//   onToggle,
-// }: {
-//   dayOfTheWeek: string;
-//   publicId: string;
-//   defaultPeriods: TimePeriod[];
-//   isExpanded: boolean;
-//   control: any;
-//   watch: any;
-//   onToggle: (id: string) => void;
-// }) => {
-//   const { fields, append, remove } = useFieldArray({
-//     control,
-//     name: `schedule.${publicId}.periods`,
-//   });
-
-//   useEffect(() => {
-//     if (fields.length === 0 && defaultPeriods.length > 0) {
-//       defaultPeriods.forEach((period) => {
-//         append(period);
-//       });
-//     }
-//   }, [defaultPeriods, append, fields.length]);
-
-//   return (
-//     <Box className="cursor-pointer" onClick={() => onToggle(publicId)}>
-//       <Flex
-//         align="center"
-//         justify="between"
-//         className="py-3 border-b border-gray3 px-4"
-//       >
-//         <Text as="p" weight="medium" size="2">
-//           {capitalize(dayOfTheWeek)}
-//         </Text>
-//         <Text as="p" weight="regular" size="2" className="text-left">
-//           {`${fields.length} availability periods`}
-//         </Text>
-//         <Switch variant="soft" size="2" />
-//       </Flex>
-
-//       {isExpanded && (
-//         <div className="px-4">
-//           {fields.map((item, index) => {
-//             const startTime = watch(
-//               `schedule.${publicId}.periods.${index}.startTime`
-//             );
-//             const endTimeOptions = getEndTimeOptions(index, startTime);
-
-//             return (
-//               <Flex
-//                 key={item.id}
-//                 align="center"
-//                 justify="between"
-//                 className="my-4"
-//               >
-//                 <Flex align="center" className="w-full">
-//                   <div className="w-1/3">
-//                     <CustomSelect
-//                       options={timeSlots}
-//                       placeholder="9:00am"
-//                       ifGrayBg={false}
-//                       name={`schedule.${publicId}.periods.${index}.startTime`}
-//                       control={control}
-//                     />
-//                   </div>
-//                   <Text as="p" size="1" weight="regular" className="px-6">
-//                     To
-//                   </Text>
-//                   <div className="w-1/3">
-//                     <CustomSelect
-//                       options={endTimeOptions}
-//                       placeholder={endTimeOptions[0]?.label || "10:00 AM"}
-//                       name={`schedule.${publicId}.periods.${index}.endTime`}
-//                       control={control}
-//                     />
-//                   </div>
-//                 </Flex>
-//                 <IconButton
-//                   style={{ border: "1px solid var(--border-gray)" }}
-//                   className="bg-transparent text-neutral_11 cursor-pointer"
-//                   size="1"
-//                   onClick={() => remove(index)}
-//                 >
-//                   <TrashIcon />
-//                 </IconButton>
-//               </Flex>
-//             );
-//           })}
-//           <Button
-//             style={{ border: "1px solid var(--border-gray)" }}
-//             onClick={() => append({ startTime: "", endTime: "" })}
-//             size="1"
-//             className="text-sm font-medium bg-transparent text-neutral_11 my-2 mx-4 cursor-pointer"
-//           >
-//             <PlusIcon /> Add Period
-//           </Button>
-//         </div>
-//       )}
-//     </Box>
-//   );
-// };
-
-// export { DayScheduleItem };
 import { Box, Button, Flex, IconButton, Switch, Text } from "@radix-ui/themes";
 import { useFieldArray } from "react-hook-form";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import CustomSelect from "../../components/ui/CustomSelect";
-import { timeSlots, getEndTimeOptions } from "../../utils/util";
+import {
+  timeSlots,
+  getEndTimeOptions,
+  calculateEndTime,
+} from "../../utils/util";
 import { DaySchedule } from "../../utils/types";
 import { useEffect } from "react";
+import { showErrorToast } from "../../utils/toastUtils";
 
 interface DayScheduleItemProps {
   day: DaySchedule;
@@ -148,49 +34,53 @@ const DayScheduleItem = ({
     name: `schedule.${day.publicId}.timeSlots`,
   });
 
-  const startTimes = watch(`schedule.${day.publicId}.timeSlots`);
+  const currentTimeSlots = watch(`schedule.${day.publicId}.timeSlots`);
+  // const currentAvailability = watch(`schedule.${day.publicId}.available`);
 
   const handleAddPeriod = () => {
-    append({ startTime: "", endTime: "" });
+    append({ startTime: "09:00", endTime: "10:00" }); // Default time period
   };
+
+  // const handleAvailabilityChange = (checked: boolean) => {
+  //   // Only allow toggling ON if there are periods or we're adding one
+  //   if (checked && fields.length === 0) {
+  //     handleAddPeriod();
+  //   }
+  //   // Always allow toggling OFF
+  // };
 
   const handleAvailabilityChange = (checked: boolean) => {
     if (checked && fields.length === 0) {
-      handleAddPeriod();
-    } else if (!checked) {
-      remove(); // Remove all periods when switched off
+      showErrorToast(
+        "Please add at least one time period before making this day available"
+      );
+      return;
     }
+    setValue(`schedule.${day.publicId}.available`, checked);
   };
 
+  // Optional: Show different text based on availability state
+  // const availabilityText = currentAvailability
+  //   ? `${fields.length} period(s)`
+  //   : fields.length > 0
+  //     ? `${fields.length} period(s) (inactive)`
+  //     : "No periods";
+
+  // Disable switch when no periods exist
+  const isSwitchDisabled = fields.length === 0;
+
   // Auto-update end time when start time changes
-
-  // useEffect(() => {
-  //   if (!startTimes) return;
-
-  //   startTimes.forEach((slot: any, index: number) => {
-  //     if (slot.startTime && !slot.endTime) {
-  //       const [startHour] = slot.startTime.split(":").map(Number);
-  //       const endHour = startHour + 1;
-  //       const endTime = `${endHour}:00`;
-  //       setValue(
-  //         `schedule.${day.publicId}.timeSlots.${index}.endTime`,
-  //         endTime
-  //       );
-  //     }
-  //   });
-  // }, [startTimes, setValue, day.publicId]);
-
   useEffect(() => {
-    if (!startTimes) return;
+    if (!currentTimeSlots) return;
 
-    startTimes.forEach((slot: any, index: number) => {
-      if (slot.startTime) {
-        const [startHour] = slot.startTime.split(":").map(Number);
-        const endHour = startHour + 1;
-        const endTime = `${endHour}:00`;
+    const subscription = watch((value: any, { name }: { name: string }) => {
+      if (name && name.includes("startTime")) {
+        const index = Number(name.split(".")[3]);
+        const startTime =
+          value.schedule[day.publicId].timeSlots[index]?.startTime;
 
-        // Only update if different from current value
-        if (slot.endTime !== endTime) {
+        if (startTime) {
+          const endTime = calculateEndTime(startTime);
           setValue(
             `schedule.${day.publicId}.timeSlots.${index}.endTime`,
             endTime
@@ -198,7 +88,9 @@ const DayScheduleItem = ({
         }
       }
     });
-  }, [startTimes, setValue, day.publicId]);
+
+    return () => subscription.unsubscribe();
+  }, [watch, setValue, day.publicId, currentTimeSlots]);
 
   return (
     <Box className="border-b border-gray-200">
@@ -215,9 +107,11 @@ const DayScheduleItem = ({
           {fields.length > 0 ? `${fields.length} period(s)` : "Not available"}
         </Text>
         <Switch
-          checked={fields.length > 0}
+          // checked={fields.length > 0}
+          checked={watch(`schedule.${day.publicId}.isAvailable`)}
           onCheckedChange={handleAvailabilityChange}
           onClick={(e) => e.stopPropagation()}
+          disabled={isSwitchDisabled && !fields.length}
         />
       </Flex>
 
@@ -247,7 +141,6 @@ const DayScheduleItem = ({
                     name={`schedule.${day.publicId}.timeSlots.${index}.endTime`}
                     control={control}
                   />
-
                   <IconButton
                     variant="ghost"
                     color="gray"
@@ -258,35 +151,6 @@ const DayScheduleItem = ({
                   </IconButton>
                 </Flex>
               );
-
-              // return (
-              //   <Flex key={field.id} align="center" gap="3" className="my-2">
-              //     <CustomSelect
-              //       options={timeSlots}
-              //       placeholder="Start time"
-              //       name={`schedule.${day.publicId}.timeSlots.${index}.startTime`}
-              //       control={control}
-              //     />
-              //     <Text as="span" size="2">
-              //       to
-              //     </Text>
-              //     <CustomSelect
-              //       options={endTimeOptions}
-              //       placeholder="End time"
-              //       name={`schedule.${day.publicId}.timeSlots.${index}.endTime`}
-              //       control={control}
-              //       disabled={!startTime}
-              //     />
-              // <IconButton
-              //   variant="ghost"
-              //   color="gray"
-              //   size="1"
-              //   onClick={() => remove(index)}
-              // >
-              //   <TrashIcon />
-              // </IconButton>
-              //   </Flex>
-              // );
             })
           ) : (
             <Text as="p" size="2" color="gray" className="py-2">
