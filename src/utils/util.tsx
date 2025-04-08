@@ -136,49 +136,52 @@ export const keysToRemove = [
   "modifiedBy",
 ];
 
-const generateTimeSlots = () => {
-  const slots: {
-    value: string;
-    label: string;
-    hour: number;
-    minute: number;
-  }[] = [];
+// const generateTimeSlots = () => {
+//   const slots: {
+//     value: string;
+//     label: string;
+//     hour: number;
+//     minute: number;
+//   }[] = [];
 
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      const period = hour >= 12 ? "PM" : "AM";
-      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-      const timeLabel = `${displayHour}:${
-        minute === 0 ? "00" : minute
-      } ${period}`;
-      const timeValue = `${hour}:${minute}`;
+//   for (let hour = 0; hour < 24; hour++) {
+//     for (let minute = 0; minute < 60; minute += 30) {
+//       const period = hour >= 12 ? "PM" : "AM";
+//       const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+//       const timeLabel = `${displayHour}:${
+//         minute === 0 ? "00" : minute
+//       } ${period}`;
+//       // const timeValue = `${hour}:${minute}`;
+//       const timeValue = `${hour.toString().padStart(2, "0")}:${minute
+//         .toString()
+//         .padStart(2, "0")}:00`;
 
-      slots.push({
-        value: timeValue,
-        label: timeLabel,
-        hour, // Store hour as number (0-23)
-        minute, // Store minute as number (0 or 30)
-      });
-    }
-  }
+//       slots.push({
+//         value: timeValue,
+//         label: timeLabel,
+//         hour, // Store hour as number (0-23)
+//         minute, // Store minute as number (0 or 30)
+//       });
+//     }
+//   }
 
-  return slots;
-};
+//   return slots;
+// };
 
-export const timeSlots = generateTimeSlots();
+// export const timeSlots = generateTimeSlots();
 
-export const getEndTimeOptions = (index: number, startTimes: any) => {
-  const startTime = startTimes?.[index]?.startTime;
-  if (!startTime) return timeSlots;
+// export const getEndTimeOptions = (index: number, startTimes: any) => {
+//   const startTime = startTimes?.[index]?.startTime;
+//   if (!startTime) return timeSlots;
 
-  const [startHour, startMinute] = startTime.split(":").map(Number);
-  const startTotalMinutes = startHour * 60 + startMinute;
+//   const [startHour, startMinute] = startTime.split(":").map(Number);
+//   const startTotalMinutes = startHour * 60 + startMinute;
 
-  return timeSlots.filter((slot) => {
-    const slotTotalMinutes = slot.hour * 60 + slot.minute;
-    return slotTotalMinutes >= startTotalMinutes + 60; // 1 hour later
-  });
-};
+//   return timeSlots.filter((slot) => {
+//     const slotTotalMinutes = slot.hour * 60 + slot.minute;
+//     return slotTotalMinutes >= startTotalMinutes + 60; // 1 hour later
+//   });
+// };
 
 /**
  * Converts a day number (1-7) to the corresponding weekday in all caps
@@ -227,11 +230,6 @@ export function convertToBackendTimeFormat(timeString: string) {
   return result;
 }
 
-// Usage
-// const backendTime = convertToBackendTimeFormat('0.30');
-// console.log(backendTime);
-// Output: { hour: 0, minute: 30, second: 1073741824, nano: 1073741824 }
-
 export function convertToLocalTimeFormat(timeString: string): string {
   // Handle empty/undefined input
   if (!timeString) return "00:00:00";
@@ -268,4 +266,56 @@ export const getCurrencySymbol = (currency: string): string => {
 
 export const isAvailable = (status: string): boolean => {
   return status === "AVAILABLE";
+};
+
+// Convert backend time to frontend display format
+export const formatTimeForDisplay = (backendTime: string): string => {
+  if (!backendTime) return "";
+
+  const [hoursStr, minutesStr] = backendTime.split(":");
+  const hours = parseInt(hoursStr, 10);
+  const minutes = parseInt(minutesStr, 10);
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+
+  return `${displayHours}:${minutes.toString().padStart(2, "0")} ${period}`;
+};
+
+// Convert display format to backend time
+export const formatTimeForBackend = (displayTime: string): string => {
+  if (!displayTime) return "00:00:00";
+
+  const [timePart, period] = displayTime.split(" ");
+  const [hoursStr, minutesStr] = timePart.split(":");
+
+  let hours = parseInt(hoursStr, 10);
+  const minutes = parseInt(minutesStr, 10);
+
+  if (period === "PM" && hours < 12) hours += 12;
+  if (period === "AM" && hours === 12) hours = 0;
+
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:00`;
+};
+
+export const timeSlots = Array.from({ length: 24 }, (_, i) => {
+  const hour = i + 1;
+  const period = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour > 12 ? hour - 12 : hour;
+  return {
+    label: `${displayHour}:00 ${period}`,
+    value: `${hour}:00`,
+  };
+});
+
+export const getEndTimeOptions = (startTime: string) => {
+  if (!startTime) return [];
+
+  const [startHour] = startTime.split(":").map(Number);
+  return timeSlots.filter((slot) => {
+    const [slotHour] = slot.value.split(":").map(Number);
+    return slotHour > startHour;
+  });
 };

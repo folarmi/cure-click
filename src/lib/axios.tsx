@@ -4,7 +4,6 @@ import axios, { AxiosInstance } from "axios";
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });
-console.log(import.meta.env);
 
 api.interceptors.request.use(
   async (config) => {
