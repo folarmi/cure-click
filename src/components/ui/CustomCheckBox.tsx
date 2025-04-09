@@ -28,3 +28,15 @@ const CustomCheckBox: React.FC<RHFCheckboxProps> = ({ name, control }) => {
 };
 
 export { CustomCheckBox };
+
+// const submitAvailableSessions = () => {
+//     updateDoctorAvailableSessionMutation.mutate({
+//       doctorPublicId: doctorProfile?.data?.publicId,
+//       dayOfTheWeek: numberToWeekday(selectedID),
+//   localTimes: getValues("addPeriod").map(
+//     (slot: { startTime: string; endTime: string }) =>
+//       convertToLocalTimeFormat(slot.startTime)
+//   ),
+//       available: isSwitchEnabled,
+//     });
+//   };

@@ -329,7 +329,7 @@ import {
   useGetDoctorProfile,
 } from "../../lib/apiCalls";
 import { Loader } from "../../components/ui/Loader";
-import { convertToLocalTimeFormat } from "../../utils/util";
+import { convertToLocalTimeFormat, mapIdsToWeekdays } from "../../utils/util";
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 
 const Calendar = () => {
@@ -367,28 +367,30 @@ const Calendar = () => {
     });
 
   const submitAvailableSessions = (data: any) => {
+    console.log(getValues());
     const scheduleData = getValues("schedule");
     if (!doctorProfile?.data?.publicId) return;
 
     // Prepare data for each day
-    Object.entries(scheduleData).forEach(([publicId, dayData]) => {
-      updateDoctorAvailableSessionMutation.mutate({
-        doctorPublicId: doctorProfile.data.publicId,
-        dayOfTheWeek: expandedDay,
-        localTimes: dayData?.periods?.map((period) =>
-          convertToLocalTimeFormat(period.startTime)
-        ),
-        available: true,
-        recurring: data.recurring,
-        timeZone: {
-          id: "string",
-          displayName: "string",
-          dstsavings: 1073741824,
-          rawOffset: 1073741824,
-        },
-      });
+    // mapIdsToWeekdays
+    updateDoctorAvailableSessionMutation.mutate({
+      doctorPublicId: doctorProfile.data.publicId,
+      dayOfTheWeek: numberToWeekday(selectedID),,
+      localTimes: scheduleData?.localTimes?.map(
+        (slot: { startTime: string; endTime: string }) =>
+          convertToLocalTimeFormat(slot.startTime)
+      ),
+      available: true,
+      recurring: data.recurring,
+      timeZone: {
+        id: "string",
+        displayName: "string",
+        dstsavings: 1073741824,
+        rawOffset: 1073741824,
+      },
     });
   };
+
   return (
     <>
       {doctorAvailableSessionsIsLoading || doctorProfileIsLoading ? (
@@ -402,7 +404,7 @@ const Calendar = () => {
           <Box className="border rounded-lg overflow-hidden">
             {doctorAvailableSessions?.data.map((day: DaySchedule) => (
               <DayScheduleItem
-                key={day.publicId}
+                key={day.dayOfTheWeek}
                 day={day}
                 control={control}
                 watch={watch}
