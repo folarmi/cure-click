@@ -14,12 +14,6 @@ export interface TimePeriod {
   id?: string; // For field array
 }
 
-// export interface DaySchedule {
-//   dayOfTheWeek: string;
-//   publicId: string;
-//   localTimes: TimePeriod[];
-// }
-
 export interface FormValues {
   schedule: {
     [dayId: string]: {
@@ -35,10 +29,14 @@ export interface TimePeriod {
 }
 
 export interface DaySchedule {
-  dayOfTheWeek: string;
   publicId: string;
+  doctorPublicId?: string;
+  dayOfTheWeek: string; // "MONDAY", "TUESDAY", etc.
+  availableTimes: number;
+  localTimes: TimePeriod[];
   available: boolean;
-  periods: TimePeriod[];
+  recurring?: boolean;
+  timeZone?: string | null;
 }
 
 export interface CalendarFormValues {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // /* eslint-disable react-hooks/exhaustive-deps */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // import {
@@ -35,28 +36,28 @@
 //   const [expandedDay, setExpandedDay] = useState<string | null>(null);
 //   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
 //     useState(true);
-//   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
-//     useGetDoctorProfile();
+// const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
+//   useGetDoctorProfile();
 
-//   const {
-//     data: doctorAvailableSessions,
-//     isLoading: doctorAvailableSessionsIsLoading,
-//   } = useGetData({
-//     url: `appointment/api/doctors/${doctorProfile?.data?.publicId}/available-sessions`,
-//     queryKey: ["GetDoctorAvailableSessions"],
-//   });
+// const {
+//   data: doctorAvailableSessions,
+//   isLoading: doctorAvailableSessionsIsLoading,
+// } = useGetData({
+//   url: `appointment/api/doctors/${doctorProfile?.data?.publicId}/available-sessions`,
+//   queryKey: ["GetDoctorAvailableSessions"],
+// });
 
 //   const { control, setValue, watch, getValues, reset } = useForm<FormValues>();
 
-//   const updateDoctorAvailableSessionMutation = useCustomMutation({
-//     endpoint: `appointment/api/doctors/available-sessions`,
-//     successMessage: () => "Available Sessions Updated sucessfully",
-//     errorMessage: (error: any) => error?.response?.data?.remark,
-//     method: "put",
-//     onSuccessCallback: () => {
-//       // toggleModal();
-//     },
-//   });
+// const updateDoctorAvailableSessionMutation = useCustomMutation({
+//   endpoint: `appointment/api/doctors/available-sessions`,
+//   successMessage: () => "Available Sessions Updated sucessfully",
+//   errorMessage: (error: any) => error?.response?.data?.remark,
+//   method: "put",
+//   onSuccessCallback: () => {
+//     // toggleModal();
+//   },
+// });
 
 //   const handleToggleDay = (publicId: string) => {
 //     setExpandedDay((prev) => (prev === publicId ? null : publicId));
@@ -113,22 +114,22 @@
 //     }
 //   }, [doctorAvailableSessions?.data, reset]);
 
-//   const submitAvailableSessions = () => {
-//     const scheduleData = getValues("schedule");
-//     if (!doctorProfile?.data?.publicId) return;
+// const submitAvailableSessions = () => {
+//   const scheduleData = getValues("schedule");
+//   if (!doctorProfile?.data?.publicId) return;
 
-//     // Prepare data for each day
-//     Object.entries(scheduleData).forEach(([publicId, dayData]) => {
-//       updateDoctorAvailableSessionMutation.mutate({
-//         doctorPublicId: doctorProfile.data.publicId,
-//         dayOfTheWeek: publicId, // or convert to proper format if needed
-//         localTimes: dayData.periods.map((period) =>
-//           convertToLocalTimeFormat(period.startTime)
-//         ),
-//         available: true, // You might want to track this per day
-//       });
+//   // Prepare data for each day
+//   Object.entries(scheduleData).forEach(([publicId, dayData]) => {
+//     updateDoctorAvailableSessionMutation.mutate({
+//       doctorPublicId: doctorProfile.data.publicId,
+//       dayOfTheWeek: publicId, // or convert to proper format if needed
+//       localTimes: dayData.periods.map((period) =>
+//         convertToLocalTimeFormat(period.startTime)
+//       ),
+//       available: true, // You might want to track this per day
 //     });
-//   };
+//   });
+// };
 
 //   return (
 //     <>
@@ -165,12 +166,12 @@
 //               )}
 //             </Box>
 
-//             <div className="flex items-center my-4">
-//               <Checkbox className="data-[state=checked]:bg-red-500" />
-//               <Text size="2" className="text-text pl-2" weight="regular" as="p">
-//                 Make Recurring
-//               </Text>
-//             </div>
+// <div className="flex items-center my-4">
+//   <Checkbox className="data-[state=checked]:bg-red-500" />
+//   <Text size="2" className="text-text pl-2" weight="regular" as="p">
+//     Make Recurring
+//   </Text>
+// </div>
 //             <Button
 //               className="bg-grass9 text-base font-medium mb-4"
 //               loading={updateDoctorAvailableSessionMutation.isPending}
@@ -317,60 +318,116 @@
 // };
 
 // export { Calendar };
-import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Checkbox, Flex, Text } from "@radix-ui/themes";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { DayScheduleItem } from "./DaySchedule";
 import { CalendarFormValues, DaySchedule } from "../../utils/types";
-
-const defaultDays: DaySchedule[] = [
-  { dayOfTheWeek: "Monday", publicId: "mon", available: false, periods: [] },
-  { dayOfTheWeek: "Tuesday", publicId: "tue", available: false, periods: [] },
-  { dayOfTheWeek: "Wednesday", publicId: "wed", available: false, periods: [] },
-  { dayOfTheWeek: "Thursday", publicId: "thu", available: false, periods: [] },
-  { dayOfTheWeek: "Friday", publicId: "fri", available: false, periods: [] },
-  { dayOfTheWeek: "Saturday", publicId: "sat", available: false, periods: [] },
-  { dayOfTheWeek: "Sunday", publicId: "sun", available: false, periods: [] },
-];
+import {
+  useCustomMutation,
+  useGetData,
+  useGetDoctorProfile,
+} from "../../lib/apiCalls";
+import { Loader } from "../../components/ui/Loader";
+import { convertToLocalTimeFormat } from "../../utils/util";
+import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 
 const Calendar = () => {
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
-  const { control, handleSubmit, watch, setValue } =
+
+  const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
+    useGetDoctorProfile();
+
+  const {
+    data: doctorAvailableSessions,
+    isLoading: doctorAvailableSessionsIsLoading,
+  } = useGetData({
+    url: `appointment/api/doctors/${doctorProfile?.data?.publicId}/available-sessions`,
+    queryKey: ["GetDoctorAvailableSessions"],
+  });
+
+  const updateDoctorAvailableSessionMutation = useCustomMutation({
+    endpoint: `appointment/api/doctors/available-sessions`,
+    successMessage: () => "Available Sessions Updated sucessfully",
+    errorMessage: (error: any) => error?.response?.data?.remark,
+    method: "put",
+    onSuccessCallback: () => {
+      // toggleModal();
+    },
+  });
+
+  const { control, handleSubmit, watch, setValue, getValues } =
     useForm<CalendarFormValues>({
       defaultValues: {
-        schedule: Object.fromEntries(
-          defaultDays.map((day) => [day.publicId, day])
-        ),
+        schedule: doctorAvailableSessions?.data?.map((day: DaySchedule) => [
+          day.publicId,
+          day,
+        ]),
       },
     });
 
-  const onSubmit = (data: CalendarFormValues) => {
-    console.log("Submitted data:", data);
-    // Add your submission logic here
+  const submitAvailableSessions = (data: any) => {
+    const scheduleData = getValues("schedule");
+    if (!doctorProfile?.data?.publicId) return;
+
+    // Prepare data for each day
+    Object.entries(scheduleData).forEach(([publicId, dayData]) => {
+      updateDoctorAvailableSessionMutation.mutate({
+        doctorPublicId: doctorProfile.data.publicId,
+        dayOfTheWeek: expandedDay,
+        localTimes: dayData?.periods?.map((period) =>
+          convertToLocalTimeFormat(period.startTime)
+        ),
+        available: true,
+        recurring: data.recurring,
+        timeZone: {
+          id: "string",
+          displayName: "string",
+          dstsavings: 1073741824,
+          rawOffset: 1073741824,
+        },
+      });
+    });
   };
-
   return (
-    <Flex direction="column" gap="4" className="p-4">
-      <Text size="5" weight="bold">
-        Weekly Availability
-      </Text>
+    <>
+      {doctorAvailableSessionsIsLoading || doctorProfileIsLoading ? (
+        <Loader />
+      ) : (
+        <Flex direction="column" gap="4" className="p-4">
+          <Text size="5" weight="bold">
+            Weekly Availability
+          </Text>
 
-      <Box className="border rounded-lg overflow-hidden">
-        {defaultDays.map((day) => (
-          <DayScheduleItem
-            key={day.publicId}
-            day={day}
-            control={control}
-            watch={watch}
-            isExpanded={expandedDay === day.publicId}
-            onToggle={(id) => setExpandedDay(id === expandedDay ? null : id)}
-            setValue={setValue}
-          />
-        ))}
-      </Box>
+          <Box className="border rounded-lg overflow-hidden">
+            {doctorAvailableSessions?.data.map((day: DaySchedule) => (
+              <DayScheduleItem
+                key={day.publicId}
+                day={day}
+                control={control}
+                watch={watch}
+                isExpanded={expandedDay === day.publicId}
+                onToggle={(id) =>
+                  setExpandedDay(id === expandedDay ? null : id)
+                }
+                setValue={setValue}
+                getValues={getValues}
+              />
+            ))}
+          </Box>
 
-      <Button onClick={handleSubmit(onSubmit)}>Save Schedule</Button>
-    </Flex>
+          <div className="flex items-center my-4">
+            <CustomCheckBox name="recurring" control={control} />
+            <Text size="2" className="text-text pl-2" weight="regular" as="p">
+              Make Recurring
+            </Text>
+          </div>
+          <Button onClick={handleSubmit(submitAvailableSessions)}>
+            Save Schedule
+          </Button>
+        </Flex>
+      )}
+    </>
   );
 };
 

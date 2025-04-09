@@ -305,6 +305,29 @@ interface TimeSlotOption {
   label: string; // "H:MM AM/PM" format
 }
 
+// export const generateTimeSlots = (): TimeSlotOption[] => {
+//   const slots: TimeSlotOption[] = [];
+
+//   for (let hour = 0; hour < 24; hour++) {
+//     for (let minute = 0; minute < 60; minute += 30) {
+//       const period = hour >= 12 ? "PM" : "AM";
+//       const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+//       const timeLabel = `${displayHour}:${
+//         minute === 0 ? "00" : minute
+//       } ${period}`;
+//       const timeValue = `${hour.toString().padStart(2, "0")}:${minute
+//         .toString()
+//         .padStart(2, "0")}`;
+
+//       slots.push({ value: timeValue, label: timeLabel });
+//     }
+//   }
+
+//   return slots;
+// };
+
+// export const timeSlots = generateTimeSlots();
+
 export const generateTimeSlots = (): TimeSlotOption[] => {
   const slots: TimeSlotOption[] = [];
 
@@ -317,7 +340,7 @@ export const generateTimeSlots = (): TimeSlotOption[] => {
       } ${period}`;
       const timeValue = `${hour.toString().padStart(2, "0")}:${minute
         .toString()
-        .padStart(2, "0")}`;
+        .padStart(2, "0")}:00`;
 
       slots.push({ value: timeValue, label: timeLabel });
     }
@@ -328,17 +351,22 @@ export const generateTimeSlots = (): TimeSlotOption[] => {
 
 export const timeSlots = generateTimeSlots();
 
-export const getEndTimeOptions = (startTime: string): TimeSlotOption[] => {
+export const getEndTimeOptions = (startTime: string) => {
   if (!startTime) return [];
 
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const startTotalMinutes = startHour * 60 + startMinute;
 
-  return timeSlots.filter((slot) => {
-    const [slotHour, slotMinute] = slot.value.split(":").map(Number);
-    const slotTotalMinutes = slotHour * 60 + slotMinute;
-    return slotTotalMinutes > startTotalMinutes;
-  });
+  return timeSlots
+    .filter((slot) => {
+      const [slotHour, slotMinute] = slot.value.split(":").map(Number);
+      const slotTotalMinutes = slotHour * 60 + slotMinute;
+      return slotTotalMinutes > startTotalMinutes;
+    })
+    .map((slot) => ({
+      ...slot,
+      value: `${slot.value}:00`, // Ensure full time format
+    }));
 };
 
 export const calculateEndTime = (startTime: string): string => {
