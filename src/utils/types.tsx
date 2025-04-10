@@ -24,19 +24,19 @@ export interface FormValues {
 
 export interface TimePeriod {
   id?: string;
-  startTime: string;
-  endTime: string;
+  startTime: string; // "HH:MM:SS"
+  endTime: string; // "HH:MM:SS"
 }
 
 export interface DaySchedule {
   publicId: string;
-  doctorPublicId?: string;
+  doctorPublicId: string;
   dayOfTheWeek: string; // "MONDAY", "TUESDAY", etc.
   availableTimes: number;
   localTimes: TimePeriod[];
   available: boolean;
-  recurring?: boolean;
-  timeZone?: string | null;
+  recurring: boolean;
+  timeZone: string | null;
 }
 
 export interface CalendarFormValues {
@@ -44,7 +44,8 @@ export interface CalendarFormValues {
     string,
     {
       available: boolean;
-      periods: TimePeriod[];
+      localTimes: TimePeriod[];
+      recurring: boolean;
     }
   >;
   blockedDates: {

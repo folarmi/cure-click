@@ -13,6 +13,7 @@ import { Loader } from "../../components/ui/Loader";
 import {
   convertToLocalTimeFormat,
   getFullDayNameFromPublicId,
+  getTimeZoneInfo,
 } from "../../utils/util";
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 import { sessionsData } from "../../utils/data";
@@ -50,6 +51,7 @@ const Calendar = () => {
               ...day,
               localTimes: day.localTimes || [],
               available: day.available || false,
+              recurring: day.recurring || false,
             };
             return acc;
           },
@@ -58,36 +60,24 @@ const Calendar = () => {
       },
     });
 
-  const submitAvailableSessions = (data: any) => {
+  const submitAvailableSessions = async () => {
     const scheduleData = getValues("schedule");
-    console.log(data.schedule);
-
     const payload = {
-      Object.entries(scheduleData).map(
-      ([publicId, schedule]: any) => ({
       doctorPublicId: doctorProfile.data.publicId,
       dayOfTheWeek: getFullDayNameFromPublicId(expandedDay),
-      localTimes: data.schedule.map(
-        (slot: { startTime: string; endTime: string }) =>
-          convertToLocalTimeFormat(slot.startTime)
-      ),
+      localTimes:
+        expandedDay &&
+        scheduleData[expandedDay]?.localTimes.map(
+          (slot: { startTime: string; endTime: string }) =>
+            convertToLocalTimeFormat(slot.startTime)
+        ),
       available: getValues(`schedule.${expandedDay}.available`),
-      // recurring: getValues(`schedule.${publicId}.recurring`),
-      timeZone: {
-        id: "string",
-        displayName: "string",
-        dstsavings: 1073741824,
-        rawOffset: 1073741824,
-      },
-      })
-      );
+      recurring: getValues(`schedule.${expandedDay}.recurring`),
+      timeZone: getTimeZoneInfo(),
     };
 
-    const formData = {
-      ...payload,
-      recurring: getValues("recurring"),
-    };
     console.log(payload);
+    // updateDoctorAvailableSessionMutation.mutateAsync(payload);
   };
   return (
     <>
@@ -111,17 +101,21 @@ const Calendar = () => {
                   setExpandedDay(id === expandedDay ? null : id)
                 }
                 setValue={setValue}
-                getValues={getValues}
               />
             ))}
           </Box>
 
-          <div className="flex items-center my-4">
-            <CustomCheckBox name="recurring" control={control} />
-            <Text size="2" className="text-text pl-2" weight="regular" as="p">
-              Make Recurring
-            </Text>
-          </div>
+          {expandedDay && (
+            <div className="flex items-center my-4">
+              <CustomCheckBox
+                name={`schedule.${expandedDay}.recurring`}
+                control={control}
+              />
+              <Text size="2" className="text-text pl-2" weight="regular" as="p">
+                Make Recurring
+              </Text>
+            </div>
+          )}
           <Button onClick={handleSubmit(submitAvailableSessions)}>
             Save Schedule
           </Button>

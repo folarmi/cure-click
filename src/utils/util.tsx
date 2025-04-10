@@ -300,33 +300,10 @@ export const formatTimeForBackend = (displayTime: string): string => {
     .padStart(2, "0")}:00`;
 };
 
-interface TimeSlotOption {
-  value: string; // "HH:MM" format
-  label: string; // "H:MM AM/PM" format
+export interface TimeSlotOption {
+  value: string; // "HH:MM:SS"
+  label: string; // "H:MM AM/PM"
 }
-
-// export const generateTimeSlots = (): TimeSlotOption[] => {
-//   const slots: TimeSlotOption[] = [];
-
-//   for (let hour = 0; hour < 24; hour++) {
-//     for (let minute = 0; minute < 60; minute += 30) {
-//       const period = hour >= 12 ? "PM" : "AM";
-//       const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-//       const timeLabel = `${displayHour}:${
-//         minute === 0 ? "00" : minute
-//       } ${period}`;
-//       const timeValue = `${hour.toString().padStart(2, "0")}:${minute
-//         .toString()
-//         .padStart(2, "0")}`;
-
-//       slots.push({ value: timeValue, label: timeLabel });
-//     }
-//   }
-
-//   return slots;
-// };
-
-// export const timeSlots = generateTimeSlots();
 
 export const generateTimeSlots = (): TimeSlotOption[] => {
   const slots: TimeSlotOption[] = [];
@@ -351,33 +328,43 @@ export const generateTimeSlots = (): TimeSlotOption[] => {
 
 export const timeSlots = generateTimeSlots();
 
-export const getEndTimeOptions = (startTime: string) => {
+export const calculateEndTime = (startTime: string): string => {
+  if (!startTime) return "10:00:00";
+
+  const [hours, minutes] = startTime.split(":").map(Number);
+  const endHour = hours + 1;
+  return `${endHour.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:00`;
+};
+
+export const getEndTimeOptions = (startTime: string): TimeSlotOption[] => {
   if (!startTime) return [];
 
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const startTotalMinutes = startHour * 60 + startMinute;
 
-  return timeSlots
-    .filter((slot) => {
-      const [slotHour, slotMinute] = slot.value.split(":").map(Number);
-      const slotTotalMinutes = slotHour * 60 + slotMinute;
-      return slotTotalMinutes > startTotalMinutes;
-    })
-    .map((slot) => ({
-      ...slot,
-      value: `${slot.value}:00`, // Ensure full time format
-    }));
+  return timeSlots.filter((slot) => {
+    const [slotHour, slotMinute] = slot.value.split(":").map(Number);
+    const slotTotalMinutes = slotHour * 60 + slotMinute;
+    return slotTotalMinutes > startTotalMinutes;
+  });
 };
 
-export const calculateEndTime = (startTime: string): string => {
-  if (!startTime) return "";
-
-  const [hour, minute] = startTime.split(":").map(Number);
-  const endHour = hour + 1;
-  return `${endHour.toString().padStart(2, "0")}:${minute
-    .toString()
-    .padStart(2, "0")}`;
+// Format day name for display ("MONDAY" -> "Monday")
+export const formatDayName = (day: string) => {
+  return day.charAt(0) + day.slice(1).toLowerCase();
 };
+
+// export const calculateEndTime = (startTime: string): string => {
+//   if (!startTime) return "";
+
+//   const [hour, minute] = startTime.split(":").map(Number);
+//   const endHour = hour + 1;
+//   return `${endHour.toString().padStart(2, "0")}:${minute
+//     .toString()
+//     .padStart(2, "0")}`;
+// };
 
 const fullDayNames = [
   "MONDAY",
@@ -403,3 +390,29 @@ export function getFullDayNameFromPublicId(publicId: string | null): string {
   const index = publicId && dayIdOrder.indexOf(publicId);
   return index !== -1 ? fullDayNames[index] : "Unknown Day";
 }
+
+export const getTimeZoneInfo = () => {
+  const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone; // Gets the timezone ID
+  const timeZoneDisplayName = new Intl.DateTimeFormat("en-US", {
+    timeZoneName: "long",
+  }).format(new Date()); // Display name
+  const rawOffsetMinutes = new Date().getTimezoneOffset(); // Gets the raw offset in minutes
+
+  // Get the timezone offset for a date in winter (January)
+  const winterOffset = new Date("2024-01-01").getTimezoneOffset();
+  // Get the timezone offset for a date in summer (July)
+  const summerOffset = new Date("2024-07-01").getTimezoneOffset();
+
+  // If the offsets are different, then DST is in effect
+  const dstSavings = winterOffset !== summerOffset ? 1 : 0;
+
+  // Convert raw offset from minutes to milliseconds
+  const rawOffsetMillis = rawOffsetMinutes * 60000;
+
+  return {
+    id: timeZoneId,
+    displayName: timeZoneDisplayName,
+    dstsavings: dstSavings * 1073741824, // Set DST savings to 1 if DST is active, otherwise 0
+    rawOffset: rawOffsetMillis,
+  };
+};

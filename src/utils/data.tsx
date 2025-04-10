@@ -985,10 +985,10 @@ export const sessionsData = [
 //   updateDoctorAvailableSessionMutation.mutate({
 //     doctorPublicId: doctorProfile?.data?.publicId,
 //     dayOfTheWeek: numberToWeekday(selectedID),
-//     localTimes: getValues("addPeriod").map(
-//       (slot: { startTime: string; endTime: string }) =>
-//         convertToLocalTimeFormat(slot.startTime)
-//     ),
+// localTimes: getValues("addPeriod").map(
+//   (slot: { startTime: string; endTime: string }) =>
+//     convertToLocalTimeFormat(slot.startTime)
+// ),
 //     available: isSwitchEnabled,
 //   });
 // };
