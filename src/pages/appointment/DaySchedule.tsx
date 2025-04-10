@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Flex, IconButton, Switch, Text } from "@radix-ui/themes";
 import { useFieldArray } from "react-hook-form";
@@ -30,7 +29,6 @@ const DayScheduleItem = ({
   isExpanded,
   onToggle,
   setValue,
-  getValues,
 }: DayScheduleItemProps) => {
   const { fields, append, remove } = useFieldArray({
     control,

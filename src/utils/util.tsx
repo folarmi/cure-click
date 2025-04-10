@@ -378,3 +378,28 @@ export const calculateEndTime = (startTime: string): string => {
     .toString()
     .padStart(2, "0")}`;
 };
+
+const fullDayNames = [
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
+];
+
+const dayIdOrder = [
+  "13173833Y2HN6988", // Monday
+  "13173870A8S96988", // Tuesday
+  "1317380PL3106988", // Wednesday
+  "131738GH0V0O6988", // Thursday
+  "131738I6720G6988", // Friday
+  "131738QX6C5Y6988", // Saturday
+  "131738V7F1WZ6988", // Sunday
+];
+
+export function getFullDayNameFromPublicId(publicId: string): string {
+  const index = dayIdOrder.indexOf(publicId);
+  return index !== -1 ? fullDayNames[index] : "Unknown Day";
+}
