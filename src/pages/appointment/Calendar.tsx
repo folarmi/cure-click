@@ -71,7 +71,7 @@ const Calendar = () => {
           (slot: { startTime: string; endTime: string }) =>
             convertToLocalTimeFormat(slot.startTime)
         ),
-      available: getValues(`schedule.${expandedDay}.available`),
+      available: getValues(`schedule.${expandedDay}.available`) || false,
       recurring: getValues(`schedule.${expandedDay}.recurring`),
       timeZone: getTimeZoneInfo(),
     };
