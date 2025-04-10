@@ -9,7 +9,7 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DayScheduleItem } from "./DaySchedule";
 import { CalendarFormValues, DaySchedule } from "../../utils/types";
 import {
@@ -21,18 +21,17 @@ import { Loader } from "../../components/ui/Loader";
 import {
   convertToLocalTimeFormat,
   getFullDayNameFromPublicId,
+  transformScheduleToFormDefaults,
   // getTimeZoneInfo,
 } from "../../utils/util";
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 import { availableTimes } from "../../utils/data";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Calendar = () => {
+  const queryClient = useQueryClient();
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
-  // const { fields, append, remove } = useFieldArray({
-  //   name: "addPeriod",
-  // });
-  // const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
     useState(true);
 
@@ -57,31 +56,35 @@ const Calendar = () => {
     errorMessage: (error: any) => error?.response?.data?.remark,
     method: "put",
     onSuccessCallback: () => {
-      // toggleModal();
+      queryClient.invalidateQueries({
+        queryKey: ["GetDoctorAvailableSessions"],
+      });
     },
   });
 
-  const { control, watch, setValue, getValues } = useForm<CalendarFormValues>({
-    defaultValues: {
-      schedule: doctorAvailableSessions?.data?.reduce(
-        (acc: any, day: DaySchedule) => {
-          acc[day.publicId] = {
-            ...day,
-            localTimes: day.localTimes || [],
-            available: day.available || false,
-            recurring: day.recurring || false,
-          };
-          return acc;
-        },
-        {}
+  const { control, watch, setValue, getValues, reset } =
+    useForm<CalendarFormValues>({
+      defaultValues: transformScheduleToFormDefaults(
+        doctorAvailableSessions?.data ?? []
       ),
-    },
-  });
+    });
+
+  useEffect(() => {
+    if (doctorAvailableSessions?.data) {
+      // Assuming doctorAvailableSessions.data is the raw data from the backend
+      const transformedData = transformScheduleToFormDefaults(
+        doctorAvailableSessions.data
+      );
+
+      // Reset the form values after transforming the data
+      reset(transformedData);
+    }
+  }, [doctorAvailableSessions?.data, reset]);
 
   const submitAvailableSessions = async () => {
     const scheduleData = getValues("schedule");
     const payload = {
-      doctorPublicId: doctorProfile.data.publicId,
+      doctorPublicId: doctorProfile?.data?.publicId,
       dayOfTheWeek: getFullDayNameFromPublicId(expandedDay),
       localTimes:
         expandedDay &&
@@ -98,7 +101,6 @@ const Calendar = () => {
     updateDoctorAvailableSessionMutation.mutateAsync(payload);
   };
 
-  console.log(doctorAvailableSessions?.data);
   return (
     <>
       {doctorAvailableSessionsIsLoading || doctorProfileIsLoading ? (

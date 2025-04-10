@@ -78,7 +78,9 @@ const DayScheduleItem = ({
           {formatDayName(day.dayOfTheWeek)}
         </Text>
         <Text as="p" weight="regular" size="2" color="gray">
-          {fields.length > 0 ? `${fields.length} period(s)` : "Not available"}
+          {fields.length > 0
+            ? `${fields.length} availability periods`
+            : "No availability periods"}
         </Text>
         <Switch
           checked={currentAvailability}

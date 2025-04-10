@@ -28,15 +28,28 @@ export interface TimePeriod {
   endTime: string; // "HH:MM:SS"
 }
 
+// Frontend
 export interface DaySchedule {
   publicId: string;
   doctorPublicId: string;
-  dayOfTheWeek: string; // "MONDAY", "TUESDAY", etc.
+  dayOfTheWeek: string;
   availableTimes: number;
-  localTimes: TimePeriod[];
+  localTimes: string[] | TimePeriod[];
   available: boolean;
   recurring: boolean;
   timeZone: string | null;
+}
+
+// Backend
+export interface ScheduleItem {
+  publicId: string;
+  doctorPublicId: string;
+  dayOfTheWeek: string;
+  availableTimes: number;
+  localTimes: string[];
+  available: boolean;
+  recurring: boolean;
+  timezone: string | null;
 }
 
 export interface CalendarFormValues {
@@ -48,8 +61,4 @@ export interface CalendarFormValues {
       recurring: boolean;
     }
   >;
-  blockedDates: {
-    startDate: string;
-    endDate: string;
-  }[];
 }

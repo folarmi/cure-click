@@ -2,6 +2,7 @@
 import { UserType } from "../lib/features/authSlice";
 import { jwtDecode } from "jwt-decode";
 import countryList from "react-select-country-list";
+import { CalendarFormValues, ScheduleItem } from "./types";
 
 interface Access {
   roles: string[];
@@ -366,7 +367,7 @@ export const formatDayName = (day: string) => {
 //     .padStart(2, "0")}`;
 // };
 
-const fullDayNames = [
+export const fullDayNames = [
   "MONDAY",
   "TUESDAY",
   "WEDNESDAY",
@@ -416,3 +417,43 @@ export const getTimeZoneInfo = () => {
     rawOffset: rawOffsetMillis,
   };
 };
+
+export function transformScheduleToFormDefaults(
+  schedule: ScheduleItem[]
+): CalendarFormValues {
+  const defaultValues: CalendarFormValues = {
+    schedule: {},
+  };
+
+  // schedule.forEach((day) => {
+  //   defaultValues.schedule[day.publicId] = {
+  //     available: day.available,
+  //     recurring: day.recurring,
+  //     // availableTimes: day.localTimes.length,
+  //     localTimes: day.localTimes.map((startTime) => ({
+  //       startTime,
+  //       endTime: "", // gets calculated on change
+  //     })),
+  //   };
+  // });
+
+  schedule
+    .sort(
+      (a, b) =>
+        fullDayNames.indexOf(a.dayOfTheWeek) -
+        fullDayNames.indexOf(b.dayOfTheWeek)
+    )
+    .forEach((day) => {
+      defaultValues.schedule[day.publicId] = {
+        available: day?.available,
+        recurring: day.recurring,
+        // availableTimes: day.localTimes.length,
+        localTimes: day.localTimes.map((time) => ({
+          startTime: time,
+          endTime: "",
+        })),
+      };
+    });
+
+  return defaultValues;
+}
