@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Flex, IconButton, Switch, Text } from "@radix-ui/themes";
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Select,
+  Switch,
+  Text,
+} from "@radix-ui/themes";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { DayScheduleItem } from "./DaySchedule";
@@ -18,7 +26,6 @@ import {
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 import { availableTimes, sessionsData } from "../../utils/data";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import * as Select from "@radix-ui/react-select";
 
 const Calendar = () => {
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
