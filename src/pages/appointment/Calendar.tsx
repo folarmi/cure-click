@@ -60,28 +60,27 @@ const Calendar = () => {
 
   const submitAvailableSessions = (data: any) => {
     const scheduleData = getValues("schedule");
-    console.log(data);
+    console.log(data.schedule);
 
     const payload = {
-      // Object.entries(scheduleData).map(
-      // ([publicId, schedule]: any) => ({
+      Object.entries(scheduleData).map(
+      ([publicId, schedule]: any) => ({
       doctorPublicId: doctorProfile.data.publicId,
-      publicId,
-      dayOfTheWeek: getFullDayNameFromPublicId(publicId),
-      localTimes: schedule.localTimes.map(
+      dayOfTheWeek: getFullDayNameFromPublicId(expandedDay),
+      localTimes: data.schedule.map(
         (slot: { startTime: string; endTime: string }) =>
           convertToLocalTimeFormat(slot.startTime)
       ),
-      available: getValues(`schedule.${publicId}.available`),
-      recurring: getValues(`schedule.${publicId}.recurring`),
+      available: getValues(`schedule.${expandedDay}.available`),
+      // recurring: getValues(`schedule.${publicId}.recurring`),
       timeZone: {
         id: "string",
         displayName: "string",
         dstsavings: 1073741824,
         rawOffset: 1073741824,
       },
-      // })
-      // );
+      })
+      );
     };
 
     const formData = {

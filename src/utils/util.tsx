@@ -399,7 +399,7 @@ const dayIdOrder = [
   "131738V7F1WZ6988", // Sunday
 ];
 
-export function getFullDayNameFromPublicId(publicId: string): string {
-  const index = dayIdOrder.indexOf(publicId);
+export function getFullDayNameFromPublicId(publicId: string | null): string {
+  const index = publicId && dayIdOrder.indexOf(publicId);
   return index !== -1 ? fullDayNames[index] : "Unknown Day";
 }
