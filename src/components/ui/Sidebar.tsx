@@ -49,7 +49,8 @@ const Sidebar = () => {
             // <NavLink end to={path} className={`flex items-center`} key={id}>
             //   <Icon
             //     className={`${
-            //       pathName.startsWith(path)
+            //       // pathName.startsWith(path)
+            //       pathName === path
             //         ? "text-[var(--color-primary)] fill-current"
             //         : "text-neutral_11"
             //     }`}
@@ -66,13 +67,11 @@ const Sidebar = () => {
             //     {name}
             //   </Text>
             // </NavLink>
-            <NavLink to={path} className={`flex items-center`} key={id}>
+
+            <NavLink to={path} className="flex items-center" key={id}>
               <Icon
                 className={
-                  // For dashboard-like parent routes that should highlight for all subroutes
-                  path === "/dashboard" && pathName.startsWith(path)
-                    ? "text-[var(--color-primary)] fill-current"
-                    : pathName === path // For exact matches on other routes
+                  pathName === path
                     ? "text-[var(--color-primary)] fill-current"
                     : "text-neutral_11"
                 }
@@ -81,9 +80,7 @@ const Sidebar = () => {
               <Text
                 size="3"
                 className={`pl-2 ${
-                  path === "/dashboard" && pathName.startsWith(path)
-                    ? "text-[var(--color-primary)] font-medium"
-                    : pathName === path
+                  pathName === path
                     ? "text-[var(--color-primary)] font-medium"
                     : "text-neutral_11 font-normal"
                 }`}

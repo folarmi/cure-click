@@ -141,7 +141,7 @@ const DayScheduleItem = ({
             </Text>
           )}
 
-          <Button
+          {/* <Button
             variant="soft"
             size="1"
             className="mt-2 w-full"
@@ -149,6 +149,18 @@ const DayScheduleItem = ({
               e.stopPropagation();
               handleAddPeriod();
             }}
+          >
+            <PlusIcon /> Add Period
+          </Button> */}
+
+          <Button
+            style={{ border: "1px solid var(--border-gray)" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddPeriod();
+            }}
+            size="1"
+            className="text-sm font-medium bg-transparent text-neutral_11 my-2 mx-4 cursor-pointer"
           >
             <PlusIcon /> Add Period
           </Button>
