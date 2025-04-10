@@ -21,10 +21,10 @@ import { Loader } from "../../components/ui/Loader";
 import {
   convertToLocalTimeFormat,
   getFullDayNameFromPublicId,
-  getTimeZoneInfo,
+  // getTimeZoneInfo,
 } from "../../utils/util";
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
-import { availableTimes, sessionsData } from "../../utils/data";
+import { availableTimes } from "../../utils/data";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 
 const Calendar = () => {
@@ -35,15 +35,6 @@ const Calendar = () => {
   // const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
     useState(true);
-
-  // const handleSwitchChange = (id: string) => {
-  //   setIsSwitchEnabled(!isSwitchEnabled);
-  //   setSelectedID(id);
-  // };
-
-  // const handleToggleDay = (publicId: string) => {
-  //   setExpandedDay((prev) => (prev === publicId ? null : publicId));
-  // };
 
   const handleBlockedOutSwitchChange = () => {
     setIsBlockedOutDaysSwitchEnabled((prevState) => !prevState);
@@ -70,23 +61,22 @@ const Calendar = () => {
     },
   });
 
-  const { control, handleSubmit, watch, setValue, getValues } =
-    useForm<CalendarFormValues>({
-      defaultValues: {
-        schedule: doctorAvailableSessions?.data?.reduce(
-          (acc: any, day: DaySchedule) => {
-            acc[day.publicId] = {
-              ...day,
-              localTimes: day.localTimes || [],
-              available: day.available || false,
-              recurring: day.recurring || false,
-            };
-            return acc;
-          },
-          {}
-        ),
-      },
-    });
+  const { control, watch, setValue, getValues } = useForm<CalendarFormValues>({
+    defaultValues: {
+      schedule: doctorAvailableSessions?.data?.reduce(
+        (acc: any, day: DaySchedule) => {
+          acc[day.publicId] = {
+            ...day,
+            localTimes: day.localTimes || [],
+            available: day.available || false,
+            recurring: day.recurring || false,
+          };
+          return acc;
+        },
+        {}
+      ),
+    },
+  });
 
   const submitAvailableSessions = async () => {
     const scheduleData = getValues("schedule");
@@ -101,12 +91,14 @@ const Calendar = () => {
         ),
       available: getValues(`schedule.${expandedDay}.available`) || false,
       recurring: getValues(`schedule.${expandedDay}.recurring`),
-      timeZone: getTimeZoneInfo(),
+      // timeZone: getTimeZoneInfo(),
+      timeZone: "Africa/Lagos",
     };
 
-    console.log(payload);
-    // updateDoctorAvailableSessionMutation.mutateAsync(payload);
+    updateDoctorAvailableSessionMutation.mutateAsync(payload);
   };
+
+  console.log(doctorAvailableSessions?.data);
   return (
     <>
       {doctorAvailableSessionsIsLoading || doctorProfileIsLoading ? (
@@ -125,8 +117,8 @@ const Calendar = () => {
               Setup your Schedule to assist patients know when to book sessions
             </Text>
 
-            <Box className="border rounded-lg overflow-hidden">
-              {sessionsData?.map((day: DaySchedule) => (
+            <Box className="border rounded-lg mt-4 w-[564px]">
+              {doctorAvailableSessions?.data?.map((day: DaySchedule) => (
                 <DayScheduleItem
                   key={day.dayOfTheWeek}
                   day={day}
@@ -159,7 +151,7 @@ const Calendar = () => {
             )}
 
             <Button
-              className="bg-grass9 text-base font-medium mb-4"
+              className="bg-grass9 text-base font-medium my-4"
               loading={updateDoctorAvailableSessionMutation.isPending}
               disabled={updateDoctorAvailableSessionMutation.isPending}
               onClick={submitAvailableSessions}
