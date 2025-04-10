@@ -329,7 +329,11 @@ import {
   useGetDoctorProfile,
 } from "../../lib/apiCalls";
 import { Loader } from "../../components/ui/Loader";
-import { convertToLocalTimeFormat, mapIdsToWeekdays } from "../../utils/util";
+import {
+  convertToLocalTimeFormat,
+  mapIdsToWeekdays,
+  numberToWeekday,
+} from "../../utils/util";
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 
 const Calendar = () => {
@@ -375,7 +379,7 @@ const Calendar = () => {
     // mapIdsToWeekdays
     updateDoctorAvailableSessionMutation.mutate({
       doctorPublicId: doctorProfile.data.publicId,
-      dayOfTheWeek: numberToWeekday(selectedID),,
+      dayOfTheWeek: numberToWeekday(selectedID),
       localTimes: scheduleData?.localTimes?.map(
         (slot: { startTime: string; endTime: string }) =>
           convertToLocalTimeFormat(slot.startTime)
