@@ -14,7 +14,7 @@ import { DayScheduleItem } from "./DaySchedule";
 import { CalendarFormValues, DaySchedule } from "../../utils/types";
 import {
   useCustomMutation,
-  useGetData,
+  useGetDoctorAvailableSessions,
   useGetDoctorProfile,
 } from "../../lib/apiCalls";
 import { Loader } from "../../components/ui/Loader";
@@ -45,10 +45,7 @@ const Calendar = () => {
   const {
     data: doctorAvailableSessions,
     isLoading: doctorAvailableSessionsIsLoading,
-  } = useGetData({
-    url: `appointment/api/doctors/${doctorProfile?.data?.publicId}/available-sessions`,
-    queryKey: ["GetDoctorAvailableSessions"],
-  });
+  } = useGetDoctorAvailableSessions(doctorProfile?.data?.publicId);
 
   const updateDoctorAvailableSessionMutation = useCustomMutation({
     endpoint: `appointment/api/doctors/available-sessions`,
@@ -65,7 +62,7 @@ const Calendar = () => {
   const { control, watch, setValue, getValues, reset } =
     useForm<CalendarFormValues>({
       defaultValues: transformScheduleToFormDefaults(
-        doctorAvailableSessions?.data ?? []
+        doctorAvailableSessions?.data?.sessions ?? []
       ),
     });
 
@@ -120,19 +117,21 @@ const Calendar = () => {
             </Text>
 
             <Box className="border rounded-lg mt-4 w-[564px]">
-              {doctorAvailableSessions?.data?.map((day: DaySchedule) => (
-                <DayScheduleItem
-                  key={day.dayOfTheWeek}
-                  day={day}
-                  control={control}
-                  watch={watch}
-                  isExpanded={expandedDay === day.publicId}
-                  onToggle={(id) =>
-                    setExpandedDay(id === expandedDay ? null : id)
-                  }
-                  setValue={setValue}
-                />
-              ))}
+              {doctorAvailableSessions?.data?.sessions?.map(
+                (day: DaySchedule) => (
+                  <DayScheduleItem
+                    key={day.dayOfTheWeek}
+                    day={day}
+                    control={control}
+                    watch={watch}
+                    isExpanded={expandedDay === day.publicId}
+                    onToggle={(id) =>
+                      setExpandedDay(id === expandedDay ? null : id)
+                    }
+                    setValue={setValue}
+                  />
+                )
+              )}
             </Box>
 
             {expandedDay && (

@@ -16,7 +16,11 @@ import { NumberOfReview } from "../components/ui/NumberOfReview";
 import { useState } from "react";
 import { UpdateDetails } from "../components/modals/UpdateDetails";
 import { Loader } from "../components/ui/Loader";
-import { capitalize, getFullName } from "../utils/util";
+import {
+  capitalize,
+  getFullName,
+  renderCommaSeparatedSpans,
+} from "../utils/util";
 import { useGetDoctorProfile } from "../lib/apiCalls";
 
 const DoctorAccountProfile = () => {
@@ -117,18 +121,10 @@ const DoctorAccountProfile = () => {
                             className="text-blueA11 ml-2"
                           >
                             <HiOutlineTranslate className="w-4 h-4 " />
-                            {doctorProfile?.data?.languages?.map(
-                              (
-                                lang: string,
-                                index: number,
-                                array: string[]
-                              ) => (
-                                <span key={lang}>
-                                  {lang}
-                                  {index < array.length - 1 ? ", " : ""}
-                                </span>
-                              )
-                            )}
+                            {doctorProfile?.data?.languages &&
+                              renderCommaSeparatedSpans(
+                                doctorProfile.data.languages
+                              )}
                           </Badge>
                           <Badge
                             variant="soft"

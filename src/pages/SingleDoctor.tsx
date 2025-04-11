@@ -22,15 +22,18 @@ import { NumberOfReview } from "../components/ui/NumberOfReview";
 import { useGetData } from "../lib/apiCalls";
 import { useParams } from "react-router";
 import { Loader } from "../components/ui/Loader";
-import { getFullName } from "../utils/util";
+import {
+  capitalize,
+  getFullName,
+  renderCommaSeparatedSpans,
+} from "../utils/util";
 
 const SingleDoctor = () => {
   const { id } = useParams();
   const [modal, setModal] = useState(false);
   const { data: singleDoctorData, isLoading: singleDoctorDataIsLoading } =
     useGetData({
-      // url: `appointment/api/doctors/${id}`,
-      url: `appointment/api/doctors/hijacimuw`,
+      url: `appointment/api/doctors/${id}`,
       queryKey: ["GetSingleDoctor"],
     });
 
@@ -52,6 +55,7 @@ const SingleDoctor = () => {
                 singleDoctorData?.data?.lastname
               )}`}
             />
+
             <Flex justify="end" className="md:absolute right-0 bottom-0">
               <img src={doctors} className="h-auto object-cover -mr-6" />
             </Flex>
@@ -73,7 +77,10 @@ const SingleDoctor = () => {
                   weight="medium"
                   className="text-indigo_12"
                 >
-                  Dr Franklin Chang
+                  {getFullName(
+                    singleDoctorData?.data?.firstname,
+                    singleDoctorData?.data?.lastname
+                  )}
                 </Text>
                 <img src={BadgeIcon} className="w-[34px] h-[34px]" />
               </Flex>
@@ -81,11 +88,15 @@ const SingleDoctor = () => {
               <Flex>
                 <Badge variant="soft" size="2" className="text-accent_alpha_11">
                   <IoBriefcaseOutline className="w-4 h-4 " />
-                  Geriatric
+                  {singleDoctorData?.data?.specialization || "N/A"}
                 </Badge>
                 <Badge variant="soft" size="2" className="text-blueA11 ml-2">
                   <HiOutlineTranslate className="w-4 h-4 " />
-                  English, French, Dutch, German
+                  {(singleDoctorData?.data?.languages &&
+                    renderCommaSeparatedSpans(
+                      singleDoctorData.data.languages
+                    )) ||
+                    "N/A"}
                 </Badge>
               </Flex>
 
@@ -96,7 +107,7 @@ const SingleDoctor = () => {
                   className="text-cyanA11 bg-cyanA3"
                 >
                   <HiOutlineTranslate className="w-4 h-4 " />
-                  Aberdeen Royal Infirmary Abe.., UK
+                  {singleDoctorData?.data?.hospitalWorkPlace || "N/A"}
                 </Badge>
               </Box>
 
@@ -106,13 +117,16 @@ const SingleDoctor = () => {
                 className="mt-3 border border-gray2 p-4"
               >
                 <Text size="2" className="text-gray11">
-                  7 years Experience
+                  {singleDoctorData?.data?.yearsOfExperience || "0"} years
+                  Experience
                 </Text>
                 <Text size="2" className="text-gray11">
-                  Male
+                  {capitalize(singleDoctorData?.data?.gender) || "N/A"}
                 </Text>
                 <Text size="2" className="text-gray11">
-                  He/Him
+                  {singleDoctorData?.data?.gender === "MALE"
+                    ? "He/Him"
+                    : "She/Her"}
                 </Text>
               </Flex>
 
@@ -121,16 +135,7 @@ const SingleDoctor = () => {
                 weight="regular"
                 className="text-gray9 text-justify"
               >
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was
-                popularised in the 1960s with the release of Letraset sheets
-                containing Lorem Ipsum passages, and more recently with desktop
-                publishing software like Aldus PageMaker including versions of
-                Lorem Ipsum.
+                {singleDoctorData?.data?.biography}
               </Text>
             </section>
 
@@ -197,6 +202,8 @@ const SingleDoctor = () => {
               <PaymentBox
                 toggleModal={toggleModal}
                 className="hidden md:block"
+                price={singleDoctorData?.data?.pricing}
+                currency={singleDoctorData?.data?.currency}
               />
 
               <Box className="bg-white p-4 border border-gray3 mt-4">
@@ -272,7 +279,12 @@ const SingleDoctor = () => {
                 time="10:59 am"
               />
 
-              <PaymentBox toggleModal={toggleModal} className=" md:hidden" />
+              <PaymentBox
+                price={singleDoctorData?.data?.pricing}
+                currency={singleDoctorData?.data?.currency}
+                toggleModal={toggleModal}
+                className=" md:hidden"
+              />
             </section>
           </div>
 

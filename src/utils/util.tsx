@@ -2,7 +2,7 @@
 import { UserType } from "../lib/features/authSlice";
 import { jwtDecode } from "jwt-decode";
 import countryList from "react-select-country-list";
-import { CalendarFormValues, ScheduleItem } from "./types";
+import { CalendarFormValues, DoctorScheduleResponse } from "./types";
 
 interface Access {
   roles: string[];
@@ -302,8 +302,8 @@ export const formatTimeForBackend = (displayTime: string): string => {
 };
 
 export interface TimeSlotOption {
-  value: string; // "HH:MM:SS"
-  label: string; // "H:MM AM/PM"
+  value: string;
+  label: string;
 }
 
 export const generateTimeSlots = (): TimeSlotOption[] => {
@@ -357,16 +357,6 @@ export const formatDayName = (day: string) => {
   return day.charAt(0) + day.slice(1).toLowerCase();
 };
 
-// export const calculateEndTime = (startTime: string): string => {
-//   if (!startTime) return "";
-
-//   const [hour, minute] = startTime.split(":").map(Number);
-//   const endHour = hour + 1;
-//   return `${endHour.toString().padStart(2, "0")}:${minute
-//     .toString()
-//     .padStart(2, "0")}`;
-// };
-
 export const fullDayNames = [
   "MONDAY",
   "TUESDAY",
@@ -419,41 +409,55 @@ export const getTimeZoneInfo = () => {
 };
 
 export function transformScheduleToFormDefaults(
-  schedule: ScheduleItem[]
+  schedule: DoctorScheduleResponse
 ): CalendarFormValues {
   const defaultValues: CalendarFormValues = {
     schedule: {},
   };
 
-  // schedule.forEach((day) => {
-  //   defaultValues.schedule[day.publicId] = {
-  //     available: day.available,
-  //     recurring: day.recurring,
-  //     // availableTimes: day.localTimes.length,
-  //     localTimes: day.localTimes.map((startTime) => ({
-  //       startTime,
-  //       endTime: "", // gets calculated on change
-  //     })),
-  //   };
-  // });
-
-  schedule
-    .sort(
+  schedule?.sessions
+    ?.sort(
       (a, b) =>
-        fullDayNames.indexOf(a.dayOfTheWeek) -
-        fullDayNames.indexOf(b.dayOfTheWeek)
+        fullDayNames?.indexOf(a?.dayOfTheWeek) -
+        fullDayNames?.indexOf(b?.dayOfTheWeek)
     )
     .forEach((day) => {
       defaultValues.schedule[day.publicId] = {
         available: day?.available,
-        recurring: day.recurring,
-        // availableTimes: day.localTimes.length,
-        localTimes: day.localTimes.map((time) => ({
+        recurring: day?.recurring,
+        localTimes: day?.localTimes.map((time) => ({
           startTime: time,
           endTime: "",
         })),
       };
     });
 
+  // const dayOrderMap = fullDayNames.reduce((acc, day, index) => {
+  //   acc[day] = index;
+  //   return acc;
+  // }, {} as Record<string, number>);
+
+  // schedule
+  //   ?.sort((a, b) => dayOrderMap[a.dayOfTheWeek] - dayOrderMap[b.dayOfTheWeek])
+  //   .forEach((day) => {
+  //     defaultValues.schedule[day.publicId] = {
+  //       available: day.available,
+  //       recurring: day.recurring,
+  //       localTimes: day.localTimes.map((time) => ({
+  //         startTime: time,
+  //         endTime: "",
+  //       })),
+  //     };
+  //   });
+
   return defaultValues;
+}
+
+export function renderCommaSeparatedSpans(items: string[]): JSX.Element[] {
+  return items.map((item, index) => (
+    <span key={item}>
+      {item}
+      {index < items.length - 1 ? ", " : ""}
+    </span>
+  ));
 }

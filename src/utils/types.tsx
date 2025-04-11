@@ -52,6 +52,10 @@ export interface ScheduleItem {
   timezone: string | null;
 }
 
+export interface DoctorScheduleResponse {
+  sessions: ScheduleItem[];
+}
+
 export interface CalendarFormValues {
   schedule: Record<
     string,

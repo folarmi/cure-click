@@ -192,3 +192,19 @@ export const useGetDoctorProfile = (enabled: boolean = true) => {
     enabled,
   });
 };
+
+export const useGetDoctorAvailableSessions = (doctorId: string | undefined) => {
+  return useQuery<any>({
+    queryKey: ["GetDoctorAvailableSessions"],
+    queryFn: async () => {
+      const response = await api.get(
+        `appointment/api/doctors/${doctorId}/available-sessions`
+      );
+      return response?.data;
+    },
+    retry: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+  });
+};
