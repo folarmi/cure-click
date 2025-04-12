@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Checkbox from "@radix-ui/react-checkbox";
+import { Text } from "@radix-ui/themes";
 import { useController, Control } from "react-hook-form";
 
 interface RHFCheckboxProps {
   name: string;
   control: Control<any>;
+  text: string;
 }
 
-const CustomCheckBox: React.FC<RHFCheckboxProps> = ({ name, control }) => {
+const CustomCheckBox: React.FC<RHFCheckboxProps> = ({
+  name,
+  control,
+  text,
+}) => {
   const {
     field: { value, onChange },
   } = useController({
@@ -17,26 +23,19 @@ const CustomCheckBox: React.FC<RHFCheckboxProps> = ({ name, control }) => {
   });
 
   return (
-    <Checkbox.Root
-      checked={!!value}
-      onCheckedChange={(val) => onChange(!!val)}
-      className="w-5 h-5 border rounded data-[state=checked]:bg-red-500"
-    >
-      <Checkbox.Indicator className="text-white">✓</Checkbox.Indicator>
-    </Checkbox.Root>
+    <label className="flex items-center cursor-pointer">
+      <Checkbox.Root
+        checked={!!value}
+        onCheckedChange={(val) => onChange(!!val)}
+        className="w-5 h-5 border rounded data-[state=checked]:bg-grass9"
+      >
+        <Checkbox.Indicator className="text-white">✓</Checkbox.Indicator>
+      </Checkbox.Root>
+      <Text size="2" className="text-text pl-2" weight="regular" as="p">
+        {text}
+      </Text>
+    </label>
   );
 };
 
 export { CustomCheckBox };
-
-// const submitAvailableSessions = () => {
-//     updateDoctorAvailableSessionMutation.mutate({
-//       doctorPublicId: doctorProfile?.data?.publicId,
-//       dayOfTheWeek: numberToWeekday(selectedID),
-//   localTimes: getValues("addPeriod").map(
-//     (slot: { startTime: string; endTime: string }) =>
-//       convertToLocalTimeFormat(slot.startTime)
-//   ),
-//       available: isSwitchEnabled,
-//     });
-//   };

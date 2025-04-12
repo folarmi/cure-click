@@ -4,8 +4,8 @@ import {
   addWeeks,
   isValid,
   parseISO,
-  setHours,
-  setMinutes,
+  // setHours,
+  // setMinutes,
 } from "date-fns";
 import { ScheduleItem } from "./types";
 
@@ -16,7 +16,6 @@ interface ScheduleData {
 }
 
 export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
-  // Safe date parsing with fallback
   let startDate = new Date();
   try {
     if (scheduleData?.date) {
@@ -29,7 +28,6 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
 
   const { sessions = [], recurring = false } = scheduleData;
 
-  // Day mapping
   const dayNameToIndex: Record<string, number> = {
     SUNDAY: 0,
     MONDAY: 1,
@@ -39,6 +37,7 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
     FRIDAY: 5,
     SATURDAY: 6,
   };
+
   const events: {
     id: string;
     title: string;
@@ -55,27 +54,42 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
       const weekStart = addWeeks(startDate, week);
 
       sessions.forEach((session) => {
-        if (session.available && session.localTimes.length > 0) {
-          const dayIndex = dayNameToIndex[session.dayOfTheWeek];
+        if (session.localTimes.length > 0) {
+          const dayIndex = dayNameToIndex[session?.dayOfTheWeek];
           const eventDate = addDays(weekStart, dayIndex);
 
-          session.localTimes.forEach((time) => {
-            const [hours, minutes] = time.split(":").map(Number);
-            const startDateTime = setMinutes(
-              setHours(eventDate, hours),
-              minutes
-            );
-            const endDateTime = new Date(
-              startDateTime.getTime() + 60 * 60 * 1000
-            ); // +1 hour
+          // Sort times to ensure earliest is first
+          const sortedTimes = [...session.localTimes].sort();
+          const firstTime = sortedTimes[0];
+          const lastTime = sortedTimes[sortedTimes.length - 1];
 
-            events.push({
-              id: `${session.publicId}-${week}-${time}`,
-              title: `${session.availableTimes} Available`,
-              start: startDateTime,
-              end: endDateTime,
-              resource: session,
-            });
+          const [startHours, startMinutes] = firstTime.split(":").map(Number);
+          const [endHours, endMinutes] = lastTime.split(":").map(Number);
+
+          const startDateTime = new Date(
+            eventDate.getFullYear(),
+            eventDate.getMonth(),
+            eventDate.getDate(),
+            startHours,
+            startMinutes
+          );
+
+          const endDateTime = new Date(
+            eventDate.getFullYear(),
+            eventDate.getMonth(),
+            eventDate.getDate(),
+            endHours,
+            endMinutes
+          );
+          // Add 1 hour to the end time
+          endDateTime?.setHours(endDateTime.getHours() + 1);
+
+          events.push({
+            id: `${session.publicId}-${week}`,
+            title: `${session?.availableTimes} Available (${session?.localTimes?.length} slots)`,
+            start: startDateTime,
+            end: endDateTime,
+            resource: session,
           });
         }
       });
@@ -85,33 +99,41 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
     sessions.forEach((session) => {
       if (session?.localTimes.length > 0) {
         const dayIndex = dayNameToIndex[session?.dayOfTheWeek];
-
-        // Calculate the next occurrence of this day from startDate
         const daysToAdd = (dayIndex - startDate.getDay() + 7) % 7;
-
         const eventDate = addDays(startDate, daysToAdd);
 
-        session?.localTimes.forEach((time) => {
-          const [hours, minutes] = time.split(":").map(Number);
-          //   This specifies that starttime is local
-          const startDateTime = new Date(
-            eventDate.getFullYear(),
-            eventDate.getMonth(),
-            eventDate.getDate(),
-            hours,
-            minutes
-          );
-          const endDateTime = new Date(
-            startDateTime.getTime() + 60 * 60 * 1000
-          ); // +1 hour
+        // Sort times to ensure earliest is first
+        const sortedTimes = [...session.localTimes].sort();
+        const firstTime = sortedTimes[0];
+        const lastTime = sortedTimes[sortedTimes.length - 1];
 
-          events.push({
-            id: `${session.publicId}-${time}`,
-            title: `${session.availableTimes} Available`,
-            start: startDateTime,
-            end: endDateTime,
-            resource: session,
-          });
+        const [startHours, startMinutes] = firstTime.split(":").map(Number);
+        const [endHours, endMinutes] = lastTime.split(":").map(Number);
+
+        const startDateTime = new Date(
+          eventDate.getFullYear(),
+          eventDate.getMonth(),
+          eventDate.getDate(),
+          startHours,
+          startMinutes
+        );
+
+        const endDateTime = new Date(
+          eventDate.getFullYear(),
+          eventDate.getMonth(),
+          eventDate.getDate(),
+          endHours,
+          endMinutes
+        );
+        // Add 1 hour to the end time
+        endDateTime?.setHours(endDateTime.getHours() + 1);
+
+        events.push({
+          id: `${session.publicId}`,
+          title: `${session?.availableTimes} Available (${session?.localTimes?.length} slots)`,
+          start: startDateTime,
+          end: endDateTime,
+          resource: session,
         });
       }
     });

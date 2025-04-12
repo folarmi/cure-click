@@ -424,7 +424,6 @@ export function transformScheduleToFormDefaults(
     .forEach((day) => {
       defaultValues.schedule[day.publicId] = {
         available: day?.available,
-        recurring: day?.recurring,
         localTimes: day?.localTimes.map((time) => ({
           startTime: time,
           endTime: "",

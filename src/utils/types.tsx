@@ -62,9 +62,9 @@ export interface CalendarFormValues {
     {
       available: boolean;
       localTimes: TimePeriod[];
-      recurring: boolean;
     }
   >;
+  recurring: boolean;
 }
 
 export interface DoctorCalendarProps {

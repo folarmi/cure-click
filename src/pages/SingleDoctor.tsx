@@ -31,6 +31,7 @@ import CustomSelect from "../components/ui/CustomSelect";
 import { monthsOfTheYear } from "../utils/data";
 import { useForm } from "react-hook-form";
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
+import { test } from "./test";
 
 const SingleDoctor = () => {
   const { id } = useParams();
@@ -59,7 +60,8 @@ const SingleDoctor = () => {
   };
 
   const scheduleData = {
-    ...doctorAvailableSessions?.data,
+    // ...doctorAvailableSessions?.data,
+    ...test,
     date: doctorAvailableSessions?.date,
   };
 
