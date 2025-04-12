@@ -19,7 +19,7 @@ import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import doctors from "../assets/doctors.svg";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
-import { useGetData } from "../lib/apiCalls";
+import { useGetData, useGetDoctorAvailableSessions } from "../lib/apiCalls";
 import { useParams } from "react-router";
 import { Loader } from "../components/ui/Loader";
 import {
@@ -27,19 +27,41 @@ import {
   getFullName,
   renderCommaSeparatedSpans,
 } from "../utils/util";
+import { MyCalendar } from "../components/ui/MyCalendar";
+import CustomSelect from "../components/ui/CustomSelect";
+import { monthsOfTheYear, myEventsList } from "../utils/data";
+import { useForm } from "react-hook-form";
 
 const SingleDoctor = () => {
   const { id } = useParams();
+  const { control } = useForm();
+
   const [modal, setModal] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
   const { data: singleDoctorData, isLoading: singleDoctorDataIsLoading } =
     useGetData({
       url: `appointment/api/doctors/${id}`,
       queryKey: ["GetSingleDoctor"],
     });
 
+  const {
+    data: doctorAvailableSessions,
+    // isLoading: doctorAvailableSessionsIsLoading,
+  } = useGetDoctorAvailableSessions(id);
+
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const handleMonthChange = (item: string) => {
+    const selectedMonth = parseInt(item); // Get selected month
+    const newDate = new Date(currentDate);
+    newDate.setMonth(selectedMonth - 1); // Set the selected month (subtract 1 since months are 0-indexed)
+    setCurrentDate(newDate); // Update the state with the new date
+  };
+
+  console.log(doctorAvailableSessions?.data?.sessions);
 
   return (
     <>
@@ -155,6 +177,30 @@ const SingleDoctor = () => {
                   />
                 </div>
               </Box>
+
+              <div className="mt-4 border border-gray_Alpha_3 rounded-lg overflow-hidden px-4 py-6">
+                <div className="flex items-center justify-between w-full mb-4">
+                  <Text
+                    as="p"
+                    size="3"
+                    weight="medium"
+                    className="text-gray12 w-1/2 whitespace-nowrap"
+                  >
+                    Availability (24 Available Sessions)
+                  </Text>
+                  <CustomSelect
+                    options={monthsOfTheYear}
+                    placeholder=""
+                    name="monthOfTheYear"
+                    control={control}
+                    className=" w-[160px] z-50"
+                    customOnChange={(item) => {
+                      handleMonthChange(item);
+                    }}
+                  />
+                </div>
+                <MyCalendar currentDate={currentDate} events={myEventsList} />
+              </div>
 
               <NumberOfReview />
 

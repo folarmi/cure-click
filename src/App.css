@@ -44,3 +44,41 @@
 .swiper-pagination-bullet-active {
   background-color: #106d44; /* Your green color */
 }
+
+/* Big calendar custom styling */
+
+.rbc-month-view {
+  border: none !important;
+  /* border-radius: 4px; */
+  background-color: #fff;
+  /* padding: 28px 16px; */
+}
+
+/* Remove column lines */
+.rbc-month-view .rbc-day-bg {
+  border: none !important;
+}
+
+/* Remove row lines */
+.rbc-month-row {
+  border: none !important;
+}
+
+/* Remove day cell borders */
+.rbc-date-cell,
+.rbc-day-bg,
+.rbc-row-content {
+  border: none !important;
+}
+
+.rbc-header {
+  border: none !important;
+  background: transparent !important;
+}
+
+.rbc-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
