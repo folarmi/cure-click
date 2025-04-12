@@ -1,0 +1,47 @@
+// const test = [
+//   {
+//     id: "13173833Y2HN6988-09:00:00",
+//     title: "1 Available",
+//     start: "2025-04-14T08:00:55.185Z",
+//     end: "2025-04-14T09:00:55.185Z",
+//     resource: {
+//       publicId: "13173833Y2HN6988",
+//       doctorPublicId: "131738A1205K6988",
+//       dayOfTheWeek: "MONDAY",
+//       availableTimes: 1,
+//       localTimes: ["09:00:00"],
+//       available: true,
+//       timezone: null,
+//     },
+//   },
+//   {
+//     id: "13173870A8S96988-06:30:00",
+//     title: "1 Available",
+//     start: "2025-04-15T05:30:55.185Z",
+//     end: "2025-04-15T06:30:55.185Z",
+//     resource: {
+//       publicId: "13173870A8S96988",
+//       doctorPublicId: "131738A1205K6988",
+//       dayOfTheWeek: "TUESDAY",
+//       availableTimes: 1,
+//       localTimes: ["06:30:00"],
+//       available: false,
+//       timezone: null,
+//     },
+//   },
+//   {
+//     id: "1317380PL3106988-07:00:00",
+//     title: "1 Available",
+//     start: "2025-04-16T06:00:55.185Z",
+//     end: "2025-04-16T07:00:55.185Z",
+//     resource: {
+//       publicId: "1317380PL3106988",
+//       doctorPublicId: "131738A1205K6988",
+//       dayOfTheWeek: "WEDNESDAY",
+//       availableTimes: 1,
+//       localTimes: ["07:00:00"],
+//       available: false,
+//       timezone: null,
+//     },
+//   },
+// ];

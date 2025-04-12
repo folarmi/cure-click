@@ -37,7 +37,7 @@ const MyCalendar = ({ currentDate, events }: CalendarProps) => {
 
   // Check if a day has any events
   const hasEventsOnDate = (date: Date) => {
-    return events.some((event) => {
+    return events?.some((event) => {
       const eventDate = new Date(event.start);
       return (
         eventDate.getFullYear() === date.getFullYear() &&
@@ -56,7 +56,7 @@ const MyCalendar = ({ currentDate, events }: CalendarProps) => {
     value: Date;
   }) => {
     const hasEvents = hasEventsOnDate(value);
-    const isCurrentMonth = value.getMonth() === currentDate.getMonth();
+    const isCurrentMonth = value?.getMonth() === currentDate?.getMonth();
 
     return (
       <div

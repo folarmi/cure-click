@@ -1,21 +1,30 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { Box, Button, Callout, Flex, Text } from "@radix-ui/themes";
-import { MyCalendar } from "./MyCalendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useGetDoctorProfile } from "../../lib/apiCalls";
+import {
+  useGetDoctorAvailableSessions,
+  useGetDoctorProfile,
+} from "../../lib/apiCalls";
 import { getCurrencySymbol } from "../../utils/util";
 import Modal from "./Modal";
 import { useState } from "react";
 import { PricingModal } from "../modals/PricingModal";
+import { DoctorCalendar } from "./DoctorCalendar";
 
 const DoctorShareProfile = () => {
   const [pricingModal, setPricingmodal] = useState(false);
   const { data: doctorProfile } = useGetDoctorProfile();
-
+  const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
+    doctorProfile?.data?.publicId
+  );
   const toggleModal = () => {
     setPricingmodal(!pricingModal);
   };
 
+  const scheduleData = {
+    ...doctorAvailableSessions?.data,
+    date: doctorAvailableSessions?.date,
+  };
   return (
     <div>
       <Box className="border border-gray3 rounded-xl px-4 py-3">
@@ -75,7 +84,7 @@ const DoctorShareProfile = () => {
       </Box>
 
       <Box className="border border-gray3 rounded-xl px-4 py-3 mt-4">
-        <MyCalendar />
+        <DoctorCalendar scheduleData={scheduleData} />
       </Box>
 
       <Modal show={pricingModal} toggleModal={toggleModal}>

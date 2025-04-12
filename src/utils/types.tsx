@@ -48,7 +48,7 @@ export interface ScheduleItem {
   availableTimes: number;
   localTimes: string[];
   available: boolean;
-  recurring: boolean;
+  recurring?: boolean;
   timezone: string | null;
 }
 
@@ -65,4 +65,20 @@ export interface CalendarFormValues {
       recurring: boolean;
     }
   >;
+}
+
+export interface DoctorCalendarProps {
+  scheduleData: {
+    sessions: Array<{
+      publicId: string;
+      doctorPublicId: string;
+      dayOfTheWeek: string;
+      availableTimes: number;
+      localTimes: string[];
+      available: boolean;
+      timezone: string | null;
+    }>;
+    recurring: boolean;
+    date: string;
+  };
 }

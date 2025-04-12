@@ -27,10 +27,10 @@ import {
   getFullName,
   renderCommaSeparatedSpans,
 } from "../utils/util";
-import { MyCalendar } from "../components/ui/MyCalendar";
 import CustomSelect from "../components/ui/CustomSelect";
-import { monthsOfTheYear, myEventsList } from "../utils/data";
+import { monthsOfTheYear } from "../utils/data";
 import { useForm } from "react-hook-form";
+import { DoctorCalendar } from "../components/ui/DoctorCalendar";
 
 const SingleDoctor = () => {
   const { id } = useParams();
@@ -45,10 +45,7 @@ const SingleDoctor = () => {
       queryKey: ["GetSingleDoctor"],
     });
 
-  const {
-    data: doctorAvailableSessions,
-    // isLoading: doctorAvailableSessionsIsLoading,
-  } = useGetDoctorAvailableSessions(id);
+  const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(id);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -61,7 +58,10 @@ const SingleDoctor = () => {
     setCurrentDate(newDate); // Update the state with the new date
   };
 
-  console.log(doctorAvailableSessions?.data?.sessions);
+  const scheduleData = {
+    ...doctorAvailableSessions?.data,
+    date: doctorAvailableSessions?.date,
+  };
 
   return (
     <>
@@ -199,7 +199,10 @@ const SingleDoctor = () => {
                     }}
                   />
                 </div>
-                <MyCalendar currentDate={currentDate} events={myEventsList} />
+                <DoctorCalendar
+                  scheduleData={scheduleData}
+                  currentDate={currentDate}
+                />
               </div>
 
               <NumberOfReview />
