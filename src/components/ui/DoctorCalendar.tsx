@@ -1,9 +1,10 @@
 // // /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Calendar } from "react-big-calendar";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { localizer, transformToCalendarEvents } from "../../utils/calendarutil";
 import "../../css/calendar-styles.css";
+import { useState } from "react";
 
 interface DoctorCalendarProps {
   currentDate?: Date;
@@ -23,6 +24,7 @@ interface DoctorCalendarProps {
 }
 
 const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const events = transformToCalendarEvents(scheduleData);
   // Check if a day has any events
   const hasEventsOnDate = (date: Date) => {
@@ -42,28 +44,73 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
     });
   };
 
-  // Custom day cell wrapper
-  const CustomDayCell = ({
-    children,
-    value,
+  // const CustomDateHeader = ({
+  //   label,
+  //   date,
+  //   value,
+  // }: {
+  //   label: string;
+  //   date: Date;
+  //   value: Date;
+  // }) => {
+  //   const hasEvents = hasEventsOnDate(date);
+  //   const isCurrentMonth =
+  //     date.getMonth() === new Date(scheduleData?.date).getMonth();
+
+  //   const handleClick = () => {
+  //     if (isCurrentMonth) {
+  //       setSelectedDate(value); // ✅ capture selected date
+  //     }
+  //   };
+
+  //   return (
+  //     <div className="rbc-date-cell" onClick={handleClick}>
+  //       <button
+  //         type="button"
+  //         className={`rbc-button-link ${
+  //           hasEvents ? "date-has-events" : "date-no-events"
+  //         } ${!isCurrentMonth ? "date-other-month" : ""}`}
+  //       >
+  //         {label}
+  //       </button>
+  //     </div>
+  //   );
+  // };
+
+  const CustomDateHeader = ({
+    label,
+    date,
   }: {
-    children: React.ReactNode;
+    label: string;
+    date: Date;
     value: Date;
   }) => {
-    const hasEvents = hasEventsOnDate(value);
+    const hasEvents = hasEventsOnDate(date);
     const isCurrentMonth =
-      value?.getMonth() === new Date(scheduleData?.date).getMonth();
+      date.getMonth() === new Date(scheduleData?.date).getMonth();
+    const isSelected = selectedDate && isSameDay(date, selectedDate);
+    const isToday = isSameDay(date, new Date());
+
+    const handleClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (isCurrentMonth) {
+        setSelectedDate(date); // Use the date prop directly
+        console.log("Selected date:", date); // Immediate feedback
+      }
+    };
 
     return (
-      <div
-        className={`rbc-day-bg ${!hasEvents ? "no-events-day" : ""} ${
-          !isCurrentMonth ? "other-month-day" : ""
-        }`}
-      >
-        {children}
-        {!hasEvents && isCurrentMonth && (
-          <div className="no-events-label"> Unavailable</div>
-        )}
+      <div className="rbc-date-cell" onClick={handleClick}>
+        <button
+          type="button"
+          className={`rbc-button-link 
+            ${hasEvents ? "date-has-events" : "date-no-events"} 
+            ${!isCurrentMonth ? "date-other-month" : ""}
+            ${isToday ? "date-today" : ""}
+            ${isSelected ? "date-selected" : ""}`}
+        >
+          {label}
+        </button>
       </div>
     );
   };
@@ -87,6 +134,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
     };
   };
 
+  console.log(selectedDate);
   return (
     <div className="calendar-container">
       <Calendar
@@ -102,7 +150,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
         eventPropGetter={eventStyleGetter}
         components={{
           month: {
-            dateCellWrapper: CustomDayCell,
+            dateHeader: CustomDateHeader,
           },
         }}
       />

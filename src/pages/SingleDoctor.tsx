@@ -35,6 +35,7 @@ import { useForm } from "react-hook-form";
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
 import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
+import { test } from "./test";
 
 const SingleDoctor = () => {
   const currentMonthIndex = new Date().getMonth();
@@ -64,7 +65,8 @@ const SingleDoctor = () => {
   };
 
   const scheduleData = {
-    ...doctorAvailableSessions?.data,
+    // ...doctorAvailableSessions?.data,
+    ...test,
     date: doctorAvailableSessions?.date,
   };
 
@@ -182,33 +184,6 @@ const SingleDoctor = () => {
                 </div>
               </Box>
 
-              <div className="mt-4 border border-gray_Alpha_3 rounded-lg overflow-hidden px-4 py-6">
-                <div className="flex items-center justify-between w-full mb-4">
-                  <Text
-                    as="p"
-                    size="3"
-                    weight="medium"
-                    className="text-gray12 w-1/2 whitespace-nowrap"
-                  >
-                    Availability (24 Available Sessions)
-                  </Text>
-                  <CustomSelect
-                    options={monthsOfTheYear}
-                    placeholder=""
-                    name="monthOfTheYear"
-                    control={control}
-                    className=" w-[160px] z-50"
-                    customOnChange={(item) => {
-                      handleMonthChange(item);
-                    }}
-                  />
-                </div>
-                <DoctorCalendar
-                  scheduleData={scheduleData}
-                  currentDate={currentDate}
-                />
-              </div>
-
               <NumberOfReview />
 
               <Review
@@ -252,9 +227,36 @@ const SingleDoctor = () => {
             </section>
 
             <section className="w-full md:w-[25%] md:mt-20 px-4 md:px-0">
+              <div className="mt-4 border border-gray_Alpha_3 rounded-lg overflow-hidden px-4 py-6">
+                <div className="flex flex-col justify-center w-full mb-4">
+                  <Text
+                    as="p"
+                    size="3"
+                    weight="medium"
+                    className="text-gray12  whitespace-nowrap pb-4"
+                  >
+                    Availability (24 Available Sessions)
+                  </Text>
+                  <CustomSelect
+                    options={monthsOfTheYear}
+                    placeholder=""
+                    name="monthOfTheYear"
+                    control={control}
+                    className=" w-[160px] z-50"
+                    customOnChange={(item) => {
+                      handleMonthChange(item);
+                    }}
+                  />
+                </div>
+                <DoctorCalendar
+                  scheduleData={scheduleData}
+                  currentDate={currentDate}
+                />
+              </div>
+
               <PaymentBox
                 toggleModal={toggleModal}
-                className="hidden md:block"
+                className="hidden md:block mt-4"
                 price={singleDoctorData?.data?.pricing}
                 currency={singleDoctorData?.data?.currency}
               />

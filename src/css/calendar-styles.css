@@ -15,7 +15,7 @@
 
 .other-month-day {
   opacity: 0.5;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 }
 
 .no-events-label {
@@ -34,4 +34,56 @@
 
 .rbc-off-range-bg {
   background-color: #fafafa;
+}
+
+/* Days WITH events */
+.rbc-day-bg.has-events-day {
+  background-color: #e3f2fd; /* Light blue */
+  border: 1px solid #bbdefb;
+}
+
+.rbc-day-bg.has-events-day:hover {
+  background-color: #bbdefb; /* Darker blue */
+}
+
+/* Days WITHOUT events */
+.rbc-day-bg.no-events-day {
+  background-color: #f5f5f5; /* Light gray */
+}
+
+.rbc-day-bg.no-events-day:hover {
+  background-color: #e0e0e0; /* Slightly darker gray */
+}
+
+/* Days in other months */
+.rbc-day-bg.other-month-day {
+  opacity: 0.6;
+  background-color: #fafafa; /* Very light gray */
+}
+
+.rbc-button-link.date-has-events {
+  color: #46a758; /* Green */
+  font-weight: 400;
+}
+
+.rbc-button-link.date-no-events {
+  color: #8d8d8d; /* Gray */
+  font-weight: 400;
+}
+
+.rbc-button-link.date-other-month {
+  opacity: 0.5;
+}
+
+/* Hover state for all date cells */
+.rbc-day-bg:hover {
+  background-color: rgba(0, 0, 0, 0.03); /* light gray background */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Only apply hover if it's a day in the current month */
+.rbc-day-bg.other-month-day:hover {
+  background-color: transparent;
+  cursor: default;
 }

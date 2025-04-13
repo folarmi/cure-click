@@ -101,7 +101,8 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
 
           events.push({
             id: `${session.publicId}-${week}`,
-            title: `${session?.availableTimes} Available (${session?.localTimes?.length} slots)`,
+            // title: `${session?.availableTimes} Available (${session?.localTimes?.length} slots)`,
+            title: ``,
             start: startDateTime,
             end: endDateTime,
             resource: session,
@@ -145,7 +146,8 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
 
         events.push({
           id: `${session.publicId}`,
-          title: `${session?.availableTimes} Available (${session?.localTimes?.length} slots)`,
+          // title: `${session?.availableTimes} Available (${session?.localTimes?.length} slots)`,
+          title: ``,
           start: startDateTime,
           end: endDateTime,
           resource: session,
