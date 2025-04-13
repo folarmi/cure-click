@@ -17,9 +17,11 @@ import Availability from "../components/modals/Availability";
 import { PaymentBox } from "../components/ui/PaymentBox";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
-import doctors from "../assets/doctors.svg";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
-import { useGetData, useGetDoctorAvailableSessions } from "../lib/apiCalls";
+import {
+  useGetDoctorAvailableSessions,
+  useGetSingleDoctorData,
+} from "../lib/apiCalls";
 import { useParams } from "react-router";
 import { Loader } from "../components/ui/Loader";
 import {
@@ -31,21 +33,23 @@ import CustomSelect from "../components/ui/CustomSelect";
 import { monthsOfTheYear } from "../utils/data";
 import { useForm } from "react-hook-form";
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
-import { test } from "./test";
+import { RootState } from "../lib/store";
+import { useSelector } from "react-redux";
 
 const SingleDoctor = () => {
+  const currentMonthIndex = new Date().getMonth();
   const { id } = useParams();
-  const { control } = useForm();
-
+  const { control } = useForm({
+    defaultValues: {
+      monthOfTheYear: (currentMonthIndex + 1).toString(),
+    },
+  });
   const [modal, setModal] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const userType = useSelector((state: RootState) => state.auth.userType);
 
   const { data: singleDoctorData, isLoading: singleDoctorDataIsLoading } =
-    useGetData({
-      url: `appointment/api/doctors/${id}`,
-      queryKey: ["GetSingleDoctor"],
-    });
-
+    useGetSingleDoctorData(userType === "patient", id || "");
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(id);
 
   const toggleModal = () => {
@@ -60,8 +64,7 @@ const SingleDoctor = () => {
   };
 
   const scheduleData = {
-    // ...doctorAvailableSessions?.data,
-    ...test,
+    ...doctorAvailableSessions?.data,
     date: doctorAvailableSessions?.date,
   };
 
@@ -71,7 +74,10 @@ const SingleDoctor = () => {
         <Loader />
       ) : (
         <DashboardLayout ifHeader={false}>
-          <BackgroundHeader className="relative h-full hidden">
+          <BackgroundHeader
+            ifDoctor
+            className="relative h-full hidden md:block"
+          >
             <Breadcrumb
               Icon={DashboardIcon}
               route={`Find a Specialist / ${getFullName(
@@ -79,10 +85,6 @@ const SingleDoctor = () => {
                 singleDoctorData?.data?.lastname
               )}`}
             />
-
-            <Flex justify="end" className="md:absolute right-0 bottom-0">
-              <img src={doctors} className="h-auto object-cover -mr-6" />
-            </Flex>
           </BackgroundHeader>
 
           <div className="md:flex gap-x-4 md:space-x-0 md:px-[50px] bg-gray_bg">
@@ -90,11 +92,11 @@ const SingleDoctor = () => {
               <Box className="w-[100px] h-[100px] relative rounded-lg">
                 <img
                   src={sampleDoctor}
-                  className="w-[100px] h-[100px] object-cover rounded-lg absolute md:top-4"
+                  className="w-[100px] h-[100px] object-cover rounded-lg absolute md:-top-10"
                 />
               </Box>
 
-              <Flex align="center" className="mt-4">
+              <Flex align="center" className="">
                 <Text
                   as="p"
                   size="7"

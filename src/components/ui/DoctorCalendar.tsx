@@ -1,18 +1,9 @@
 // // /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay } from "date-fns";
-import { enUS } from "date-fns/locale/en-US";
-import { transformToCalendarEvents } from "../../utils/calendarutil";
-import "../../calendar-styles.css";
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales: { "en-US": enUS },
-});
+import { Calendar } from "react-big-calendar";
+import { format } from "date-fns";
+import { localizer, transformToCalendarEvents } from "../../utils/calendarutil";
+import "../../css/calendar-styles.css";
 
 interface DoctorCalendarProps {
   currentDate?: Date;

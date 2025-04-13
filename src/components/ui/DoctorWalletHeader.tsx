@@ -32,7 +32,7 @@ const DoctorWalletHeader = () => {
           className="mr-6"
         />
         <WalletHeader
-          balance="$ 340,000.00"
+          balance="$ 0.00"
           title="Wallet Balance"
           buttonText="Withdraw"
           ifFull

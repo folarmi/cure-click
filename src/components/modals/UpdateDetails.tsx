@@ -157,6 +157,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
                     style={{
                       border: "1px solid #00083046",
                     }}
+                    type="submit"
                     onClick={() => updateProfilePicture()}
                     loading={isPending}
                   >

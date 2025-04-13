@@ -19,6 +19,7 @@ interface DayScheduleItemProps {
   setValue: any;
   isExpanded: boolean;
   onToggle: (id: string) => void;
+  submitAvailableSessions: any;
 }
 
 const DayScheduleItem = ({
@@ -28,6 +29,7 @@ const DayScheduleItem = ({
   isExpanded,
   onToggle,
   setValue,
+  submitAvailableSessions,
 }: DayScheduleItemProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -56,6 +58,7 @@ const DayScheduleItem = ({
       return;
     }
     setValue(`schedule.${day.publicId}.available`, checked);
+    submitAvailableSessions();
   };
 
   const handleStartTimeChange = (value: string, index: number) => {

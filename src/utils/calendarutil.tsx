@@ -1,4 +1,3 @@
-// utils/scheduleUtils.ts
 import {
   addDays,
   addWeeks,
@@ -7,7 +6,23 @@ import {
   // setHours,
   // setMinutes,
 } from "date-fns";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+
 import { ScheduleItem } from "./types";
+import { enUS } from "date-fns/locale/en-US";
+import { dateFnsLocalizer } from "react-big-calendar";
+
+const locales = {
+  "en-US": enUS,
+};
+
+export const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
 
 interface ScheduleData {
   sessions: ScheduleItem[];

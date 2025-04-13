@@ -68,7 +68,7 @@ const DoctorDashboardHeader = ({
               <IoWalletOutline className="text-iris1" />
 
               <Text as="p" size="3" className="text-iris2" weight="bold">
-                $340,000.00
+                $0.00
               </Text>
               <ChevronRightIcon className="w-5 h-5 text-iris1" />
             </Flex>
@@ -169,7 +169,7 @@ const DoctorDashboardHeader = ({
               Wallet Balance
             </Text>
             <Text as="p" size="3" className="text-iris2" weight="bold">
-              $340,000.00
+              $0.00
             </Text>
             <ChevronRightIcon className="w-5 h-5 text-iris1" />
           </Flex>

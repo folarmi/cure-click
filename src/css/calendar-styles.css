@@ -1,0 +1,37 @@
+/* calendar-styles.css */
+
+.calendar-container {
+  height: 500px;
+}
+
+.rbc-month-view {
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.rbc-day-bg {
+  position: relative;
+}
+
+.other-month-day {
+  opacity: 0.5;
+  background-color: #f5f5f5;
+}
+
+.no-events-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(0, 7, 20, 0.62);
+  font-size: 12px;
+  pointer-events: none;
+  font-weight: 500;
+  background-color: rgba(0, 0, 51, 0.06);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.rbc-off-range-bg {
+  background-color: #fafafa;
+}

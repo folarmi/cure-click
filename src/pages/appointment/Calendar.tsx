@@ -129,6 +129,7 @@ const Calendar = () => {
                       setExpandedDay(id === expandedDay ? null : id)
                     }
                     setValue={setValue}
+                    submitAvailableSessions={submitAvailableSessions}
                   />
                 )
               )}

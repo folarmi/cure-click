@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserType } from "../lib/features/authSlice";
 import { jwtDecode } from "jwt-decode";
@@ -136,53 +137,6 @@ export const keysToRemove = [
   "createdBy",
   "modifiedBy",
 ];
-
-// const generateTimeSlots = () => {
-//   const slots: {
-//     value: string;
-//     label: string;
-//     hour: number;
-//     minute: number;
-//   }[] = [];
-
-//   for (let hour = 0; hour < 24; hour++) {
-//     for (let minute = 0; minute < 60; minute += 30) {
-//       const period = hour >= 12 ? "PM" : "AM";
-//       const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-//       const timeLabel = `${displayHour}:${
-//         minute === 0 ? "00" : minute
-//       } ${period}`;
-//       // const timeValue = `${hour}:${minute}`;
-//       const timeValue = `${hour.toString().padStart(2, "0")}:${minute
-//         .toString()
-//         .padStart(2, "0")}:00`;
-
-//       slots.push({
-//         value: timeValue,
-//         label: timeLabel,
-//         hour, // Store hour as number (0-23)
-//         minute, // Store minute as number (0 or 30)
-//       });
-//     }
-//   }
-
-//   return slots;
-// };
-
-// export const timeSlots = generateTimeSlots();
-
-// export const getEndTimeOptions = (index: number, startTimes: any) => {
-//   const startTime = startTimes?.[index]?.startTime;
-//   if (!startTime) return timeSlots;
-
-//   const [startHour, startMinute] = startTime.split(":").map(Number);
-//   const startTotalMinutes = startHour * 60 + startMinute;
-
-//   return timeSlots.filter((slot) => {
-//     const slotTotalMinutes = slot.hour * 60 + slot.minute;
-//     return slotTotalMinutes >= startTotalMinutes + 60; // 1 hour later
-//   });
-// };
 
 /**
  * Converts a day number (1-7) to the corresponding weekday in all caps
@@ -413,6 +367,7 @@ export function transformScheduleToFormDefaults(
 ): CalendarFormValues {
   const defaultValues: CalendarFormValues = {
     schedule: {},
+    recurring: false,
   };
 
   schedule?.sessions
@@ -431,24 +386,6 @@ export function transformScheduleToFormDefaults(
       };
     });
 
-  // const dayOrderMap = fullDayNames.reduce((acc, day, index) => {
-  //   acc[day] = index;
-  //   return acc;
-  // }, {} as Record<string, number>);
-
-  // schedule
-  //   ?.sort((a, b) => dayOrderMap[a.dayOfTheWeek] - dayOrderMap[b.dayOfTheWeek])
-  //   .forEach((day) => {
-  //     defaultValues.schedule[day.publicId] = {
-  //       available: day.available,
-  //       recurring: day.recurring,
-  //       localTimes: day.localTimes.map((time) => ({
-  //         startTime: time,
-  //         endTime: "",
-  //       })),
-  //     };
-  //   });
-
   return defaultValues;
 }
 
@@ -460,3 +397,21 @@ export function renderCommaSeparatedSpans(items: string[]): JSX.Element[] {
     </span>
   ));
 }
+
+export const convertStartTimeToBackendFormat = (timeRange: string): string => {
+  const startTime = timeRange.split(" - ")[0].trim();
+
+  const convertTo24Hour = (time: string): string => {
+    const [timePart, modifier] = time.split(/(AM|PM)/i).filter(Boolean);
+    let [hour, minute] = timePart.split(":").map((v) => parseInt(v, 10));
+
+    if (modifier.toUpperCase() === "PM" && hour !== 12) hour += 12;
+    if (modifier.toUpperCase() === "AM" && hour === 12) hour = 0;
+
+    return `${hour.toString().padStart(2, "0")}:${minute
+      .toString()
+      .padStart(2, "0")}:00`;
+  };
+
+  return convertTo24Hour(startTime);
+};

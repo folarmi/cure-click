@@ -15,10 +15,25 @@ import { createColumnHelper } from "@tanstack/react-table";
 import avatar from "../../assets/avatar.svg";
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import { appointmentSampleData, doctorSampleData } from "../../utils/data";
+import { useGetData } from "../../lib/apiCalls";
+import { Loader } from "../../components/ui/Loader";
 
 const TableContent = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
+  const { data: profileData, isLoading: profileDataIsLoading } = useGetData({
+    url: `appointment/api/patients/profile`,
+    queryKey: ["GetPatientProfile"],
+    enabled: userType === "patient",
+  });
 
+  const { data: appointmentsData, isLoading: appointmentsDataIsLoading } =
+    useGetData({
+      url: `appointment/api/appointments?publicId=${profileData?.data?.publicId}f&page=0&size=20`,
+      queryKey: ["GetAllDoctors"],
+      enabled: userType === "patient",
+    });
+
+  console.log(appointmentsData?.data?.content);
   const columnHelper = createColumnHelper<any>();
   const columns = [
     columnHelper.accessor("nameOfDoc", {
@@ -198,47 +213,59 @@ const TableContent = () => {
   ];
 
   return (
-    <div>
-      <CustomText
-        className="text-gray_12 mt-6 md:mt-0"
-        size="large"
-        weight="semibold"
-      >
-        Appointment History
-      </CustomText>
-      <CustomText className="text-gray_11 pb-4" size="medium" weight="normal">
-        View your appointment history.
-      </CustomText>
+    <>
+      {profileDataIsLoading || appointmentsDataIsLoading ? (
+        <Loader />
+      ) : (
+        <div>
+          <CustomText
+            className="text-gray_12 mt-6 md:mt-0"
+            size="large"
+            weight="semibold"
+          >
+            Appointment History
+          </CustomText>
+          <CustomText
+            className="text-gray_11 pb-4"
+            size="medium"
+            weight="normal"
+          >
+            View your appointment history.
+          </CustomText>
 
-      <Tabs.Root className="" defaultValue="allAppointments">
-        <Tabs.List>
-          <Tabs.Trigger value="allAppointments">All Appointments</Tabs.Trigger>
-          <Tabs.Trigger value="upcomingAppointments">
-            Upcoming Appointments
-          </Tabs.Trigger>
-          <Tabs.Trigger value="completedAppointments">
-            Completed Appointments
-          </Tabs.Trigger>
-          <Tabs.Trigger value="cancelledAppointments">
-            Cancelled Appointments
-          </Tabs.Trigger>
-          {userType === "doctor" && (
-            <Tabs.Trigger value="cancelledAppointments">
-              Rescheduled
-            </Tabs.Trigger>
-          )}
-        </Tabs.List>
+          <Tabs.Root className="" defaultValue="allAppointments">
+            <Tabs.List>
+              <Tabs.Trigger value="allAppointments">
+                All Appointments
+              </Tabs.Trigger>
+              <Tabs.Trigger value="upcomingAppointments">
+                Upcoming Appointments
+              </Tabs.Trigger>
+              <Tabs.Trigger value="completedAppointments">
+                Completed Appointments
+              </Tabs.Trigger>
+              <Tabs.Trigger value="cancelledAppointments">
+                Cancelled Appointments
+              </Tabs.Trigger>
+              {userType === "doctor" && (
+                <Tabs.Trigger value="cancelledAppointments">
+                  Rescheduled
+                </Tabs.Trigger>
+              )}
+            </Tabs.List>
 
-        <Tabs.Content className=" w-full" value="allAppointments">
-          {userType === "patient" && (
-            <Table columns={columns} data={appointmentSampleData} />
-          )}
-          {userType === "doctor" && (
-            <Table columns={doctorColumns} data={doctorSampleData} />
-          )}
-        </Tabs.Content>
-      </Tabs.Root>
-    </div>
+            <Tabs.Content className=" w-full" value="allAppointments">
+              {userType === "patient" && (
+                <Table columns={columns} data={appointmentSampleData} />
+              )}
+              {userType === "doctor" && (
+                <Table columns={doctorColumns} data={doctorSampleData} />
+              )}
+            </Tabs.Content>
+          </Tabs.Root>
+        </div>
+      )}
+    </>
   );
 };
 

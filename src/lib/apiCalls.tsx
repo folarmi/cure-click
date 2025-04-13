@@ -208,3 +208,18 @@ export const useGetDoctorAvailableSessions = (doctorId: string | undefined) => {
     staleTime: 0,
   });
 };
+
+export const useGetSingleDoctorData = (enabled: boolean = true, id: string) => {
+  return useQuery<any>({
+    queryKey: ["GetSingleDoctor"],
+    queryFn: async () => {
+      const response = await api.get(`appointment/api/doctors/${id}`);
+      return response?.data;
+    },
+    retry: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    enabled,
+  });
+};

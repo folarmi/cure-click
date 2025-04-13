@@ -42,7 +42,7 @@ const CustomTextarea: React.FC<TextareaProps> = ({
 
         <textarea
           className={clsx(
-            "w-full p-2 text-sm outline-none border rounded-md border-alpha_9/[12.6%] bg-white/90 transition-all placeholder:text-alpha_9 placeholder:pl-6",
+            "w-full p-2 text-sm outline-none border rounded-md border-alpha_9/[12.6%] bg-white/90 transition-all placeholder:text-alpha_9 placeholder:pl-1",
             error ? "border-red-500 focus:ring-red-500" : "border-gray-300",
             icon && "pl-8" // Adjust padding if icon is present
           )}

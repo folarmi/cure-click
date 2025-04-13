@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import DashboardLayout from "../components/layouts/DashboardLayout";
 import sampleDoctor from "../assets/sampleDoctorOne.svg";
 import { Badge, Box, Button, Flex, Text } from "@radix-ui/themes";
@@ -10,29 +11,76 @@ import { DashboardIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
 import { PaymentBox } from "../components/ui/PaymentBox";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import Breadcrumb from "../components/ui/BreadCrumb";
-import doctors from "../assets/doctors.svg";
 import Modal from "../components/ui/Modal";
 import Availability from "../components/modals/Availability";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { RootState } from "../lib/store";
+import { useAppSelector } from "../lib/hook";
+import { useCustomMutation, useGetSingleDoctorData } from "../lib/apiCalls";
+import { useParams } from "react-router";
+import {
+  capitalize,
+  convertStartTimeToBackendFormat,
+  getFullName,
+  renderCommaSeparatedSpans,
+} from "../utils/util";
 
 const Schedule = () => {
-  const { control } = useForm();
+  const { id } = useParams();
+  const { control, handleSubmit } = useForm();
   const [modal, setModal] = useState(false);
+  const userType = useAppSelector((state: RootState) => state.auth.userType);
+  const { doctorId, timeSlot } = useAppSelector(
+    (state: RootState) => state.schedule
+  );
+
+  const { data: singleDoctorData } = useGetSingleDoctorData(
+    userType === "patient",
+    id || ""
+  );
 
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const bookAppointmentMutation = useCustomMutation({
+    endpoint: `appointment/api/appointments`,
+    successMessage: () => "Appointment booked sucessfully",
+    errorMessage: (error: any) => error?.response?.data?.remark,
+    onSuccessCallback: () => {
+      toggleModal();
+    },
+  });
+
+  const bookAppointment = (data: any) => {
+    const formData = {
+      doctorPublicId: doctorId,
+      topic: data.topic,
+      transactionId: "string",
+      details: data.details,
+      appointmentDate: "2025-04-13",
+      appointmentTime: convertStartTimeToBackendFormat(timeSlot),
+      attachments: ["string"],
+    };
+
+    console.log(formData);
+    bookAppointmentMutation.mutate(formData);
+  };
+
   return (
     <DashboardLayout ifHeader={false}>
-      <BackgroundHeader className="hidden md:relative h-full ">
+      <BackgroundHeader ifDoctor className="hidden md:block h-full">
         <Breadcrumb
           Icon={DashboardIcon}
-          route="Dashboard / Find a Specialist / Dr Franklin Chang / Schedule"
+          route={`Dashboard / Find a Specialist /  ${getFullName(
+            singleDoctorData?.data?.firstname,
+            singleDoctorData?.data?.lastname
+          )} / Schedule`}
         />
-        <Flex justify="end" className="absolute right-0 bottom-0">
+        {/* <Flex justify="end" className="absolute right-0 bottom-0">
           <img src={doctors} className="h-auto object-cover -mr-6" />
-        </Flex>
+        </Flex> */}
       </BackgroundHeader>
       <Flex
         className="w-full px-4 md:px-12 bg-gray_bg flex-col md:flex-row"
@@ -42,22 +90,27 @@ const Schedule = () => {
           <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
-              className="w-[100px] h-[100px] md:top-24 object-cover rounded-lg absolute"
+              className="w-[100px] h-[100px] md:top-52 object-cover rounded-lg absolute"
             />
           </Box>
 
-          <Text as="p" size="7" className="text-indigo_12 pt-4 font-semibold">
-            Dr Franklin Chang
+          <Text as="p" size="7" className="text-indigo_12 font-semibold">
+            {getFullName(
+              singleDoctorData?.data?.firstname,
+              singleDoctorData?.data?.lastname
+            )}
           </Text>
 
           <Flex className="space-x-2 mt-3 flex-wrap md:flex-nowrap justify-center">
             <Badge variant="soft" size="2" className="text-accent_alpha_11">
               <IoBriefcaseOutline className="w-4 h-4 " />
-              Geriatric
+              {singleDoctorData?.data?.specialization || "N/A"}
             </Badge>
             <Badge variant="soft" size="2" className="text-blueA11 ml-2">
               <HiOutlineTranslate className="w-4 h-4 " />
-              English, French, Dutch, German
+              {(singleDoctorData?.data?.languages &&
+                renderCommaSeparatedSpans(singleDoctorData.data.languages)) ||
+                "N/A"}
             </Badge>
             <Badge
               variant="soft"
@@ -65,7 +118,7 @@ const Schedule = () => {
               className="text-cyanA11 bg-cyanA3 mt-4 md:mt-0"
             >
               <HiOutlineTranslate className="w-4 h-4 " />
-              Aberdeen Royal Infirmary Abe.., UK
+              {singleDoctorData?.data?.hospitalWorkPlace || "N/A"}
             </Badge>
           </Flex>
 
@@ -75,13 +128,14 @@ const Schedule = () => {
             className="mt-3 border border-gray2 p-4 w-full"
           >
             <Text size="2" className="text-gray11">
-              7 years Experience
+              {singleDoctorData?.data?.yearsOfExperience || "0"} years
+              Experience
             </Text>
             <Text size="2" className="text-gray11">
-              Male
+              {capitalize(singleDoctorData?.data?.gender) || "N/A"}
             </Text>
             <Text size="2" className="text-gray11">
-              He/Him
+              {singleDoctorData?.data?.gender === "MALE" ? "He/Him" : "She/Her"}
             </Text>
           </Flex>
 
@@ -92,7 +146,10 @@ const Schedule = () => {
             <Text as="p" className="text-gray11">
               Pricing
             </Text>
-            <PricePerSession />
+            <PricePerSession
+              price={singleDoctorData?.data?.pricing}
+              currency={singleDoctorData?.data?.currency}
+            />
           </Flex>
 
           <Box className="mt-3 bg-white border border-gray2 p-4 justify-start w-full rounded-md mx-4">
@@ -130,7 +187,7 @@ const Schedule = () => {
                   align="center"
                   className="text-iris9"
                 >
-                  12:00 - 1:00 PM
+                  {timeSlot}
                 </Text>
               </Box>
 
@@ -146,71 +203,86 @@ const Schedule = () => {
             </Flex>
           </Box>
 
-          <Box className="mt-3 bg-white border border-gray2 p-4 justify-start w-full rounded-md">
-            <Text size="2" as="p" weight="medium" className="text-gray12">
-              Appointment Details
-            </Text>
-
-            <Box className="mt-4">
-              <CustomInput
-                label="Appointment Topic*"
-                placeholder="Geriatric"
-                type="text"
-                control={control}
-                name="firstname"
-              />
-              <CustomTextarea
-                label="Reason for Appointment*"
-                placeholder="Brief summary of what the doctor should expect"
-                className="mt-3 mb-4"
-                control={control}
-                name="biography"
-              />
-            </Box>
-          </Box>
-
-          <Flex
-            align="center"
-            className="mt-3 mb-8 w-full bg-white p-4"
-            justify="between"
-          >
-            <Box>
+          <form className="w-full" onSubmit={handleSubmit(bookAppointment)}>
+            <Box className="mt-3 bg-white border border-gray2 p-4 justify-start  rounded-md">
               <Text size="2" as="p" weight="medium" className="text-gray12">
-                Upload Files
+                Appointment Details
               </Text>
-              <Text
-                size="2"
-                as="p"
-                weight="regular"
-                className="text-gray11 w-[371px]"
-              >
-                Provide any document or image that would assist this specialist
-                in rendering professional service to you
-              </Text>
+
+              <Box className="mt-4">
+                <CustomInput
+                  label="Appointment Topic*"
+                  placeholder="Geriatric"
+                  type="text"
+                  control={control}
+                  name="topic"
+                />
+                <CustomTextarea
+                  label="Reason for Appointment*"
+                  placeholder="Brief summary of what the doctor should expect"
+                  className="mt-3 mb-4"
+                  control={control}
+                  name="details"
+                />
+              </Box>
             </Box>
+
+            <Flex
+              align="center"
+              className="mt-3 mb-8 w-full bg-white p-4"
+              justify="between"
+            >
+              <Box>
+                <Text size="2" as="p" weight="medium" className="text-gray12">
+                  Upload Files
+                </Text>
+                <Text
+                  size="2"
+                  as="p"
+                  weight="regular"
+                  className="text-gray11 w-[371px]"
+                >
+                  Provide any document or image that would assist this
+                  specialist in rendering professional service to you
+                </Text>
+              </Box>
+
+              <Button
+                className="text-accent_alpha_11 font-medium tex-sm bg-accent_alpha_3"
+                size="2"
+              >
+                <PaperPlaneIcon />
+                Upload
+              </Button>
+            </Flex>
 
             <Button
-              className="text-accent_alpha_11 font-medium tex-sm bg-accent_alpha_3"
-              size="2"
+              size="3"
+              variant="solid"
+              radius="medium"
+              onClick={toggleModal}
+              className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer md:hidden mx-6"
             >
-              <PaperPlaneIcon />
-              Upload
+              Proceed to Pay
             </Button>
-          </Flex>
-
-          <Button
-            size="3"
-            variant="solid"
-            radius="medium"
-            onClick={toggleModal}
-            className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer md:hidden mx-6"
-          >
-            Proceed to Pay
-          </Button>
+            <Button
+              size="3"
+              variant="solid"
+              radius="medium"
+              className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer  mx-6"
+            >
+              Proceed to Pay
+            </Button>
+          </form>
         </Box>
 
         <Box className="">
-          <PaymentBox toggleModal={toggleModal} className="hidden md:block" />
+          <PaymentBox
+            toggleModal={toggleModal}
+            className="hidden md:block"
+            price={singleDoctorData?.data?.pricing}
+            currency={singleDoctorData?.data?.currency}
+          />
         </Box>
       </Flex>
 
