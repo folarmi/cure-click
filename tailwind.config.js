@@ -46,6 +46,7 @@ export default {
         neutral_alpha_3: "#0000330F",
         neutral_alpha_6: "#00002F26",
         neutral_alpha_7: "#00062E32",
+        neutral_alpha_11: "#0007149F",
         accent_alpha_11: "#002BB7C5",
         accent_alpha_3: "#0047F112",
         accent_alpha_3: "#0047F112",

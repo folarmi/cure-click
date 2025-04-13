@@ -93,7 +93,7 @@ const DayScheduleItem = ({
       </Flex>
 
       {isExpanded && (
-        <Box className="px-4 pb-3 bg-gray-50">
+        <Box className="px-4 pb-3">
           {fields.length > 0 ? (
             fields.map((field, index) => {
               const startTime = watch(
@@ -118,6 +118,7 @@ const DayScheduleItem = ({
                   <CustomSelect
                     options={endTimeOptions}
                     placeholder="End time"
+                    disabled
                     name={`schedule.${day.publicId}.localTimes.${index}.endTime`}
                     control={control}
                   />
@@ -143,18 +144,6 @@ const DayScheduleItem = ({
               No time periods added
             </Text>
           )}
-
-          {/* <Button
-            variant="soft"
-            size="1"
-            className="mt-2 w-full"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAddPeriod();
-            }}
-          >
-            <PlusIcon /> Add Period
-          </Button> */}
 
           <Button
             style={{ border: "1px solid var(--border-gray)" }}

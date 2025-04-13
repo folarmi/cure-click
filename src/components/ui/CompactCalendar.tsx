@@ -69,7 +69,7 @@ const CompactCalendar = ({
         </div>
       </div>
 
-      <Link to="/dashboard/appointments" className="w-full">
+      <Link to="/dashboard/appointments/calendar" className="w-full">
         <Button className="bg-grass9 font-medium w-full">
           Modify Calendar
         </Button>

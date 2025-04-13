@@ -15,6 +15,7 @@ import {
 import Schedule from "../pages/Schedule";
 import Wallet from "../pages/Wallet";
 import ProtectedRoute from "../context/ProtectedRoute";
+import { Calendar } from "../pages/appointment/Calendar";
 
 const RoutePage = () => {
   return (
@@ -32,6 +33,7 @@ const RoutePage = () => {
         <Route path="/dashboard/schedule" element={<Schedule />} />
         <Route path="/dashboard/wallet" element={<Wallet />} />
         <Route path="/dashboard/appointments" element={<Appointments />} />
+        <Route path="/dashboard/appointments/calendar" element={<Calendar />} />
         <Route
           path="/dashboard/account-settings"
           element={<AccountSettings />}

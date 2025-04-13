@@ -377,12 +377,23 @@ export function transformScheduleToFormDefaults(
         fullDayNames?.indexOf(b?.dayOfTheWeek)
     )
     .forEach((day) => {
-      defaultValues.schedule[day.publicId] = {
+      defaultValues.schedule[day?.publicId] = {
         available: day?.available,
-        localTimes: day?.localTimes.map((time) => ({
-          startTime: time,
-          endTime: "",
-        })),
+        localTimes: day?.localTimes.map((time) => {
+          const [hours, minutes, seconds] = time.split(":").map(Number);
+          const start = new Date();
+          start.setHours(hours, minutes, seconds || 0);
+
+          const end = new Date(start);
+          end.setHours(end.getHours() + 1); // Add 1 hour
+
+          const formatTime = (date: Date) => date.toTimeString().split(" ")[0]; // returns HH:mm:ss
+
+          return {
+            startTime: formatTime(start),
+            endTime: formatTime(end),
+          };
+        }),
       };
     });
 
