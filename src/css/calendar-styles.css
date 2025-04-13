@@ -66,6 +66,36 @@
   font-weight: 400;
 }
 
+/* Selected date style */
+.rbc-button-link.date-selected {
+  background-color: #eef9f2; /* soft green */
+  border-radius: 0.75rem;
+  color: #2e7d32;
+  font-weight: 600;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Optional hover effect */
+.rbc-button-link.date-selected:hover {
+  background-color: #d6f2e0;
+}
+
+/* Ensure all dates are consistent in shape */
+.rbc-button-link {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  transition: background 0.2s ease;
+}
+
 .rbc-button-link.date-no-events {
   color: #8d8d8d; /* Gray */
   font-weight: 400;
@@ -86,4 +116,12 @@
 .rbc-day-bg.other-month-day:hover {
   background-color: transparent;
   cursor: default;
+}
+
+.rbc-event {
+  background-color: #fff !important;
+}
+
+.rbc-today {
+  background-color: #fff !important;
 }

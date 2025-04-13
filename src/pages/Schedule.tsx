@@ -18,23 +18,29 @@ import { useForm } from "react-hook-form";
 import { RootState } from "../lib/store";
 import { useAppSelector } from "../lib/hook";
 import { useCustomMutation, useGetSingleDoctorData } from "../lib/apiCalls";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   capitalize,
   convertStartTimeToBackendFormat,
   getFullName,
   renderCommaSeparatedSpans,
 } from "../utils/util";
+import { format, parseISO } from "date-fns";
+import { getDayWithSuffix } from "../utils/calendarutil";
 
 const Schedule = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { control, handleSubmit } = useForm();
   const [modal, setModal] = useState(false);
   const userType = useAppSelector((state: RootState) => state.auth.userType);
-  const { doctorId, timeSlot } = useAppSelector(
+  const { doctorId, timeSlot, selectedDate } = useAppSelector(
     (state: RootState) => state.schedule
   );
-
+  const date = parseISO(selectedDate);
+  const formatted = `${format(date, "EEEE")}, ${getDayWithSuffix(
+    date?.getDate()
+  )} ${format(date, "MMMM yyyy")}`;
   const { data: singleDoctorData } = useGetSingleDoctorData(
     userType === "patient",
     id || ""
@@ -52,19 +58,19 @@ const Schedule = () => {
       toggleModal();
     },
   });
-
   const bookAppointment = (data: any) => {
     const formData = {
       doctorPublicId: doctorId,
       topic: data.topic,
       transactionId: "string",
       details: data.details,
-      appointmentDate: "2025-04-13",
+      // appointmentDate: "2025-04-13",
+      appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
       attachments: ["string"],
     };
 
-    console.log(formData);
+    // console.log(formData);
     bookAppointmentMutation.mutate(formData);
   };
 
@@ -163,6 +169,7 @@ const Schedule = () => {
               size="2"
               align="center"
               className="text-accent_alpha_11 md:hidden"
+              onClick={() => navigate("-1")}
             >
               Change
             </Text>
@@ -176,7 +183,7 @@ const Schedule = () => {
                   align="center"
                   className="text-iris9"
                 >
-                  Thursday , 5th February 2024
+                  {formatted}
                 </Text>
               </Box>
               <Box className="bg-irisA2 border border-irisA3 py-2 md:w-[261px] mt-3 md:mt-0">

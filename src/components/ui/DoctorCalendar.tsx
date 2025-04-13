@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // // /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Calendar } from "react-big-calendar";
@@ -5,6 +6,14 @@ import { format, isSameDay } from "date-fns";
 import { localizer, transformToCalendarEvents } from "../../utils/calendarutil";
 import "../../css/calendar-styles.css";
 import { useState } from "react";
+import { Box, Button, Text } from "@radix-ui/themes";
+import { useNavigate, useParams } from "react-router";
+import { useAppDispatch } from "../../lib/hook";
+import {
+  updateDate,
+  updateDoctorId,
+  updateTimeSlot,
+} from "../../lib/features/scheduleSlice";
 
 interface DoctorCalendarProps {
   currentDate?: Date;
@@ -24,7 +33,13 @@ interface DoctorCalendarProps {
 }
 
 const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState();
+
   const events = transformToCalendarEvents(scheduleData);
   // Check if a day has any events
   const hasEventsOnDate = (date: Date) => {
@@ -44,39 +59,6 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
     });
   };
 
-  // const CustomDateHeader = ({
-  //   label,
-  //   date,
-  //   value,
-  // }: {
-  //   label: string;
-  //   date: Date;
-  //   value: Date;
-  // }) => {
-  //   const hasEvents = hasEventsOnDate(date);
-  //   const isCurrentMonth =
-  //     date.getMonth() === new Date(scheduleData?.date).getMonth();
-
-  //   const handleClick = () => {
-  //     if (isCurrentMonth) {
-  //       setSelectedDate(value); // ✅ capture selected date
-  //     }
-  //   };
-
-  //   return (
-  //     <div className="rbc-date-cell" onClick={handleClick}>
-  //       <button
-  //         type="button"
-  //         className={`rbc-button-link ${
-  //           hasEvents ? "date-has-events" : "date-no-events"
-  //         } ${!isCurrentMonth ? "date-other-month" : ""}`}
-  //       >
-  //         {label}
-  //       </button>
-  //     </div>
-  //   );
-  // };
-
   const CustomDateHeader = ({
     label,
     date,
@@ -94,8 +76,8 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
     const handleClick = (e: React.MouseEvent) => {
       e.stopPropagation();
       if (isCurrentMonth) {
-        setSelectedDate(date); // Use the date prop directly
-        console.log("Selected date:", date); // Immediate feedback
+        setSelectedDate(date);
+        handleSelectedDay(date);
       }
     };
 
@@ -107,7 +89,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
             ${hasEvents ? "date-has-events" : "date-no-events"} 
             ${!isCurrentMonth ? "date-other-month" : ""}
             ${isToday ? "date-today" : ""}
-            ${isSelected ? "date-selected" : ""}`}
+            ${isSelected ? "date-selected" : "selected-day"}`}
         >
           {label}
         </button>
@@ -134,26 +116,112 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
     };
   };
 
-  console.log(selectedDate);
+  const handleSelectedTimeSlot = () => {
+    dispatch(updateDoctorId(id || ""));
+    dispatch(updateTimeSlot(selectedTimeSlot || ""));
+    if (selectedDate) {
+      dispatch(updateDate(selectedDate.toISOString()));
+    }
+    navigate("/dashboard/schedule");
+  };
+
+  const dayMap: Record<string, string> = {
+    Sunday: "SUNDAY",
+    Monday: "MONDAY",
+    Tuesday: "TUESDAY",
+    Wednesday: "WEDNESDAY",
+    Thursday: "THURSDAY",
+    Friday: "FRIDAY",
+    Saturday: "SATURDAY",
+  };
+
+  const handleSelectedDay = (day: Date) => {
+    const dayOfWeek = day.toLocaleDateString("en-US", { weekday: "long" });
+    const backendDay = dayMap[dayOfWeek];
+    const matched = scheduleData?.sessions.find(
+      (item: any) => item.dayOfTheWeek === backendDay
+    );
+
+    const formattedTimes =
+      matched?.localTimes.map((time: string) => {
+        const [hours, minutes] = time.split(":").map(Number);
+        const start = new Date();
+        start.setHours(hours, minutes);
+
+        const end = new Date(start);
+        end.setHours(end.getHours() + 1); // 1-hour slot
+
+        const startTime = start.toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+          // hour12: true,
+        });
+
+        const endTime = end.toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+
+        return { timeSlot: `${startTime} - ${endTime}` };
+      }) ?? [];
+    setAvailableTimes(formattedTimes);
+  };
+
   return (
-    <div className="calendar-container">
-      <Calendar
-        localizer={localizer}
-        events={events}
-        date={currentDate}
-        startAccessor="start"
-        endAccessor="end"
-        defaultView="month"
-        toolbar={false}
-        views={["month"]}
-        formats={formats}
-        eventPropGetter={eventStyleGetter}
-        components={{
-          month: {
-            dateHeader: CustomDateHeader,
-          },
-        }}
-      />
+    <div className="">
+      <div className="calendar-container">
+        <Calendar
+          localizer={localizer}
+          events={events}
+          date={currentDate}
+          startAccessor="start"
+          endAccessor="end"
+          defaultView="month"
+          toolbar={false}
+          views={["month"]}
+          formats={formats}
+          eventPropGetter={eventStyleGetter}
+          components={{
+            month: {
+              dateHeader: CustomDateHeader,
+            },
+          }}
+        />
+      </div>
+
+      <div className="grid grid-cols-2">
+        {availableTimes.map(({ timeSlot }) => {
+          return (
+            <Box
+              className="mt-2 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer"
+              key={timeSlot}
+              onClick={() => setSelectedTimeSlot(timeSlot)}
+            >
+              <Text
+                as="p"
+                size="3"
+                weight="medium"
+                align="center"
+                className="text-gray11 py-2"
+              >
+                {timeSlot}
+              </Text>
+            </Box>
+          );
+        })}
+      </div>
+
+      <Button
+        size="3"
+        variant="solid"
+        radius="medium"
+        onClick={() => handleSelectedTimeSlot()}
+        disabled={!selectedTimeSlot}
+        className="bg-grass9 w-full font-medium mt-8 text-base cursor-pointer"
+      >
+        Book a Session
+      </Button>
     </div>
   );
 };

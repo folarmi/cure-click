@@ -416,8 +416,8 @@ export const convertStartTimeToBackendFormat = (timeRange: string): string => {
     const [timePart, modifier] = time.split(/(AM|PM)/i).filter(Boolean);
     let [hour, minute] = timePart.split(":").map((v) => parseInt(v, 10));
 
-    if (modifier.toUpperCase() === "PM" && hour !== 12) hour += 12;
-    if (modifier.toUpperCase() === "AM" && hour === 12) hour = 0;
+    if (modifier?.toUpperCase() === "PM" && hour !== 12) hour += 12;
+    if (modifier?.toUpperCase() === "AM" && hour === 12) hour = 0;
 
     return `${hour.toString().padStart(2, "0")}:${minute
       .toString()

@@ -30,6 +30,16 @@ interface ScheduleData {
   date: string;
 }
 
+export const dayNameToIndex: Record<string, number> = {
+  SUNDAY: 0,
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+};
+
 export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
   let startDate = new Date();
   try {
@@ -42,16 +52,6 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
   }
 
   const { sessions = [], recurring = false } = scheduleData;
-
-  const dayNameToIndex: Record<string, number> = {
-    SUNDAY: 0,
-    MONDAY: 1,
-    TUESDAY: 2,
-    WEDNESDAY: 3,
-    THURSDAY: 4,
-    FRIDAY: 5,
-    SATURDAY: 6,
-  };
 
   const events: {
     id: string;
@@ -157,4 +157,18 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
   }
 
   return events;
+};
+
+export const getDayWithSuffix = (day: number) => {
+  if (day > 3 && day < 21) return `${day}th`;
+  switch (day % 10) {
+    case 1:
+      return `${day}st`;
+    case 2:
+      return `${day}nd`;
+    case 3:
+      return `${day}rd`;
+    default:
+      return `${day}th`;
+  }
 };

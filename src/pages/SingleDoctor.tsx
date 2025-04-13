@@ -26,6 +26,7 @@ import { useParams } from "react-router";
 import { Loader } from "../components/ui/Loader";
 import {
   capitalize,
+  getCurrencySymbol,
   getFullName,
   renderCommaSeparatedSpans,
 } from "../utils/util";
@@ -229,6 +230,15 @@ const SingleDoctor = () => {
             <section className="w-full md:w-[25%] md:mt-20 px-4 md:px-0">
               <div className="mt-4 border border-gray_Alpha_3 rounded-lg overflow-hidden px-4 py-6">
                 <div className="flex flex-col justify-center w-full mb-4">
+                  <Text as="p" className="font-semibold" size="6">
+                    {`${getCurrencySymbol(
+                      singleDoctorData?.data?.currency || "NAIRA"
+                    )} ${singleDoctorData?.data?.pricing || "0"}`}
+                    <Text weight="regular" size="4" className="pl-2">
+                      Per session
+                    </Text>
+                  </Text>
+
                   <Text
                     as="p"
                     size="3"
@@ -253,13 +263,13 @@ const SingleDoctor = () => {
                   currentDate={currentDate}
                 />
               </div>
-
+              {/* 
               <PaymentBox
                 toggleModal={toggleModal}
                 className="hidden md:block mt-4"
                 price={singleDoctorData?.data?.pricing}
                 currency={singleDoctorData?.data?.currency}
-              />
+              /> */}
 
               <Box className="bg-white p-4 border border-gray3 mt-4">
                 <Text weight="medium" size="3">
