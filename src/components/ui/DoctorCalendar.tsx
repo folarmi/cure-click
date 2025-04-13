@@ -89,7 +89,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
             ${hasEvents ? "date-has-events" : "date-no-events"} 
             ${!isCurrentMonth ? "date-other-month" : ""}
             ${isToday ? "date-today" : ""}
-            ${isSelected ? "date-selected" : "selected-day"}`}
+            ${isSelected ? "date-selected" : ""}`}
         >
           {label}
         </button>
