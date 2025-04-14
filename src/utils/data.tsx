@@ -60,12 +60,12 @@ export const navBarItems = [
     icon: IoWalletOutline,
     path: "/dashboard/wallet",
   },
-  {
-    id: 4,
-    name: "Messages",
-    icon: EnvelopeClosedIcon,
-    path: "/messages",
-  },
+  // {
+  //   id: 4,
+  //   name: "Messages",
+  //   icon: EnvelopeClosedIcon,
+  //   path: "/messages",
+  // },
 ];
 
 export const options = [

@@ -59,14 +59,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
     });
   };
 
-  const CustomDateHeader = ({
-    label,
-    date,
-  }: {
-    label: string;
-    date: Date;
-    value: Date;
-  }) => {
+  const CustomDateHeader = ({ date }: { date: Date; value: Date }) => {
     const hasEvents = hasEventsOnDate(date);
     const isCurrentMonth =
       date.getMonth() === new Date(scheduleData?.date).getMonth();
@@ -91,7 +84,8 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
             ${isToday ? "date-today" : ""}
             ${isSelected ? "date-selected" : ""}`}
         >
-          {label}
+          {/* {label} */}
+          {format(date, "d")}
         </button>
       </div>
     );

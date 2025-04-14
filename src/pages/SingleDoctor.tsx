@@ -36,7 +36,6 @@ import { useForm } from "react-hook-form";
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
 import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
-import { test } from "./test";
 
 const SingleDoctor = () => {
   const currentMonthIndex = new Date().getMonth();
@@ -66,8 +65,8 @@ const SingleDoctor = () => {
   };
 
   const scheduleData = {
-    // ...doctorAvailableSessions?.data,
-    ...test,
+    ...doctorAvailableSessions?.data,
+    // ...test,
     date: doctorAvailableSessions?.date,
   };
 
