@@ -7,7 +7,7 @@ import { HiOutlineTranslate } from "react-icons/hi";
 import PricePerSession from "../components/atoms/PricePerSession";
 import { CustomInput } from "../components/ui/CustomInput";
 import { CustomTextarea } from "../components/ui/CustomTextArea";
-import { DashboardIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
+import { DashboardIcon } from "@radix-ui/react-icons";
 import { PaymentBox } from "../components/ui/PaymentBox";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import Breadcrumb from "../components/ui/BreadCrumb";
@@ -27,20 +27,28 @@ import {
 } from "../utils/util";
 import { format, parseISO } from "date-fns";
 import { getDayWithSuffix } from "../utils/calendarutil";
+import FileUploader from "../components/FileUploader";
 
 const Schedule = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { control, handleSubmit } = useForm();
   const [modal, setModal] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
   const userType = useAppSelector((state: RootState) => state.auth.userType);
   const { doctorId, timeSlot, selectedDate } = useAppSelector(
     (state: RootState) => state.schedule
   );
-  const date = parseISO(selectedDate);
-  const formatted = `${format(date, "EEEE")}, ${getDayWithSuffix(
-    date?.getDate()
-  )} ${format(date, "MMMM yyyy")}`;
+  const date =
+    typeof selectedDate === "string" ? parseISO(selectedDate) : selectedDate;
+  const formatted =
+    date instanceof Date && !isNaN(date.getTime())
+      ? `${format(date, "EEEE")}, ${getDayWithSuffix(date.getDate())} ${format(
+          date,
+          "MMMM yyyy"
+        )}`
+      : "";
   const { data: singleDoctorData } = useGetSingleDoctorData(
     userType === "patient",
     id || ""
@@ -53,9 +61,9 @@ const Schedule = () => {
   const bookAppointmentMutation = useCustomMutation({
     endpoint: `appointment/api/appointments`,
     successMessage: () => "Appointment booked sucessfully",
-    errorMessage: (error: any) => error?.response?.data?.remark,
+    errorMessage: (error: any) => error?.response?.data?.message,
     onSuccessCallback: () => {
-      toggleModal();
+      navigate("/dashboard");
     },
   });
   const bookAppointment = (data: any) => {
@@ -64,7 +72,6 @@ const Schedule = () => {
       topic: data.topic,
       transactionId: "string",
       details: data.details,
-      // appointmentDate: "2025-04-13",
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
       attachments: ["string"],
@@ -168,7 +175,7 @@ const Schedule = () => {
               weight="regular"
               size="2"
               align="center"
-              className="text-accent_alpha_11 md:hidden"
+              className="text-accent_alpha_11 md:hidden cursor-pointer"
               onClick={() => navigate("-1")}
             >
               Change
@@ -254,13 +261,19 @@ const Schedule = () => {
                 </Text>
               </Box>
 
-              <Button
+              {/* <Button
                 className="text-accent_alpha_11 font-medium tex-sm bg-accent_alpha_3"
                 size="2"
               >
                 <PaperPlaneIcon />
                 Upload
-              </Button>
+              </Button> */}
+              <FileUploader
+                maxSizeMB={5}
+                acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
+                onFileUpload={setUploadedFile}
+                // defaultFile={defaultValues?.image}
+              />
             </Flex>
 
             <Button

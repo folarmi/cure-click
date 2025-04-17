@@ -193,7 +193,10 @@ export const useGetDoctorProfile = (enabled: boolean = true) => {
   });
 };
 
-export const useGetDoctorAvailableSessions = (doctorId: string | undefined) => {
+export const useGetDoctorAvailableSessions = (
+  doctorId: string | undefined,
+  enabled: boolean = true
+) => {
   return useQuery<any>({
     queryKey: ["GetDoctorAvailableSessions"],
     queryFn: async () => {
@@ -206,6 +209,7 @@ export const useGetDoctorAvailableSessions = (doctorId: string | undefined) => {
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     staleTime: 0,
+    enabled,
   });
 };
 

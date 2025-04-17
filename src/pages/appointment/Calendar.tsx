@@ -83,9 +83,10 @@ const Calendar = () => {
 
   const submitAvailableSessions = async () => {
     const scheduleData = getValues("schedule");
+    const dayIdOrder = Object.keys(getValues("schedule"));
     const payload = {
       doctorPublicId: doctorProfile?.data?.publicId,
-      dayOfTheWeek: getFullDayNameFromPublicId(expandedDay),
+      dayOfTheWeek: getFullDayNameFromPublicId(expandedDay, dayIdOrder),
       localTimes:
         expandedDay &&
         scheduleData[expandedDay]?.localTimes.map(
@@ -97,7 +98,6 @@ const Calendar = () => {
       // timeZone: getTimeZoneInfo(),
       timeZone: "Africa/Lagos",
     };
-
     updateDoctorAvailableSessionMutation.mutateAsync(payload);
   };
 
@@ -134,11 +134,11 @@ const Calendar = () => {
                 {doctorAvailableSessions?.data?.sessions?.map(
                   (day: DaySchedule) => (
                     <DayScheduleItem
-                      key={day.dayOfTheWeek}
+                      key={day?.dayOfTheWeek}
                       day={day}
                       control={control}
                       watch={watch}
-                      isExpanded={expandedDay === day.publicId}
+                      isExpanded={expandedDay === day?.publicId}
                       onToggle={(id) =>
                         setExpandedDay(id === expandedDay ? null : id)
                       }

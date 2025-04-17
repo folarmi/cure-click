@@ -14,33 +14,25 @@ import Table from "../../components/ui/Table";
 import { createColumnHelper } from "@tanstack/react-table";
 import avatar from "../../assets/avatar.svg";
 import { StarFilledIcon } from "@radix-ui/react-icons";
-import { appointmentSampleData, doctorSampleData } from "../../utils/data";
-import { useGetData } from "../../lib/apiCalls";
-import { Loader } from "../../components/ui/Loader";
+import { doctorSampleData } from "../../utils/data";
+import { getFullName } from "../../utils/util";
+import { format, parse } from "date-fns";
 
-const TableContent = () => {
+type Prop = {
+  appointmentsData: any;
+};
+
+const TableContent = ({ appointmentsData }: Prop) => {
   const userType = useSelector((state: RootState) => state.auth.userType);
-  const { data: profileData, isLoading: profileDataIsLoading } = useGetData({
-    url: `appointment/api/patients/profile`,
-    queryKey: ["GetPatientProfile"],
-    enabled: userType === "patient",
-  });
 
-  const { data: appointmentsData, isLoading: appointmentsDataIsLoading } =
-    useGetData({
-      url: `appointment/api/appointments?publicId=${profileData?.data?.publicId}f&page=0&size=20`,
-      queryKey: ["GetAllDoctors"],
-      enabled: userType === "patient",
-    });
-
-  console.log(appointmentsData?.data?.content);
   const columnHelper = createColumnHelper<any>();
   const columns = [
-    columnHelper.accessor("nameOfDoc", {
+    columnHelper.accessor("doctor", {
       header: "Name",
       cell: (info) => {
-        const docName = info.getValue();
-        const docType = info.row.original.docType;
+        const docFirstName = info.row.original?.doctor?.firstname;
+        const doclastName = info.row.original?.doctor?.lastname;
+        const docType = info.row.original?.doctor?.specialization;
 
         return (
           <div className="flex items-center">
@@ -51,26 +43,25 @@ const TableContent = () => {
                 weight="medium"
                 size="medium"
               >
-                {docName}
+                {getFullName(docFirstName, doclastName)}
               </CustomText>
               <CustomText className="text-gray12" weight="normal" size="small">
-                {docType}
+                {docType || "N/A"}
               </CustomText>
             </div>
           </div>
         );
       },
     }),
-    columnHelper.accessor("summaryTitle", {
+
+    columnHelper.accessor("details", {
       header: "Appointment Summary",
       cell: (info) => {
-        const summaryTitle = info.getValue();
-        const summaryText = info.row.original.summaryText;
-
+        const summaryText = info.row.original?.topic;
         return (
           <Box>
             <Text size="3" className="text-iris12" weight="medium" as="p">
-              {summaryTitle}
+              {info.getValue()}
             </Text>
             <Text size="2" className="text-gray11" weight="regular" as="p">
               {summaryText}
@@ -80,16 +71,18 @@ const TableContent = () => {
       },
     }),
 
-    columnHelper.accessor("date", {
+    columnHelper.accessor("appointmentDate", {
       header: "Date & Time",
       cell: (info) => {
-        const date = info.getValue();
-        const time = info.row.original.time;
-
+        const time = format(
+          parse(info.row.original?.appointmentTime, "HH:mm:ss", new Date()),
+          "h:mm a"
+        );
         return (
           <Box>
             <Text size="2" className="text-gray12" weight="medium" as="p">
-              {date}
+              {/* {info.getValue()} */}
+              {format(new Date(info.getValue()), "d MMM, yyyy")}
             </Text>
             <Text size="2" className="text-gray10" weight="regular" as="p">
               {time}
@@ -98,24 +91,24 @@ const TableContent = () => {
         );
       },
     }),
-    columnHelper.accessor("status", {
+
+    columnHelper.accessor("appointmentStatus", {
       header: "Status",
       cell: (info) => (
         <Badge
           size="2"
           variant="soft"
           className={`font-medium ${
-            info.getValue() === "Upcoming"
+            info.getValue() === "UPCOMING"
               ? "bg-blueA3 text-blueA11"
               : "bg-tomatoA3 text-tomatoA11"
           }`}
         >
-          {info.getValue()}
+          {info.getValue().toLowerCase()}
         </Badge>
       ),
     }),
 
-    // Display Column
     columnHelper.display({
       id: "actions",
       cell: () => (
@@ -211,62 +204,80 @@ const TableContent = () => {
       ),
     }),
   ];
-
   return (
     <>
-      {profileDataIsLoading || appointmentsDataIsLoading ? (
-        <Loader />
-      ) : (
-        <div>
-          <CustomText
-            className="text-gray_12 mt-6 md:mt-0"
-            size="large"
-            weight="semibold"
-          >
-            Appointment History
-          </CustomText>
-          <CustomText
-            className="text-gray_11 pb-4"
-            size="medium"
-            weight="normal"
-          >
-            View your appointment history.
-          </CustomText>
+      <div>
+        <CustomText
+          className="text-gray_12 mt-6 md:mt-0"
+          size="large"
+          weight="semibold"
+        >
+          Appointment History
+        </CustomText>
+        <CustomText className="text-gray_11 pb-4" size="medium" weight="normal">
+          View your appointment history.
+        </CustomText>
 
-          <Tabs.Root className="" defaultValue="allAppointments">
-            <Tabs.List>
-              <Tabs.Trigger value="allAppointments">
-                All Appointments
-              </Tabs.Trigger>
-              <Tabs.Trigger value="upcomingAppointments">
-                Upcoming Appointments
-              </Tabs.Trigger>
-              <Tabs.Trigger value="completedAppointments">
-                Completed Appointments
-              </Tabs.Trigger>
+        <Tabs.Root className="" defaultValue="allAppointments">
+          <Tabs.List>
+            <Tabs.Trigger value="allAppointments">
+              All Appointments
+            </Tabs.Trigger>
+            <Tabs.Trigger value="upcomingAppointments">
+              Upcoming Appointments
+            </Tabs.Trigger>
+            <Tabs.Trigger value="completedAppointments">
+              Completed Appointments
+            </Tabs.Trigger>
+            <Tabs.Trigger value="cancelledAppointments">
+              Cancelled Appointments
+            </Tabs.Trigger>
+            {userType === "doctor" && (
               <Tabs.Trigger value="cancelledAppointments">
-                Cancelled Appointments
+                Rescheduled
               </Tabs.Trigger>
-              {userType === "doctor" && (
-                <Tabs.Trigger value="cancelledAppointments">
-                  Rescheduled
-                </Tabs.Trigger>
-              )}
-            </Tabs.List>
+            )}
+          </Tabs.List>
 
-            <Tabs.Content className=" w-full" value="allAppointments">
-              {userType === "patient" && (
-                <Table columns={columns} data={appointmentSampleData} />
-              )}
-              {userType === "doctor" && (
-                <Table columns={doctorColumns} data={doctorSampleData} />
-              )}
-            </Tabs.Content>
-          </Tabs.Root>
-        </div>
-      )}
+          <Tabs.Content className=" w-full" value="allAppointments">
+            {userType === "patient" && (
+              <Table columns={columns} data={appointmentsData?.data} />
+            )}
+            {userType === "doctor" && (
+              <Table columns={doctorColumns} data={doctorSampleData} />
+            )}
+          </Tabs.Content>
+        </Tabs.Root>
+      </div>
     </>
   );
 };
 
 export { TableContent };
+
+// {
+//   "publicId": "161027KE15FS18320",
+//   "createdDate": "2025-04-13T16:10:27.694861",
+//   "lastModifiedDate": "2025-04-13T16:14:56.320467",
+//   "createdBy": null,
+//   "modifiedBy": null,
+//   "username": "fafiwif",
+//   "firstname": "Nasim",
+//   "lastname": "Livingston",
+//   "biography": "Test Bio",
+//   "email": "testPatient@mailinator.com",
+//   "profilePictureUrl": "",
+//   "yearsOfExperience": 10,
+//   "pricing": "600",
+//   "specialization": "Endocrinology",
+//   "currency": "NAIRA",
+//   "country": null,
+//   "gender": "MALE",
+//   "availabilityStatus": "NOT_AVAILABLE",
+//   "hospitalWorkPlace": "Test workplace Three",
+//   "languages": [
+//       "Basque",
+//       "Amharic"
+//   ],
+//   "files": {}
+// }

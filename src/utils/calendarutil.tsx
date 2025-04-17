@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   addDays,
   addWeeks,
@@ -23,6 +24,17 @@ export const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
+
+type AvailabilityData = {
+  dayOfTheWeek: string;
+  availableTimes: number;
+};
+
+type DayStatus = {
+  id: number;
+  name: string;
+  filled: boolean;
+};
 
 interface ScheduleData {
   sessions: ScheduleItem[];
@@ -171,4 +183,36 @@ export const getDayWithSuffix = (day: number) => {
     default:
       return `${day}th`;
   }
+};
+
+export const transformAvailabilityToDays = (
+  availability: AvailabilityData[]
+): DayStatus[] => {
+  const dayOrder = [
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ];
+
+  return dayOrder?.map((day, index) => {
+    const match = availability?.find((d) => d?.dayOfTheWeek === day);
+
+    return {
+      id: index + 1,
+      name: day[0], // First letter only
+      filled: match ? match?.availableTimes > 0 : false,
+    };
+  });
+};
+
+export const getTotalAvailableTimes = (weeklyData: any[]): number => {
+  return weeklyData?.reduce(
+    (total: any, day: { availableTimes: any }) =>
+      total + (day.availableTimes || 0),
+    0
+  );
 };
