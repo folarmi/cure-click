@@ -82,7 +82,9 @@ const DayScheduleItem = ({
         </Text>
         <Text as="p" weight="regular" size="2" color="gray">
           {fields.length > 0
-            ? `${fields.length} availability periods`
+            ? `${fields.length} availability period${
+                fields.length > 1 ? "s" : ""
+              }`
             : "No availability periods"}
         </Text>
         <Switch

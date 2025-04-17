@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Flex } from "@radix-ui/themes";
 import { CustomText } from "../../components/ui/CustomText";
 import { MeetingCard } from "../../components/cards/MeetingCard";
@@ -13,7 +14,11 @@ import { MeetingTwoDetailsCard } from "../../components/modals/MeetingTwoDetails
 import AppointmentDetails from "../../components/modals/AppointmentDetails";
 import { useState } from "react";
 
-const ModuleContent = () => {
+type Prop = {
+  appointmentsData: any;
+};
+
+const ModuleContent = ({ appointmentsData }: Prop) => {
   const [modal, setModal] = useState(false);
   const [meetingCardTwoModal, setMeetingCardTwoModal] = useState(false);
   const [cancelAppointment, setCancelAppointment] = useState(false);
@@ -21,6 +26,8 @@ const ModuleContent = () => {
   const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
   const [rescheduleModal, setRescheduleModal] = useState(false);
   const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
+
+  console.log(appointmentsData?.data);
 
   const toggleModal = () => {
     setModal(!modal);
