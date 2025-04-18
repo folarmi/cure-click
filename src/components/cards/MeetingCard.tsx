@@ -11,7 +11,7 @@ type Props = {
   time: string;
   doctorName?: string;
   patientName?: string;
-  speciality: string;
+  speciality: string | null;
   ifButtons?: boolean;
   ifModal?: boolean;
   onClick?: () => void;

@@ -41,6 +41,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState();
 
   const events = transformToCalendarEvents(scheduleData);
+
   // Check if a day has any events
   const hasEventsOnDate = (date: Date) => {
     return events.some((event) => {
@@ -98,7 +99,6 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
   const eventStyleGetter = () => {
     return {
       style: {
-        // backgroundColor,
         borderRadius: "4px",
         padding: "4px 8px",
         fontSize: "12px",

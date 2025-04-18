@@ -36,6 +36,7 @@ import { useForm } from "react-hook-form";
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
 import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
+import { getTotalAvailableTimes } from "../utils/calendarutil";
 
 const SingleDoctor = () => {
   const currentMonthIndex = new Date().getMonth();
@@ -244,7 +245,11 @@ const SingleDoctor = () => {
                     weight="medium"
                     className="text-gray12  whitespace-nowrap pb-4"
                   >
-                    Availability (24 Available Sessions)
+                    Availability (
+                    {getTotalAvailableTimes(
+                      doctorAvailableSessions?.data?.sessions
+                    )}{" "}
+                    Available Sessions )
                   </Text>
                   <CustomSelect
                     options={monthsOfTheYear}

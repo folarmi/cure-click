@@ -13,6 +13,13 @@ import CompletedAppointment from "../../components/modals/CompletedAppointment";
 import { MeetingTwoDetailsCard } from "../../components/modals/MeetingTwoDetailsCard";
 import AppointmentDetails from "../../components/modals/AppointmentDetails";
 import { useState } from "react";
+import {
+  formatAppointmentTime,
+  sortUpcomingAppointments,
+} from "../../utils/calendarutil";
+import { getFullName } from "../../utils/util";
+import { Appointment } from "../../utils/types";
+import { format, parse } from "date-fns";
 
 type Prop = {
   appointmentsData: any;
@@ -27,7 +34,7 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
   const [rescheduleModal, setRescheduleModal] = useState(false);
   const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
 
-  console.log(appointmentsData?.data);
+  const sortedAppointments = sortUpcomingAppointments(appointmentsData?.data);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -77,30 +84,44 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
         </div>
 
         <MeetingCard
-          title="Second Opinion on scheduled Cancer surgery"
-          date="Today"
-          time="11:30PM GMT+1 ( In 30 min)"
-          doctorName="Dr. Alison Ogaga"
-          patientName="Kemi Ukpong"
-          speciality="General Practioner"
+          title={sortedAppointments?.[0]?.topic}
+          date={sortedAppointments?.[0]?.appointmentDate}
+          time={formatAppointmentTime(
+            sortedAppointments?.[0]?.appointmentDate,
+            sortedAppointments?.[0]?.appointmentTime
+          )}
+          doctorName={getFullName(
+            sortedAppointments?.[0]?.doctor?.firstname,
+            sortedAppointments?.[0]?.doctor?.lastname
+          )}
+          patientName={getFullName(
+            sortedAppointments?.[0]?.patient?.firstname,
+            sortedAppointments?.[0]?.patient?.lastname
+          )}
+          speciality={sortedAppointments?.[0]?.doctor?.specialization}
           onClick={toggleModal}
           cancelOnClick={toggleCancel}
           rescheduleOnClick={toggleRescheduleModal}
         />
-        <MeetingCardTwo
-          title="Second Opinion on scheduled Cancer surge.."
-          date="1 July 2023"
-          time="11:30PM GMT+1"
-          doctorName="Dr. Alison Ogaga"
-          onClick={toggleMeetingCardTwoModal}
-        />
-        <MeetingCardTwo
-          title="Second Opinion on scheduled Cancer surge.."
-          date="1 July 2023"
-          time="11:30PM GMT+1"
-          doctorName="Dr. Alison Ogaga"
-          onClick={toggleCompletedAppointment}
-        />
+        {sortedAppointments?.slice(1).map((item: Appointment) => {
+          return (
+            <div key={item?.publicId}>
+              <MeetingCardTwo
+                title={item?.topic}
+                date={item?.appointmentDate}
+                time={format(
+                  parse(item?.appointmentTime, "HH:mm:ss", new Date()),
+                  "h:mm a"
+                )}
+                doctorName={getFullName(
+                  item?.doctor?.firstname,
+                  item?.doctor?.lastname
+                )}
+                onClick={toggleMeetingCardTwoModal}
+              />
+            </div>
+          );
+        })}
       </Box>
 
       <Modal show={modal} toggleModal={toggleModal}>
@@ -144,7 +165,10 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
 
       <Modal show={rescheduleModal} toggleModal={toggleRescheduleModal}>
         <div className="p-4">
-          <Reschedule toggleModal={toggleRescheduleModal} />
+          <Reschedule
+            details={sortedAppointments?.[0]}
+            toggleModal={toggleRescheduleModal}
+          />
         </div>
       </Modal>
 

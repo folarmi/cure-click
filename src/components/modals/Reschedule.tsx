@@ -5,11 +5,32 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../lib/store";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import { useForm } from "react-hook-form";
+import { Appointment } from "../../utils/types";
+import { DoctorCalendar } from "../ui/DoctorCalendar";
+import { useGetDoctorAvailableSessions } from "../../lib/apiCalls";
+import {
+  formatAppointmentTime,
+  getTotalAvailableTimes,
+} from "../../utils/calendarutil";
+import { getFullName } from "../../utils/util";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const Reschedule = ({ toggleModal }: any) => {
+type Prop = {
+  toggleModal: () => void;
+  details: Appointment;
+};
+
+const Reschedule = ({ toggleModal, details }: Prop) => {
   const { control } = useForm();
+  const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
+    details?.doctor?.publicId
+  );
   const userType = useSelector((state: RootState) => state.auth.userType);
+
+  const scheduleData = {
+    ...doctorAvailableSessions?.data,
+    // ...test,
+    date: doctorAvailableSessions?.date,
+  };
 
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
@@ -20,21 +41,40 @@ const Reschedule = ({ toggleModal }: any) => {
 
       <Box className="mt-4">
         <MeetingCard
-          title="Second Opinion on scheduled Cancer surgery"
-          date="Today"
-          time="11:30PM GMT+1 ( In 30 min)"
-          patientName="Kemi Ukpong"
-          doctorName="Dr. Alison Ogaga"
-          speciality="General Practioner"
+          title={details?.topic}
+          date={details?.appointmentDate}
+          time={formatAppointmentTime(
+            details?.appointmentDate,
+            details?.appointmentTime
+          )}
+          patientName={getFullName(
+            details?.patient?.firstname,
+            details?.patient?.lastname
+          )}
+          doctorName={getFullName(
+            details?.doctor?.firstname,
+            details?.doctor?.lastname
+          )}
+          speciality={details?.doctor?.specialization}
           onClick={toggleModal}
           ifButtons={false}
           ifModal
         />
         <Box className="mt-6">
           {userType === "patient" ? (
-            <Text size="3" className="text-gray12 px-6">
-              Select New Date (24 Available Sessions)
-            </Text>
+            <>
+              <Text size="3" className="text-gray12 px-6">
+                Select New Date ({" "}
+                {getTotalAvailableTimes(
+                  doctorAvailableSessions?.data?.sessions
+                )}{" "}
+                Available Sessions )
+              </Text>
+
+              <div className="mt-6">
+                <DoctorCalendar scheduleData={scheduleData} />
+              </div>
+            </>
           ) : (
             <>
               <CustomTextarea

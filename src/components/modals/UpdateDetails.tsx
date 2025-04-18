@@ -72,6 +72,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
   };
 
   const updateProfilePicture = () => {
+    // console.log(uo)
     if (uploadedFile) {
       const formData = new FormData();
       formData.append("file", uploadedFile);
@@ -142,7 +143,10 @@ const UpdateDetails = ({ toggleModal }: any) => {
               </Text>
 
               <Flex align="center" className="col-span-2">
-                <img src={avatar} className="w-16 h-16" />
+                <img
+                  src={doctorProfile?.data?.profilePictureUrl || avatar}
+                  className="w-16 h-16 object-fit"
+                />
                 <Box className="ml-4">
                   <FileUploader
                     maxSizeMB={5}
@@ -157,7 +161,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
                     style={{
                       border: "1px solid #00083046",
                     }}
-                    type="submit"
+                    type="button"
                     onClick={() => updateProfilePicture()}
                     loading={isPending}
                   >

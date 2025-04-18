@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
+
 import {
   addDays,
   addWeeks,
@@ -9,7 +14,7 @@ import {
 } from "date-fns";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 
-import { ScheduleItem } from "./types";
+import { Appointment, ScheduleItem } from "./types";
 import { enUS } from "date-fns/locale/en-US";
 import { dateFnsLocalizer } from "react-big-calendar";
 
@@ -78,12 +83,15 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
     const weeksToGenerate = 52;
 
     for (let week = 0; week < weeksToGenerate; week++) {
-      const weekStart = addWeeks(startDate, week);
+      // Always start from SUNDAY of each week
+      const rawWeekStart = addWeeks(startDate, week);
+      const sundayStart = addDays(rawWeekStart, -rawWeekStart.getDay());
+      // const weekStart = addWeeks(startDate, week);
 
       sessions.forEach((session) => {
-        if (session.localTimes.length > 0) {
+        if (session?.localTimes?.length > 0) {
           const dayIndex = dayNameToIndex[session?.dayOfTheWeek];
-          const eventDate = addDays(weekStart, dayIndex);
+          const eventDate = addDays(sundayStart, dayIndex);
 
           // Sort times to ensure earliest is first
           const sortedTimes = [...session.localTimes].sort();
@@ -215,4 +223,24 @@ export const getTotalAvailableTimes = (weeklyData: any[]): number => {
       total + (day.availableTimes || 0),
     0
   );
+};
+
+export const sortUpcomingAppointments = (
+  data: Appointment[]
+): Appointment[] => {
+  return data
+    ?.filter((app) => app?.appointmentStatus === "UPCOMING")
+    .sort((a, b) => {
+      const dateTimeA = new Date(`${a.appointmentDate}T${a.appointmentTime}`);
+      const dateTimeB = new Date(`${b.appointmentDate}T${b.appointmentTime}`);
+      return dateTimeA.getTime() - dateTimeB.getTime();
+    });
+};
+
+export const formatAppointmentTime = (date: string, time: string) => {
+  const dateTime = dayjs(`${date}T${time}`);
+  const formattedTime = dateTime?.format("hh:mmA"); // e.g. "11:30PM"
+  const relative = dayjs()?.to(dateTime); // e.g. "in 30 minutes"
+
+  return `${formattedTime} (${relative})`;
 };

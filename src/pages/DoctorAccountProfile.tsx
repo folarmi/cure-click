@@ -24,7 +24,7 @@ import {
 import { useGetDoctorProfile } from "../lib/apiCalls";
 
 const DoctorAccountProfile = () => {
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
 
