@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Flex, Switch, Text } from "@radix-ui/themes";
 import { CustomInput } from "../components/ui/CustomInput";
 import { useState } from "react";
@@ -6,15 +7,31 @@ import UpperAndLowerText from "../components/atoms/UpperAndLowerText";
 import { useSelector } from "react-redux";
 import { RootState } from "../lib/store";
 import { useForm } from "react-hook-form";
+import { useCustomMutation } from "../lib/apiCalls";
 
 const AccountSecurity = () => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
 
   const handleSwitchChange = () => {
     setIsSwitchEnabled((prevState) => !prevState);
   };
+
+  const changePasswordMutation = useCustomMutation({
+    endpoint: `appointment/api/${
+      userType === "patient" ? "patients" : "doctors"
+    }/reset-password`,
+    successMessage: () => "Registration successful!",
+    errorMessage: (error: any) => error?.response?.data?.remark,
+    onSuccessCallback: (data) => {
+      console.log(data);
+      // navigate("/login");
+    },
+  });
+
+  const submitForm = (data: any) => {};
+
   return (
     <Box className="p-6 max-w-[660px] mx-auto border border-gray3 rounded-lg">
       {userType === "doctor" && (
@@ -142,6 +159,8 @@ const AccountSecurity = () => {
         <Button
           size="3"
           className="md:hidden bg-grass_9 font-medium text-base cursor-pointer w-full mt-4"
+          loading={changePasswordMutation.isPending}
+          disabled={changePasswordMutation.isPending}
         >
           Save
         </Button>

@@ -79,7 +79,8 @@ export const useCustomMutation = <
       return response.data;
     },
     onSuccess: (data: any) => {
-      if (data?.access_token || data?.data) {
+      console.log(data);
+      if (data?.access_token || data?.data || data?.isSuccess) {
         if (successMessage) {
           showSuccessToast(successMessage(data));
         }
