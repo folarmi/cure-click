@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from "react-toastify";
 
 const successToastStyle = {
@@ -33,11 +34,11 @@ export const showSuccessToast = (message: string) => {
   });
 };
 
-export const showErrorToast = (message: string) => {
-  toast.error(message, {
-    style: errorToastStyle,
-  });
-};
+// export const showErrorToast = (message: string) => {
+//   toast.error(message, {
+//     style: errorToastStyle,
+//   });
+// };
 
 // Optional: Generic toast with custom type
 export const showToast = (
@@ -52,4 +53,51 @@ export const showToast = (
       : /* default */ successToastStyle;
 
   toast[type](message, { style });
+};
+
+export const showErrorToast = (
+  message: string | string[] | Record<string, string[]>
+) => {
+  if (typeof message === "string") {
+    toast.error(message, {
+      style: errorToastStyle,
+    });
+  } else if (Array.isArray(message)) {
+    toast.error(
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        {message.map((msg, i) => (
+          <span key={i}>{msg}</span>
+        ))}
+      </div>,
+      {
+        style: errorToastStyle,
+      }
+    );
+  } else if (typeof message === "object" && message !== null) {
+    const errorMessages = Object.entries(message).flatMap(([field, errors]) =>
+      errors.map((error) => `${field}: ${error}`)
+    );
+
+    toast.error(
+      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        {errorMessages.map((msg, i) => (
+          <p key={i}>{msg}</p>
+        ))}
+      </div>,
+      {
+        style: errorToastStyle,
+      }
+    );
+  }
+};
+
+// utils/errorUtils.ts
+export const getApiErrors = (
+  error: any
+): string | string[] | Record<string, string[]> => {
+  return (
+    error?.response?.data?.errors ||
+    error?.response?.data?.message ||
+    "An unexpected error occurred"
+  );
 };

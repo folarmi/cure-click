@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   UseMutationOptions,
@@ -9,7 +10,11 @@ import {
 import { AxiosError } from "axios";
 
 import api from "../lib/axios";
-import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
+import {
+  getApiErrors,
+  showErrorToast,
+  showSuccessToast,
+} from "../utils/toastUtils";
 // import { Callout } from "@radix-ui/themes";
 // import { InfoCircledIcon } from "@radix-ui/react-icons";
 
@@ -79,7 +84,6 @@ export const useCustomMutation = <
       return response.data;
     },
     onSuccess: (data: any) => {
-      console.log(data);
       if (data?.access_token || data?.data || data?.isSuccess) {
         if (successMessage) {
           showSuccessToast(successMessage(data));
@@ -89,12 +93,35 @@ export const useCustomMutation = <
         }
       }
     },
-    onError: (error: any) => {
-      const message = errorMessage
-        ? errorMessage(error)
-        : error?.response?.data?.data || "An unexpected error occurred";
+    // onError: (error: any) => {
+    //   const message = errorMessage
+    //     ? errorMessage(error)
+    //     : error?.response?.data?.data || "An unexpected error occurred";
 
-      showErrorToast(message);
+    //   showErrorToast(message);
+    // },
+    onError: (error: any) => {
+      try {
+        let message: string | string[] | Record<string, string[]>;
+        console.log(options.errorMessage);
+        if (options.errorMessage) {
+          message = options.errorMessage(error) || getApiErrors(error);
+        } else {
+          message = getApiErrors(error);
+        }
+
+        // Final safety check
+        if (
+          !message ||
+          (typeof message === "object" && !Object.keys(message).length)
+        ) {
+          message = "An unexpected error occurred";
+        }
+
+        showErrorToast(message);
+      } catch (e) {
+        showErrorToast("Failed to process error");
+      }
     },
     ...mutationOptions,
   });
