@@ -3,7 +3,11 @@
 
 import { Calendar } from "react-big-calendar";
 import { format, isSameDay } from "date-fns";
-import { localizer, transformToCalendarEvents } from "../../utils/calendarutil";
+import {
+  getTotalAvailableTimes,
+  localizer,
+  transformToCalendarEvents,
+} from "../../utils/calendarutil";
 import "../../css/calendar-styles.css";
 import { useState } from "react";
 import { Box, Button, Text } from "@radix-ui/themes";
@@ -14,9 +18,16 @@ import {
   updateDoctorId,
   updateTimeSlot,
 } from "../../lib/features/scheduleSlice";
+import CustomSelect from "./CustomSelect";
+import { monthsOfTheYear } from "../../utils/data";
+import { getCurrencySymbol } from "../../utils/util";
+import { useForm } from "react-hook-form";
 
 interface DoctorCalendarProps {
-  currentDate?: Date;
+  singleDoctorData: any;
+  ifPrice?: boolean;
+  customSubmit?: boolean;
+  submitFunction?: () => void;
   scheduleData: {
     sessions: Array<{
       publicId: string;
@@ -32,15 +43,35 @@ interface DoctorCalendarProps {
   };
 }
 
-const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
+const DoctorCalendar = ({
+  scheduleData,
+  singleDoctorData,
+  ifPrice = false,
+  submitFunction,
+  customSubmit,
+}: DoctorCalendarProps) => {
+  const currentMonthIndex = new Date().getMonth();
   const { id } = useParams();
+  const { control } = useForm({
+    defaultValues: {
+      monthOfTheYear: (currentMonthIndex + 1).toString(),
+    },
+  });
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [availableTimes, setAvailableTimes] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState();
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const events = transformToCalendarEvents(scheduleData);
+
+  const handleMonthChange = (item: string) => {
+    const selectedMonth = parseInt(item); // Get selected month
+    const newDate = new Date(currentDate);
+    newDate.setMonth(selectedMonth - 1); // Set the selected month (subtract 1 since months are 0-indexed)
+    setCurrentDate(newDate); // Update the state with the new date
+  };
 
   // Check if a day has any events
   const hasEventsOnDate = (date: Date) => {
@@ -164,6 +195,42 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
 
   return (
     <div className="">
+      <div className="flex flex-col justify-center w-full mb-4">
+        {ifPrice && (
+          <>
+            <Text as="p" className="font-semibold" size="6">
+              {`${getCurrencySymbol(
+                singleDoctorData?.data?.currency || "NAIRA"
+              )} ${singleDoctorData?.data?.pricing || "0"}`}
+              <Text weight="regular" size="4" className="pl-2">
+                Per session
+              </Text>
+            </Text>
+
+            <Text
+              as="p"
+              size="3"
+              weight="medium"
+              className="text-gray12  whitespace-nowrap pb-4"
+            >
+              Availability ({getTotalAvailableTimes(scheduleData?.sessions)}{" "}
+              Available Sessions )
+            </Text>
+          </>
+        )}
+
+        <CustomSelect
+          options={monthsOfTheYear}
+          placeholder=""
+          name="monthOfTheYear"
+          control={control}
+          className=" w-[160px] z-50"
+          customOnChange={(item) => {
+            handleMonthChange(item);
+          }}
+        />
+      </div>
+
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
@@ -210,7 +277,7 @@ const DoctorCalendar = ({ scheduleData, currentDate }: DoctorCalendarProps) => {
         size="3"
         variant="solid"
         radius="medium"
-        onClick={() => handleSelectedTimeSlot()}
+        onClick={customSubmit ? submitFunction : handleSelectedTimeSlot}
         disabled={!selectedTimeSlot}
         className="bg-grass9 w-full font-medium mt-8 text-base cursor-pointer"
       >

@@ -153,7 +153,10 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
 
       <Modal show={cancelAppointment} toggleModal={toggleCancel}>
         <div className="p-4">
-          <CancelAppointment toggleModal={toggleCancel} />
+          <CancelAppointment
+            toggleModal={toggleCancel}
+            details={sortedAppointments?.[0]}
+          />
         </div>
       </Modal>
 

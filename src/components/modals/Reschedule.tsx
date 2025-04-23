@@ -63,7 +63,7 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
         <Box className="mt-6">
           {userType === "patient" ? (
             <>
-              <Text size="3" className="text-gray12 px-6">
+              <Text size="3" className="text-gray12">
                 Select New Date ({" "}
                 {getTotalAvailableTimes(
                   doctorAvailableSessions?.data?.sessions
@@ -72,7 +72,12 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
               </Text>
 
               <div className="mt-6">
-                <DoctorCalendar scheduleData={scheduleData} />
+                <DoctorCalendar
+                  singleDoctorData={details?.doctor}
+                  scheduleData={scheduleData}
+                  customSubmit
+                  submitFunction={() => console.log("jhbfjhdsbhf")}
+                />
               </div>
             </>
           ) : (

@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Flex, Text } from "@radix-ui/themes";
 import { BiX } from "react-icons/bi";
-import { reasonsForCalling } from "../../utils/data";
+import { reasonsForCancelling } from "../../utils/data";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import MeetingCardTwo from "../cards/MeetingCardTwo";
 import { useForm } from "react-hook-form";
@@ -72,7 +72,7 @@ const CancelAppointmentTwo = ({ toggleModal }: any) => {
           Help us Improve our service
         </Text>
 
-        {reasonsForCalling.map(({ reason }) => {
+        {reasonsForCancelling.map(({ reason }) => {
           return (
             <>
               <Flex

@@ -18,6 +18,7 @@ import {
   useGetData,
   useGetDoctorAvailableSessions,
   useGetDoctorProfile,
+  useGetPatientProfile,
 } from "../../lib/apiCalls";
 import {
   getTotalAvailableTimes,
@@ -30,17 +31,13 @@ const Appointments = () => {
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   const { data: doctorProfile } = useGetDoctorProfile(userType === "doctor");
+  const { data: profileData, isLoading: profileDataIsLoading } =
+    useGetPatientProfile(userType === "patient");
 
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
     doctorProfile?.data?.publicId,
     userType === "doctor"
   );
-
-  const { data: profileData, isLoading: profileDataIsLoading } = useGetData({
-    url: `appointment/api/patients/profile`,
-    queryKey: ["GetPatientProfile"],
-    enabled: userType === "patient",
-  });
 
   const { data: appointmentsData, isLoading: appointmentsDataIsLoading } =
     useGetData({

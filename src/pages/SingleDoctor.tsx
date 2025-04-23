@@ -26,28 +26,16 @@ import { useParams } from "react-router";
 import { Loader } from "../components/ui/Loader";
 import {
   capitalize,
-  getCurrencySymbol,
   getFullName,
   renderCommaSeparatedSpans,
 } from "../utils/util";
-import CustomSelect from "../components/ui/CustomSelect";
-import { monthsOfTheYear } from "../utils/data";
-import { useForm } from "react-hook-form";
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
 import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
-import { getTotalAvailableTimes } from "../utils/calendarutil";
 
 const SingleDoctor = () => {
-  const currentMonthIndex = new Date().getMonth();
   const { id } = useParams();
-  const { control } = useForm({
-    defaultValues: {
-      monthOfTheYear: (currentMonthIndex + 1).toString(),
-    },
-  });
   const [modal, setModal] = useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   const { data: singleDoctorData, isLoading: singleDoctorDataIsLoading } =
@@ -56,13 +44,6 @@ const SingleDoctor = () => {
 
   const toggleModal = () => {
     setModal(!modal);
-  };
-
-  const handleMonthChange = (item: string) => {
-    const selectedMonth = parseInt(item); // Get selected month
-    const newDate = new Date(currentDate);
-    newDate.setMonth(selectedMonth - 1); // Set the selected month (subtract 1 since months are 0-indexed)
-    setCurrentDate(newDate); // Update the state with the new date
   };
 
   const scheduleData = {
@@ -229,42 +210,10 @@ const SingleDoctor = () => {
 
             <section className="w-full md:w-[25%] md:mt-20 px-4 md:px-0">
               <div className="mt-4 border border-gray_Alpha_3 rounded-lg overflow-hidden px-4 py-6">
-                <div className="flex flex-col justify-center w-full mb-4">
-                  <Text as="p" className="font-semibold" size="6">
-                    {`${getCurrencySymbol(
-                      singleDoctorData?.data?.currency || "NAIRA"
-                    )} ${singleDoctorData?.data?.pricing || "0"}`}
-                    <Text weight="regular" size="4" className="pl-2">
-                      Per session
-                    </Text>
-                  </Text>
-
-                  <Text
-                    as="p"
-                    size="3"
-                    weight="medium"
-                    className="text-gray12  whitespace-nowrap pb-4"
-                  >
-                    Availability (
-                    {getTotalAvailableTimes(
-                      doctorAvailableSessions?.data?.sessions
-                    )}{" "}
-                    Available Sessions )
-                  </Text>
-                  <CustomSelect
-                    options={monthsOfTheYear}
-                    placeholder=""
-                    name="monthOfTheYear"
-                    control={control}
-                    className=" w-[160px] z-50"
-                    customOnChange={(item) => {
-                      handleMonthChange(item);
-                    }}
-                  />
-                </div>
                 <DoctorCalendar
                   scheduleData={scheduleData}
-                  currentDate={currentDate}
+                  singleDoctorData={singleDoctorData}
+                  ifPrice
                 />
               </div>
               {/* 

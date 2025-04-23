@@ -1,8 +1,4 @@
-import {
-  CalendarIcon,
-  DashboardIcon,
-  EnvelopeClosedIcon,
-} from "@radix-ui/react-icons";
+import { CalendarIcon, DashboardIcon } from "@radix-ui/react-icons";
 import createAccount from "../assets/icons/createAccount.svg";
 import verifyEmail from "../assets/icons/verifyEmail.svg";
 import welcomeOnboard from "../assets/icons/welcomeOnboard.svg";
@@ -403,22 +399,40 @@ export const appointmentSampleData = [
   },
 ];
 
-export const reasonsForCalling = [
+// export const reasonsForCancelling = [
+//   {
+//     id: 1,
+//     reason: "Doctor asked me to cancel",
+//   },
+//   {
+//     id: 2,
+//     reason: "I don’t need the service anymore",
+//   },
+//   {
+//     id: 3,
+//     reason: "Doctor Did Not Attend session",
+//   },
+//   {
+//     id: 4,
+//     reason: "Other Reasons",
+//   },
+// ];
+export const reasonsForCancelling = [
   {
-    id: 1,
-    reason: "Doctor asked me to cancel",
+    label: "Doctor asked me to cancel",
+    value: "Doctor asked me to cancel",
   },
   {
-    id: 2,
-    reason: "I don’t need the service anymore",
+    label: "I don’t need the service anymore",
+    value: "I don’t need the service anymore",
   },
   {
-    id: 3,
-    reason: "Doctor Did Not Attend session",
+    label: "Doctor Did Not Attend session",
+    value: "Doctor Did Not Attend session",
   },
   {
-    id: 4,
-    reason: "Other Reasons",
+    label: "Other Reasons",
+    value: "Other Reasons",
   },
 ];
 
