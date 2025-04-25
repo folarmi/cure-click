@@ -53,6 +53,7 @@ type FileUploadOptions = {
   successToast?: string | ((data: any) => string);
   errorToast?: string | ((error: AxiosError) => string);
   method?: "get" | "post" | "put" | "delete";
+  url?: string;
 };
 
 export const useCustomMutation = <
@@ -93,17 +94,9 @@ export const useCustomMutation = <
         }
       }
     },
-    // onError: (error: any) => {
-    //   const message = errorMessage
-    //     ? errorMessage(error)
-    //     : error?.response?.data?.data || "An unexpected error occurred";
-
-    //   showErrorToast(message);
-    // },
     onError: (error: any) => {
       try {
         let message: string | string[] | Record<string, string[]>;
-        console.log(options.errorMessage);
         if (options.errorMessage) {
           message = options.errorMessage(error) || getApiErrors(error);
         } else {
@@ -156,31 +149,41 @@ export const useFileUpload = ({
   onError,
   onSuccess,
   successToast,
+  url = "appointment/api/files/upload",
 }: FileUploadOptions) => {
   return useMutation<
     any,
     AxiosError,
-    { file: File; extraData?: Record<string, any> }
+    { file: File | File[] | null; extraData?: Record<string, any> }
   >({
     mutationFn: async ({ file, extraData }) => {
       const formData = new FormData();
-      formData.append("file", file);
+
+      // Handle both single file and array of files
+      if (Array.isArray(file)) {
+        file.forEach((file) => {
+          formData.append(`file`, file);
+        });
+      } else {
+        formData.append("file", file);
+      }
 
       if (extraData) {
         Object.entries(extraData).forEach(([key, value]) => {
-          formData.append(key, value);
+          // Handle nested objects by stringifying them
+          if (typeof value === "object" && !(value instanceof File)) {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, value);
+          }
         });
       }
 
-      const response = await api[method](
-        "appointment/api/files/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await api[method](url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     },
     onSuccess: (data) => {

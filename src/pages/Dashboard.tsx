@@ -33,6 +33,13 @@ const Dashboard = () => {
     enabled: userType === "patient",
   });
 
+  const { data: reviewsData, isLoading: reviewsDataIsLoading } = useGetData({
+    url: `appointment/api/reviews?page=0&size=20`,
+    queryKey: ["GetAllDoctors"],
+    enabled: userType === "doctor",
+  });
+
+  // console.log(reviewsData?.data?.content);
   return (
     <DashboardLayout ifHeader={false}>
       {userType === "patient" ? (
@@ -48,7 +55,7 @@ const Dashboard = () => {
 
       {userType === "patient" && (
         <>
-          {doctorDataIsLoading ? (
+          {doctorDataIsLoading || reviewsDataIsLoading ? (
             <Loader />
           ) : (
             <section className="px-6 mt-8">
@@ -59,30 +66,14 @@ const Dashboard = () => {
                     size="large"
                     weight="semibold"
                   >
-                    Upcoming Appointments
+                    Popular Specialist
                   </CustomText>
                   <CustomText
                     className="text-gray_11 pb-4"
                     size="medium"
                     weight="normal"
                   >
-                    View your upcoming appointments.
-                  </CustomText>
-                </div>
-                <div className="hidden md:block">
-                  <CustomText
-                    className="text-gray_12"
-                    size="large"
-                    weight="semibold"
-                  >
-                    Upcoming Appointments
-                  </CustomText>
-                  <CustomText
-                    className="text-gray_11 pb-4"
-                    size="medium"
-                    weight="normal"
-                  >
-                    View your upcoming appointments.
+                    Most rated specialist for you
                   </CustomText>
                 </div>
               </div>
@@ -93,7 +84,7 @@ const Dashboard = () => {
                     return (
                       <>
                         <DoctorCard
-                          image={sampleDoctor}
+                          image={item?.profilePictureUrl || sampleDoctor}
                           doctorName={`${getFullName(
                             item?.firstname,
                             item?.lastname
@@ -111,7 +102,23 @@ const Dashboard = () => {
                   })}
                 </section>
 
-                <section className="w-full md:w-[25%] order-1 md:order-2">
+                <section className="w-full md:w-[25%] order-1 md:order-2 -mt-16">
+                  <div className="hidden md:block ">
+                    <CustomText
+                      className="text-gray_12"
+                      size="large"
+                      weight="semibold"
+                    >
+                      Upcoming Appointments
+                    </CustomText>
+                    <CustomText
+                      className="text-gray_11 pb-4"
+                      size="medium"
+                      weight="normal"
+                    >
+                      View your upcoming appointments
+                    </CustomText>
+                  </div>
                   <MeetingCard
                     title="Second Opinion on scheduled Cancer surgery"
                     date="Today"

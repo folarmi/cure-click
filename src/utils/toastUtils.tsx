@@ -25,7 +25,7 @@ const errorToastStyle = {
   fontWeight: "normal",
   minWidth: "200px",
   maxWidth: "80vw",
-  whiteSpace: "nowrap",
+  // whiteSpace: "nowrap",
 };
 
 export const showSuccessToast = (message: string) => {

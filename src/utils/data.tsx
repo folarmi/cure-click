@@ -598,45 +598,6 @@ export const availableTimes = [
   },
 ];
 
-// export const myEventsList = [
-//   {
-//     title: "Team Meeting",
-//     start: new Date(2024, 11, 28, 10, 0), // December 28, 2024, 10:00 AM
-//     end: new Date(2024, 11, 28, 11, 0), // December 28, 2024, 11:00 AM
-//     description: "Weekly team sync to discuss project updates.",
-//     location: "Conference Room A",
-//   },
-//   {
-//     title: "Lunch with Client",
-//     start: new Date(2024, 11, 28, 13, 0), // December 28, 2024, 1:00 PM
-//     end: new Date(2024, 11, 28, 14, 0), // December 28, 2024, 2:00 PM
-//     description: "Discuss project roadmap with the client.",
-//     location: "Downtown Cafe",
-//   },
-//   {
-//     title: "Presentation Review",
-//     start: new Date(2024, 11, 29, 9, 30), // December 29, 2024, 9:30 AM
-//     end: new Date(2024, 11, 29, 10, 30), // December 29, 2024, 10:30 AM
-//     description: "Review slides for the quarterly meeting.",
-//     location: "Zoom",
-//   },
-//   {
-//     title: "Project Deadline",
-//     start: new Date(2024, 11, 30, 0, 0), // December 30, 2024, All Day Event
-//     end: new Date(2024, 11, 30, 23, 59),
-//     description: "Complete and submit the final project deliverables.",
-//     location: "Online",
-//     allDay: true,
-//   },
-// ];
-
-// {
-//   id: 1,
-//   title: "Long Event",
-//   start: new Date(2015, 3, 7),
-//   end: new Date(2015, 3, 10),
-// },
-
 export const myEventsList = [
   {
     id: "1",
@@ -903,5 +864,24 @@ export const monthsOfTheYear = [
   {
     label: "December",
     value: "12",
+  },
+];
+
+export const testActions = [
+  {
+    label: "View",
+    value: "View",
+  },
+  {
+    label: "Accept",
+    value: "Accept",
+  },
+  {
+    label: "Reschedule",
+    value: "Reschedule",
+  },
+  {
+    label: "Cancel",
+    value: "Cancel",
   },
 ];

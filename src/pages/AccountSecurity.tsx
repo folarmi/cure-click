@@ -22,15 +22,17 @@ const AccountSecurity = () => {
     endpoint: `appointment/api/${
       userType === "patient" ? "patients" : "doctors"
     }/reset-password`,
+    method: "put",
     successMessage: () => "Registration successful!",
-    errorMessage: (error: any) => error?.response?.data?.remark,
     onSuccessCallback: (data) => {
       console.log(data);
       // navigate("/login");
     },
   });
 
-  const submitForm = (data: any) => {};
+  const submitForm = (data: any) => {
+    changePasswordMutation.mutate(data);
+  };
 
   return (
     <Box className="p-6 max-w-[660px] mx-auto border border-gray3 rounded-lg">
@@ -64,13 +66,16 @@ const AccountSecurity = () => {
         subText="Update your account password"
       />
 
-      <form action="" className="mt-4">
+      <form onSubmit={handleSubmit(submitForm)} className="mt-4">
         <CustomInput
           label="Password"
           placeholder="Input your password"
           type="password"
           control={control}
-          name="firstname"
+          name="oldPassword"
+          rules={{
+            required: "Old Password is required",
+          }}
         />
         <CustomInput
           label="Confirm Password"
@@ -78,7 +83,10 @@ const AccountSecurity = () => {
           type="password"
           className="mt-6"
           control={control}
-          name="firstname"
+          name="password"
+          rules={{
+            required: "New Password is required",
+          }}
         />
 
         <Flex className="mt-10" align="center" justify="between">
@@ -158,7 +166,7 @@ const AccountSecurity = () => {
 
         <Button
           size="3"
-          className="md:hidden bg-grass_9 font-medium text-base cursor-pointer w-full mt-4"
+          className=" bg-grass_9 font-medium text-base cursor-pointer w-full mt-4"
           loading={changePasswordMutation.isPending}
           disabled={changePasswordMutation.isPending}
         >

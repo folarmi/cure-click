@@ -419,3 +419,16 @@ export const convertStartTimeToBackendFormat = (timeRange: string): string => {
 
   return convertTo24Hour(startTime);
 };
+
+export const isUploadedFileEmpty = (uploadedFile: File | File[] | null) => {
+  if (uploadedFile === null) {
+    return true; // No file selected
+  }
+
+  if (Array.isArray(uploadedFile)) {
+    return uploadedFile.length === 0; // Empty array
+  }
+
+  // Single file case - check if it's a valid File object
+  return !(uploadedFile instanceof File);
+};

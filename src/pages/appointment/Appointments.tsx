@@ -46,9 +46,17 @@ const Appointments = () => {
       enabled: !!profileData?.data?.publicId && userType === "patient",
     });
 
+  const { data: bookingsData, isLoading: bookingsDataIsLoading } = useGetData({
+    url: `appointment/api/doctors/${doctorProfile?.data?.publicId}/bookings`,
+    queryKey: ["GetAllAppointments"],
+    enabled: !!doctorProfile?.data?.publicId && userType === "doctor",
+  });
+
   return (
     <>
-      {profileDataIsLoading || appointmentsDataIsLoading ? (
+      {profileDataIsLoading ||
+      appointmentsDataIsLoading ||
+      bookingsDataIsLoading ? (
         <Loader />
       ) : (
         <DashboardLayout ifHeader={false}>
@@ -137,7 +145,7 @@ const Appointments = () => {
                       </Button>
                     </Link>
                   </Box>
-                  <ModuleContent />
+                  <ModuleContent appointmentsData={bookingsData} />
                 </Box>
 
                 <Box className="w-[72%] ml-6">
@@ -160,7 +168,11 @@ const Appointments = () => {
                       <img src={medalFour} />
                     </Flex>
                   </div>
-                  <TableContent />
+
+                  <TableContent
+                    appointmentsData={bookingsData}
+                    appointmentsDataIsLoading={bookingsDataIsLoading}
+                  />
                 </Box>
               </Flex>
               {/* )} */}
@@ -180,7 +192,10 @@ const Appointments = () => {
               </Box>
 
               <Box className="w-full md:w-[72%] md:ml-6">
-                <TableContent appointmentsData={appointmentsData} />
+                <TableContent
+                  appointmentsData={appointmentsData}
+                  appointmentsDataIsLoading={appointmentsDataIsLoading}
+                />
               </Box>
             </Flex>
           )}

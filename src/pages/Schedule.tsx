@@ -17,7 +17,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RootState } from "../lib/store";
 import { useAppSelector } from "../lib/hook";
-import { useCustomMutation, useGetSingleDoctorData } from "../lib/apiCalls";
+import {
+  useCustomMutation,
+  useFileUpload,
+  useGetSingleDoctorData,
+} from "../lib/apiCalls";
 import { useNavigate, useParams } from "react-router";
 import {
   capitalize,
@@ -34,7 +38,7 @@ const Schedule = () => {
   const navigate = useNavigate();
   const { control, handleSubmit } = useForm();
   const [modal, setModal] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File[]>([]);
 
   const userType = useAppSelector((state: RootState) => state.auth.userType);
   const { doctorId, timeSlot, selectedDate } = useAppSelector(
@@ -58,6 +62,22 @@ const Schedule = () => {
     setModal(!modal);
   };
 
+  const { mutate: uploadFile, isPending } = useFileUpload({
+    url: "appointment/api/files/upload-multiple",
+    successToast: () => `File uploaded successfully!`,
+    // errorToast: (error) => error.response?.data?.message || "Upload failed",
+    onSuccess: (data) => {
+      console.log(data);
+      // bookAppointment()
+    },
+  });
+
+  const uploadFiles = () => {
+    uploadFile({
+      file: uploadedFile,
+    });
+  };
+
   const bookAppointmentMutation = useCustomMutation({
     endpoint: `appointment/api/appointments`,
     successMessage: () => "Appointment booked sucessfully",
@@ -66,6 +86,7 @@ const Schedule = () => {
       navigate("/dashboard");
     },
   });
+
   const bookAppointment = (data: any) => {
     const formData = {
       doctorPublicId: doctorId,
@@ -74,11 +95,11 @@ const Schedule = () => {
       details: data.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
-      attachments: ["string"],
+      attachments: [uploadedFile],
     };
 
-    // console.log(formData);
-    bookAppointmentMutation.mutate(formData);
+    console.log(formData);
+    // bookAppointmentMutation.mutate(formData);
   };
 
   return (
@@ -217,7 +238,7 @@ const Schedule = () => {
             </Flex>
           </Box>
 
-          <form className="w-full" onSubmit={handleSubmit(bookAppointment)}>
+          <form className="w-full" onSubmit={handleSubmit(uploadFiles)}>
             <Box className="mt-3 bg-white border border-gray2 p-4 justify-start  rounded-md">
               <Text size="2" as="p" weight="medium" className="text-gray12">
                 Appointment Details
@@ -241,40 +262,37 @@ const Schedule = () => {
               </Box>
             </Box>
 
-            <Flex
-              align="center"
-              className="mt-3 mb-8 w-full bg-white p-4"
-              justify="between"
-            >
-              <Box>
-                <Text size="2" as="p" weight="medium" className="text-gray12">
-                  Upload Files
-                </Text>
-                <Text
-                  size="2"
-                  as="p"
-                  weight="regular"
-                  className="text-gray11 w-[371px]"
-                >
-                  Provide any document or image that would assist this
-                  specialist in rendering professional service to you
-                </Text>
-              </Box>
-
-              {/* <Button
-                className="text-accent_alpha_11 font-medium tex-sm bg-accent_alpha_3"
-                size="2"
+            <div className="upload-section-container">
+              <Flex
+                align="center"
+                className="mt-3 w-full bg-white p-4"
+                justify="between"
               >
-                <PaperPlaneIcon />
-                Upload
-              </Button> */}
-              <FileUploader
-                maxSizeMB={5}
-                acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
-                onFileUpload={setUploadedFile}
-                // defaultFile={defaultValues?.image}
-              />
-            </Flex>
+                <Box>
+                  <Text size="2" as="p" weight="medium" className="text-gray12">
+                    Upload Files
+                  </Text>
+                  <Text
+                    size="2"
+                    as="p"
+                    weight="regular"
+                    className="text-gray11 w-[371px]"
+                  >
+                    Provide any document or image that would assist this
+                    specialist in rendering professional service to you
+                  </Text>
+                </Box>
+
+                {/* Only the upload button part renders here */}
+                <FileUploader
+                  maxSizeMB={5}
+                  acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
+                  onFileUpload={setUploadedFile}
+                />
+              </Flex>
+
+              {/* The previews will automatically render here */}
+            </div>
 
             <Button
               size="3"

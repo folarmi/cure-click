@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   filterObject,
   getAllCountryOptions,
+  isUploadedFileEmpty,
   keysToRemove,
   stringToNumber,
 } from "../../utils/util";
@@ -32,21 +33,18 @@ import { DashboardIcon as DashboardFilled } from "@radix-ui/react-icons";
 
 const UpdateDetails = ({ toggleModal }: any) => {
   const countryOptions = useMemo(() => getAllCountryOptions(), []);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [backendFileUrl, setBackendFileUrl] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<File | File[] | null>(null);
+  // const [backendFileUrl, setBackendFileUrl] = useState("");
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
+
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: doctorProfile?.data,
+  });
 
   const { mutate: uploadFile, isPending } = useFileUpload({
     successToast: () => `File uploaded successfully!`,
     errorToast: (error) => error.response?.data?.message || "Upload failed",
-    onSuccess: (data) => {
-      setBackendFileUrl(data?.data?.url);
-    },
-  });
-
-  const { control, handleSubmit, reset } = useForm({
-    defaultValues: doctorProfile?.data,
   });
 
   const updateDoctorProfileMutation = useCustomMutation({
@@ -65,19 +63,23 @@ const UpdateDetails = ({ toggleModal }: any) => {
     formData = {
       ...formData,
       yearsOfExperience: stringToNumber(data?.yearsOfExperience),
-      profilePictureUrl: backendFileUrl,
     };
-
-    updateDoctorProfileMutation.mutate(formData);
-  };
-
-  const updateProfilePicture = () => {
-    // console.log(uo)
-    if (uploadedFile) {
-      const formData = new FormData();
-      formData.append("file", uploadedFile);
-
-      uploadFile({ file: uploadedFile });
+    if (!isUploadedFileEmpty(uploadedFile)) {
+      // First upload file, then update profile
+      uploadFile(
+        { file: uploadedFile },
+        {
+          onSuccess: (uploadResponse) => {
+            updateDoctorProfileMutation.mutate({
+              ...formData,
+              profilePictureUrl: uploadResponse.data.url,
+            });
+          },
+        }
+      );
+    } else {
+      // No file to upload, just update profile
+      updateDoctorProfileMutation.mutate(formData);
     }
   };
 
@@ -125,7 +127,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
 
             <Button
               disabled={updateDoctorProfileMutation.isPending}
-              loading={updateDoctorProfileMutation.isPending}
+              loading={isPending || updateDoctorProfileMutation.isPending}
               className="bg-grass9 font-medium"
             >
               Save
@@ -146,6 +148,7 @@ const UpdateDetails = ({ toggleModal }: any) => {
                 <img
                   src={doctorProfile?.data?.profilePictureUrl || avatar}
                   className="w-16 h-16 object-fit"
+                  loading="lazy"
                 />
                 <Box className="ml-4">
                   <FileUploader
@@ -155,18 +158,6 @@ const UpdateDetails = ({ toggleModal }: any) => {
                     // defaultFile={defaultValues?.image}
                   />
 
-                  <Button
-                    size="2"
-                    className="bg-white text-neutral_11 font-medium text-sm mt-4"
-                    style={{
-                      border: "1px solid #00083046",
-                    }}
-                    type="button"
-                    onClick={() => updateProfilePicture()}
-                    loading={isPending}
-                  >
-                    Update Image
-                  </Button>
                   <Text as="p" size="1" className="text-gray10 pt-1">
                     Profile image should be less than 5mb
                   </Text>

@@ -35,6 +35,7 @@ const Sidebar = () => {
   };
 
   const pathName = location.pathname;
+
   return (
     <nav className="flex items-center justify-between py-5 px-4 md:px-16 bg-white border border-gray3">
       <img

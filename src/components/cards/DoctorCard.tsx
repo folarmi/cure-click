@@ -32,7 +32,14 @@ const DoctorCard = ({
 }: DoctorCardProp) => {
   return (
     <div className={`mb-6 mr-6`} style={{ width: `${cardWidth}px` }}>
-      <img src={image} />
+      <div className="w-[318px] h-[172px] overflow-hidden">
+        <img
+          src={image}
+          className="w-full h-full object-cover object-center"
+          loading="lazy"
+          alt="Doctor Profile Image"
+        />
+      </div>
       <CustomText className="text-iris_12 pt-2" size="medium" weight="semibold">
         {doctorName}
       </CustomText>

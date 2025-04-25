@@ -228,13 +228,16 @@ export const getTotalAvailableTimes = (weeklyData: any[]): number => {
 export const sortUpcomingAppointments = (
   data: Appointment[]
 ): Appointment[] => {
-  return data
-    ?.filter((app) => app?.appointmentStatus === "UPCOMING")
-    .sort((a, b) => {
-      const dateTimeA = new Date(`${a.appointmentDate}T${a.appointmentTime}`);
-      const dateTimeB = new Date(`${b.appointmentDate}T${b.appointmentTime}`);
-      return dateTimeA.getTime() - dateTimeB.getTime();
-    });
+  return (
+    data
+      ?.filter((app) => app?.appointmentStatus === "UPCOMING")
+      // ?.filter((app) => app?.appointmentStatus)
+      .sort((a, b) => {
+        const dateTimeA = new Date(`${a.appointmentDate}T${a.appointmentTime}`);
+        const dateTimeB = new Date(`${b.appointmentDate}T${b.appointmentTime}`);
+        return dateTimeA.getTime() - dateTimeB.getTime();
+      })
+  );
 };
 
 export const formatAppointmentTime = (date: string, time: string) => {

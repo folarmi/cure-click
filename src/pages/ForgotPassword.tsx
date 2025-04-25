@@ -19,7 +19,6 @@ const ForgotPassword = () => {
     successMessage: () => "Registration successful!",
     errorMessage: (error: any) => error?.response?.data?.remark,
     onSuccessCallback: (data) => {
-      console.log(data);
       // navigate("/login");
     },
   });

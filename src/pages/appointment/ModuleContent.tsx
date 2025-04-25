@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Flex } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import { CustomText } from "../../components/ui/CustomText";
 import { MeetingCard } from "../../components/cards/MeetingCard";
 
@@ -35,7 +35,6 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
   const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
 
   const sortedAppointments = sortUpcomingAppointments(appointmentsData?.data);
-
   const toggleModal = () => {
     setModal(!modal);
   };
@@ -83,26 +82,33 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
           </CustomText>
         </div>
 
-        <MeetingCard
-          title={sortedAppointments?.[0]?.topic}
-          date={sortedAppointments?.[0]?.appointmentDate}
-          time={formatAppointmentTime(
-            sortedAppointments?.[0]?.appointmentDate,
-            sortedAppointments?.[0]?.appointmentTime
-          )}
-          doctorName={getFullName(
-            sortedAppointments?.[0]?.doctor?.firstname,
-            sortedAppointments?.[0]?.doctor?.lastname
-          )}
-          patientName={getFullName(
-            sortedAppointments?.[0]?.patient?.firstname,
-            sortedAppointments?.[0]?.patient?.lastname
-          )}
-          speciality={sortedAppointments?.[0]?.doctor?.specialization}
-          onClick={toggleModal}
-          cancelOnClick={toggleCancel}
-          rescheduleOnClick={toggleRescheduleModal}
-        />
+        {sortedAppointments?.[0] === undefined ? (
+          <Text as="p" weight="regular" className="text-gray11 text-xl">
+            You have no upcoming appointments
+          </Text>
+        ) : (
+          <MeetingCard
+            title={sortedAppointments?.[0]?.topic}
+            date={sortedAppointments?.[0]?.appointmentDate}
+            time={formatAppointmentTime(
+              sortedAppointments?.[0]?.appointmentDate,
+              sortedAppointments?.[0]?.appointmentTime
+            )}
+            doctorName={getFullName(
+              sortedAppointments?.[0]?.doctor?.firstname,
+              sortedAppointments?.[0]?.doctor?.lastname
+            )}
+            patientName={getFullName(
+              sortedAppointments?.[0]?.patient?.firstname,
+              sortedAppointments?.[0]?.patient?.lastname
+            )}
+            speciality={sortedAppointments?.[0]?.doctor?.specialization}
+            onClick={toggleModal}
+            cancelOnClick={toggleCancel}
+            rescheduleOnClick={toggleRescheduleModal}
+          />
+        )}
+
         {sortedAppointments?.slice(1).map((item: Appointment) => {
           return (
             <div key={item?.publicId}>
