@@ -873,3 +873,12 @@ export const testActions = [
     value: "Cancel",
   },
 ];
+
+export const tabItems = [
+  { label: "All Appointments", value: "" },
+  { label: "Pending Appointments", value: "PENDING" },
+  { label: "Upcoming Appointments", value: "UPCOMING" },
+  { label: "Completed Appointments", value: "COMPLETED" },
+  { label: "Cancelled Appointments", value: "CANCELLED" },
+  { label: "Rescheduled", value: "RESCHEDULED", onlyFor: "doctor" },
+];

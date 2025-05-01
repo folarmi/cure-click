@@ -177,6 +177,18 @@ const DoctorCalendar = ({
   };
 
   const handleSelectedDay = (day: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to midnight
+
+    const selectedDay = new Date(day);
+    selectedDay.setHours(0, 0, 0, 0);
+
+    if (selectedDay < today) {
+      // Show warning (toast, alert, etc.)
+      toast.warning("You cannot select a past date.");
+      return;
+    }
+
     const dayOfWeek = day.toLocaleDateString("en-US", { weekday: "long" });
     const backendDay = dayMap[dayOfWeek];
     const matched = scheduleData?.sessions.find(

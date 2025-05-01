@@ -14,11 +14,7 @@ import { TableContent } from "./TableContent";
 // import { Calendar } from "./Calendar";
 
 import { AppointmentTab } from "../../components/atoms/AppointmentTab";
-import {
-  useGetData,
-  useGetDoctorAvailableSessions,
-  useGetPatientProfile,
-} from "../../lib/apiCalls";
+import { useGetData, useGetDoctorAvailableSessions } from "../../lib/apiCalls";
 import {
   getTotalAvailableTimes,
   transformAvailabilityToDays,
@@ -27,20 +23,23 @@ import { Link } from "react-router-dom";
 import { Loader } from "../../components/ui/Loader";
 import { useState } from "react";
 import { Appointment, emptyAppointment } from "../../utils/types";
+import { useForm } from "react-hook-form";
 
 const Appointments = () => {
+  const { control, getValues } = useForm();
+
   const [modal, setModal] = useState(false);
   const [cancelAppointment, setCancelAppointment] = useState(false);
   const [cancelledDetails, setCancelledDetails] = useState(false);
   const [upcomingDetails, setUpcomingDetails] = useState(false);
   const [rescheduleModal, setRescheduleModal] = useState(false);
   const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
+  const [activeTab, setActiveTab] = useState("");
+
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment>(emptyAppointment);
 
   const { userType, publicId } = useSelector((state: RootState) => state.auth);
-  const { data: profileData, isLoading: profileDataIsLoading } =
-    useGetPatientProfile(userType === "patient");
 
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
     publicId,
@@ -49,14 +48,15 @@ const Appointments = () => {
 
   const { data: appointmentsData, isLoading: appointmentsDataIsLoading } =
     useGetData({
-      url: `appointment/api/patients/${profileData?.data?.publicId}/appointments`,
-      queryKey: ["GetAllAppointments"],
-      enabled: !!profileData?.data?.publicId && userType === "patient",
+      url: `appointment/api/appointments?patient=${publicId}&appointmentStatus=${activeTab}&page=0&size=20`,
+      queryKey: ["GetAllAppointments", activeTab],
+      enabled: !!publicId && userType === "patient",
     });
 
   const { data: bookingsData, isLoading: bookingsDataIsLoading } = useGetData({
-    url: `appointment/api/doctors/${publicId}/bookings`,
-    queryKey: ["GetAllAppointments"],
+    // url: `appointment/api/doctors/${publicId}/bookings`,
+    url: `appointment/api/appointments?doctor=${publicId}&appointmentStatus=${activeTab}&page=0&size=20`,
+    queryKey: ["GetAllAppointments", activeTab],
     enabled: !!publicId && userType === "doctor",
   });
 
@@ -86,9 +86,7 @@ const Appointments = () => {
 
   return (
     <>
-      {profileDataIsLoading ||
-      appointmentsDataIsLoading ||
-      bookingsDataIsLoading ? (
+      {appointmentsDataIsLoading || bookingsDataIsLoading ? (
         <Loader />
       ) : (
         <DashboardLayout ifHeader={false}>
@@ -97,6 +95,8 @@ const Appointments = () => {
               routeName="Appointments"
               Icon={CalendarIcon}
               ifNameAndWalletBalance={false}
+              control={control}
+              getValues={getValues}
             />
           ) : (
             <DoctorDashboardHeader
@@ -177,7 +177,7 @@ const Appointments = () => {
                     </Link>
                   </Box>
                   <ModuleContent
-                    appointmentsData={bookingsData}
+                    appointmentsData={bookingsData?.data?.content}
                     modal={modal}
                     toggleModal={toggleModal}
                     selectedAppointment={selectedAppointment}
@@ -216,7 +216,7 @@ const Appointments = () => {
                   </div>
 
                   <TableContent
-                    appointmentsData={bookingsData}
+                    appointmentsData={bookingsData?.data?.content}
                     appointmentsDataIsLoading={bookingsDataIsLoading}
                     toggleModal={toggleModal}
                     toggleCancel={toggleCancel}
@@ -224,6 +224,8 @@ const Appointments = () => {
                     toggleUpcomingDetails={toggleUpcomingDetails}
                     setSelectedAppointment={setSelectedAppointment}
                     toggleRescheduleTwoModal={toggleRescheduleTwoModal}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                   />
                 </Box>
               </Flex>
@@ -238,7 +240,7 @@ const Appointments = () => {
             >
               <Box className="w-[28%]">
                 <ModuleContent
-                  appointmentsData={appointmentsData}
+                  appointmentsData={appointmentsData?.data?.content}
                   modal={modal}
                   toggleModal={toggleModal}
                   selectedAppointment={selectedAppointment}
@@ -257,7 +259,7 @@ const Appointments = () => {
 
               <Box className="w-full md:w-[72%] md:ml-6">
                 <TableContent
-                  appointmentsData={appointmentsData}
+                  appointmentsData={appointmentsData?.data?.content}
                   appointmentsDataIsLoading={appointmentsDataIsLoading}
                   toggleModal={toggleModal}
                   toggleCancel={toggleCancel}
@@ -265,6 +267,8 @@ const Appointments = () => {
                   toggleUpcomingDetails={toggleUpcomingDetails}
                   setSelectedAppointment={setSelectedAppointment}
                   toggleRescheduleTwoModal={toggleRescheduleTwoModal}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
                 />
               </Box>
             </Flex>

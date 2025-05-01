@@ -15,16 +15,19 @@ import {
   getStatusClassName,
   handleStatusAction,
 } from "../../utils/types";
+import { tabItems } from "../../utils/data";
 
 type Prop = {
   appointmentsData: any;
   appointmentsDataIsLoading: boolean;
   selectedAppointment?: Appointment;
+  activeTab: string;
   toggleModal: () => void;
   toggleCancel: () => void;
   toggleCancelledDetails: () => void;
   toggleUpcomingDetails: () => void;
   toggleRescheduleTwoModal: () => void;
+  setActiveTab: (arg0: string) => void;
   setSelectedAppointment?: (appointment: Appointment) => void;
 };
 
@@ -37,14 +40,14 @@ const TableContent = ({
   toggleUpcomingDetails,
   toggleRescheduleTwoModal,
   setSelectedAppointment,
+  activeTab,
+  setActiveTab,
 }: Prop) => {
-  // const { control } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
 
   const handleAction = (item: Appointment) => {
     setSelectedAppointment?.(item);
   };
-
   const columnHelper = createColumnHelper<any>();
   const columns = [
     columnHelper.accessor("doctor", {
@@ -224,6 +227,18 @@ const TableContent = ({
   //   },
   // ];
 
+  const renderTable = () => {
+    return (
+      <Table
+        // emptyState={userType === "patient" ? <EmptyAppointment /> : undefined}
+        emptyState={<EmptyAppointment />}
+        columns={columns}
+        data={appointmentsData}
+        isLoading={appointmentsDataIsLoading}
+      />
+    );
+  };
+
   return (
     <>
       <div>
@@ -238,45 +253,32 @@ const TableContent = ({
           View your appointment history.
         </CustomText>
 
-        <Tabs.Root className="" defaultValue="allAppointments">
+        <Tabs.Root
+          value={activeTab}
+          onValueChange={setActiveTab}
+          defaultValue=""
+        >
           <Tabs.List>
-            <Tabs.Trigger value="allAppointments">
-              All Appointments
-            </Tabs.Trigger>
-            <Tabs.Trigger value="upcomingAppointments">
-              Upcoming Appointments
-            </Tabs.Trigger>
-            <Tabs.Trigger value="completedAppointments">
-              Completed Appointments
-            </Tabs.Trigger>
-            <Tabs.Trigger value="cancelledAppointments">
-              Cancelled Appointments
-            </Tabs.Trigger>
-            {userType === "doctor" && (
-              <Tabs.Trigger value="cancelledAppointments">
-                Rescheduled
-              </Tabs.Trigger>
-            )}
+            {tabItems
+              .filter((item) => !item.onlyFor || item.onlyFor === userType)
+              .map((item) => (
+                <Tabs.Trigger key={item.value} value={item.value}>
+                  {item.label}
+                </Tabs.Trigger>
+              ))}
           </Tabs.List>
 
-          <Tabs.Content className=" w-full" value="allAppointments">
-            {userType === "patient" && (
-              <Table
-                emptyState={<EmptyAppointment />}
-                columns={columns}
-                data={appointmentsData?.data}
-                isLoading={appointmentsDataIsLoading}
-              />
-            )}
-            {userType === "doctor" && (
-              <Table
-                columns={columns}
-                // data={testAppointments}
-                data={appointmentsData?.data}
-                isLoading={appointmentsDataIsLoading}
-              />
-            )}
-          </Tabs.Content>
+          {tabItems
+            .filter((item) => !item.onlyFor || item.onlyFor === userType)
+            .map((item) => (
+              <Tabs.Content
+                key={item.value}
+                className="w-full"
+                value={item.value}
+              >
+                {renderTable()}
+              </Tabs.Content>
+            ))}
         </Tabs.Root>
       </div>
     </>

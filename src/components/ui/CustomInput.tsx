@@ -51,8 +51,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const parsedValue = onlyNumbers ? value.replace(/\D/g, "") : value;
+    const value = e?.target?.value;
+    const parsedValue = onlyNumbers ? value?.replace(/\D/g, "") : value;
     field.onChange(parsedValue);
   };
 

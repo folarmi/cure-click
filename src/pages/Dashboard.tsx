@@ -28,6 +28,7 @@ import { useEffect, useMemo } from "react";
 import { setPublicId } from "../lib/features/authSlice";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
+import { EmptyDoctorSearch } from "../components/emptyStates/EmptyDoctorSearch";
 // import { UpComingAppointments } from "../components/ui/UpComingAppointments";
 // import { decodeLogin } from "../utils/util";
 
@@ -81,7 +82,6 @@ const Dashboard = () => {
           routeName="Dashboard"
           control={control}
           getValues={getValues}
-          // setQueryString={setQueryString}
         />
       ) : (
         <DoctorDashboardHeader
@@ -119,26 +119,27 @@ const Dashboard = () => {
 
               <div className="md:flex">
                 <section className="flex flex-wrap w-full md:w-[75%] order-2 md:order-1">
-                  {doctorData?.data?.content?.map((item: any) => {
-                    return (
-                      <>
-                        <DoctorCard
-                          image={item?.profilePictureUrl || sampleDoctor}
-                          doctorName={`${getFullName(
-                            item?.firstname,
-                            item?.lastname
-                          )}`}
-                          doctorType={item?.specialization || "N/A"}
-                          desc={item?.hospitalWorkPlace || "N/A"}
-                          noOfSessions={3}
-                          cost="$35 Per Session"
-                          time="Today at 2:30pm"
-                          review="5 (13 reviews)"
-                          id={item?.publicId}
-                        />
-                      </>
-                    );
-                  })}
+                  {doctorData?.data?.content?.length > 0 ? (
+                    doctorData.data.content.map((item: any) => (
+                      <DoctorCard
+                        key={item?.publicId}
+                        image={item?.profilePictureUrl || sampleDoctor}
+                        doctorName={`${getFullName(
+                          item?.firstname,
+                          item?.lastname
+                        )}`}
+                        doctorType={item?.specialization || "N/A"}
+                        desc={item?.hospitalWorkPlace || "N/A"}
+                        noOfSessions={3}
+                        cost="$35 Per Session"
+                        time="Today at 2:30pm"
+                        review="5 (13 reviews)"
+                        id={item?.publicId}
+                      />
+                    ))
+                  ) : (
+                    <EmptyDoctorSearch />
+                  )}
                 </section>
 
                 <section className="w-full md:w-[25%] order-1 md:order-2 -mt-16">
