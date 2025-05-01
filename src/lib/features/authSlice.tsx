@@ -4,11 +4,13 @@ export type UserType = "doctor" | "patient" | "";
 
 interface AuthState {
   userType: UserType;
+  publicId: string;
   // registrationUserType: UserType
 }
 
 const initialState: AuthState = {
   userType: "patient",
+  publicId: "",
 };
 
 const authSlice = createSlice({
@@ -18,11 +20,14 @@ const authSlice = createSlice({
     setUserType: (state, action: PayloadAction<UserType>) => {
       state.userType = action.payload;
     },
+    setPublicId: (state, action: PayloadAction<string>) => {
+      state.publicId = action.payload;
+    },
     logout: () => {
       return initialState;
     },
   },
 });
 
-export const { setUserType, logout } = authSlice.actions;
+export const { setUserType, setPublicId, logout } = authSlice.actions;
 export default authSlice.reducer;

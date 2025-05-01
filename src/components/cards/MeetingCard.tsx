@@ -14,9 +14,17 @@ type Props = {
   speciality: string | null;
   ifButtons?: boolean;
   ifModal?: boolean;
+  ifPending?: boolean;
   onClick?: () => void;
   cancelOnClick?: () => void;
+  acceptOnClick?: () => void;
   rescheduleOnClick?: () => void;
+  joinOnClick?: () => void;
+  cancelLoading?: boolean;
+  acceptLoading?: boolean;
+  rescheduleLoading?: boolean;
+  joinLoading?: boolean;
+  joinDisabled?: boolean;
 };
 
 const MeetingCard = ({
@@ -28,9 +36,17 @@ const MeetingCard = ({
   speciality,
   ifButtons = true,
   ifModal = false,
-  onClick,
+  // onClick,
   cancelOnClick,
   rescheduleOnClick,
+  acceptOnClick,
+  joinOnClick,
+  ifPending = false,
+  acceptLoading,
+  cancelLoading,
+  joinLoading,
+  rescheduleLoading,
+  joinDisabled,
 }: Props) => {
   const userType = useSelector((state: RootState) => state.auth.userType);
 
@@ -99,32 +115,58 @@ const MeetingCard = ({
         <>
           <Separator className="w-full bg-[var(--meeting-card-divider-color)] my-5" />
 
-          <div className="flex items-center space-x-2 whitespace-nowrap">
+          <div className="flex items-center justify-between space-x-2 whitespace-nowrap">
             <Button
               size="3"
               style={{
                 border: "1px solid var(--meeting-card-divider-color)",
               }}
               onClick={cancelOnClick}
-              className="text-var(--meeting-card-button-color) bg-transparent font-medium text-base cursor-pointer"
+              loading={cancelLoading}
+              disabled={cancelLoading}
+              className={`text-var(--meeting-card-button-color) bg-transparent font-medium text-base cursor-pointer ${
+                ifModal ? "min-w-[125px]" : "w-fit"
+              }`}
             >
               Cancel
             </Button>
+            {ifPending ? (
+              <Button
+                onClick={acceptOnClick}
+                size="3"
+                variant="solid"
+                loading={acceptLoading}
+                disabled={acceptLoading}
+                className={`text-[var(--color-primary)] bg-iris2 cursor-pointer ${
+                  ifModal ? "min-w-[125px]" : "w-fit"
+                }`}
+              >
+                Accept
+              </Button>
+            ) : (
+              <Button
+                size="3"
+                loading={rescheduleLoading}
+                disabled={rescheduleLoading}
+                style={{
+                  border: "1px solid var(--meeting-card-divider-color)",
+                }}
+                className="text-var(--meeting-card-button-color) bg-transparent"
+                onClick={rescheduleOnClick}
+              >
+                Reschedule
+              </Button>
+            )}
+
             <Button
-              size="3"
-              style={{
-                border: "1px solid var(--meeting-card-divider-color)",
-              }}
-              className="text-var(--meeting-card-button-color) bg-transparent"
-              onClick={rescheduleOnClick}
-            >
-              Reschedule
-            </Button>
-            <Button
-              onClick={onClick}
+              onClick={joinOnClick}
+              loading={joinLoading}
+              disabled={joinDisabled}
               size="3"
               variant="solid"
-              className="text-[var(--color-primary)] bg-iris2 cursor-pointer"
+              className={`text-[var(--color-primary)] bg-iris2 cursor-pointer ${
+                ifModal ? "min-w-[125px]" : "w-fit"
+              }`}
             >
               Join
             </Button>

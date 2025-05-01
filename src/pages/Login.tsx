@@ -18,6 +18,8 @@ const Login = () => {
   const { loginFromContext } = useAuth();
   const dispatch = useDispatch();
 
+  // const { data: doctorProfile } = useGetDoctorProfile(userType === "doctor");
+
   const loginMutation = useCustomMutation({
     endpoint: `auth/${import.meta.env.VITE_KEY_CLOAK}/token`,
     contentType: "application/x-www-form-urlencoded",

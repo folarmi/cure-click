@@ -17,7 +17,6 @@ import { AppointmentTab } from "../../components/atoms/AppointmentTab";
 import {
   useGetData,
   useGetDoctorAvailableSessions,
-  useGetDoctorProfile,
   useGetPatientProfile,
 } from "../../lib/apiCalls";
 import {
@@ -26,16 +25,25 @@ import {
 } from "../../utils/calendarutil";
 import { Link } from "react-router-dom";
 import { Loader } from "../../components/ui/Loader";
+import { useState } from "react";
+import { Appointment, emptyAppointment } from "../../utils/types";
 
 const Appointments = () => {
-  const userType = useSelector((state: RootState) => state.auth.userType);
+  const [modal, setModal] = useState(false);
+  const [cancelAppointment, setCancelAppointment] = useState(false);
+  const [cancelledDetails, setCancelledDetails] = useState(false);
+  const [upcomingDetails, setUpcomingDetails] = useState(false);
+  const [rescheduleModal, setRescheduleModal] = useState(false);
+  const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment>(emptyAppointment);
 
-  const { data: doctorProfile } = useGetDoctorProfile(userType === "doctor");
+  const { userType, publicId } = useSelector((state: RootState) => state.auth);
   const { data: profileData, isLoading: profileDataIsLoading } =
     useGetPatientProfile(userType === "patient");
 
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
-    doctorProfile?.data?.publicId,
+    publicId,
     userType === "doctor"
   );
 
@@ -47,10 +55,34 @@ const Appointments = () => {
     });
 
   const { data: bookingsData, isLoading: bookingsDataIsLoading } = useGetData({
-    url: `appointment/api/doctors/${doctorProfile?.data?.publicId}/bookings`,
+    url: `appointment/api/doctors/${publicId}/bookings`,
     queryKey: ["GetAllAppointments"],
-    enabled: !!doctorProfile?.data?.publicId && userType === "doctor",
+    enabled: !!publicId && userType === "doctor",
   });
+
+  const toggleModal = () => {
+    setModal(!modal);
+  };
+
+  const toggleCancel = () => {
+    setCancelAppointment(!cancelAppointment);
+  };
+
+  const toggleCancelledDetails = () => {
+    setCancelledDetails(!cancelledDetails);
+  };
+
+  const toggleUpcomingDetails = () => {
+    setUpcomingDetails(!upcomingDetails);
+  };
+
+  const toggleRescheduleTwoModal = () => {
+    setRescheduleModalTwo(!rescheduleModalTwo);
+  };
+
+  const toggleRescheduleModal = () => {
+    setRescheduleModal(!rescheduleModal);
+  };
 
   return (
     <>
@@ -82,7 +114,6 @@ const Appointments = () => {
                 <AppointmentTab />
               </div>
 
-              {/* {activeTab === "Appointment History" && ( */}
               <Flex justify="center" className="px-12">
                 <Box className="w-[28%]">
                   <Box className="border border-gray3 rounded-lg p-6 my-4">
@@ -145,7 +176,22 @@ const Appointments = () => {
                       </Button>
                     </Link>
                   </Box>
-                  <ModuleContent appointmentsData={bookingsData} />
+                  <ModuleContent
+                    appointmentsData={bookingsData}
+                    modal={modal}
+                    toggleModal={toggleModal}
+                    selectedAppointment={selectedAppointment}
+                    cancelAppointment={cancelAppointment}
+                    toggleCancel={toggleCancel}
+                    cancelledDetails={cancelledDetails}
+                    upcomingDetails={upcomingDetails}
+                    rescheduleModalTwo={rescheduleModalTwo}
+                    rescheduleModal={rescheduleModal}
+                    toggleCancelledDetails={toggleCancelledDetails}
+                    toggleRescheduleTwoModal={toggleRescheduleTwoModal}
+                    toggleUpcomingDetails={toggleUpcomingDetails}
+                    toggleRescheduleModal={toggleRescheduleModal}
+                  />
                 </Box>
 
                 <Box className="w-[72%] ml-6">
@@ -172,12 +218,15 @@ const Appointments = () => {
                   <TableContent
                     appointmentsData={bookingsData}
                     appointmentsDataIsLoading={bookingsDataIsLoading}
+                    toggleModal={toggleModal}
+                    toggleCancel={toggleCancel}
+                    toggleCancelledDetails={toggleCancelledDetails}
+                    toggleUpcomingDetails={toggleUpcomingDetails}
+                    setSelectedAppointment={setSelectedAppointment}
+                    toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                   />
                 </Box>
               </Flex>
-              {/* )} */}
-
-              {/* {activeTab === "Appointment Calendar" && <Calendar />} */}
             </>
           )}
 
@@ -188,13 +237,34 @@ const Appointments = () => {
               className="flex-col md:flex-row px-4 md:px-10 mt-10"
             >
               <Box className="w-[28%]">
-                <ModuleContent appointmentsData={appointmentsData} />
+                <ModuleContent
+                  appointmentsData={appointmentsData}
+                  modal={modal}
+                  toggleModal={toggleModal}
+                  selectedAppointment={selectedAppointment}
+                  cancelAppointment={cancelAppointment}
+                  toggleCancel={toggleCancel}
+                  cancelledDetails={cancelledDetails}
+                  upcomingDetails={upcomingDetails}
+                  rescheduleModalTwo={rescheduleModalTwo}
+                  rescheduleModal={rescheduleModal}
+                  toggleCancelledDetails={toggleCancelledDetails}
+                  toggleRescheduleTwoModal={toggleRescheduleTwoModal}
+                  toggleUpcomingDetails={toggleUpcomingDetails}
+                  toggleRescheduleModal={toggleRescheduleModal}
+                />
               </Box>
 
               <Box className="w-full md:w-[72%] md:ml-6">
                 <TableContent
                   appointmentsData={appointmentsData}
                   appointmentsDataIsLoading={appointmentsDataIsLoading}
+                  toggleModal={toggleModal}
+                  toggleCancel={toggleCancel}
+                  toggleCancelledDetails={toggleCancelledDetails}
+                  toggleUpcomingDetails={toggleUpcomingDetails}
+                  setSelectedAppointment={setSelectedAppointment}
+                  toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                 />
               </Box>
             </Flex>

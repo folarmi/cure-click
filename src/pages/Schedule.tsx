@@ -27,6 +27,7 @@ import {
   capitalize,
   convertStartTimeToBackendFormat,
   getFullName,
+  isUploadedFileEmpty,
   renderCommaSeparatedSpans,
 } from "../utils/util";
 import { format, parseISO } from "date-fns";
@@ -65,18 +66,7 @@ const Schedule = () => {
   const { mutate: uploadFile, isPending } = useFileUpload({
     url: "appointment/api/files/upload-multiple",
     successToast: () => `File uploaded successfully!`,
-    // errorToast: (error) => error.response?.data?.message || "Upload failed",
-    onSuccess: (data) => {
-      console.log(data);
-      // bookAppointment()
-    },
   });
-
-  const uploadFiles = () => {
-    uploadFile({
-      file: uploadedFile,
-    });
-  };
 
   const bookAppointmentMutation = useCustomMutation({
     endpoint: `appointment/api/appointments`,
@@ -95,11 +85,26 @@ const Schedule = () => {
       details: data.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
-      attachments: [uploadedFile],
     };
 
-    console.log(formData);
-    // bookAppointmentMutation.mutate(formData);
+    if (!isUploadedFileEmpty(uploadedFile)) {
+      // First upload file, then update profile
+      uploadFile(
+        { file: uploadedFile },
+        {
+          onSuccess: (uploadResponse) => {
+            console.log(uploadResponse);
+            bookAppointmentMutation.mutate({
+              ...formData,
+              attachments: uploadResponse.data.url,
+            });
+          },
+        }
+      );
+    } else {
+      // No file to upload, just update profile
+      bookAppointmentMutation.mutate(formData);
+    }
   };
 
   return (
@@ -238,7 +243,7 @@ const Schedule = () => {
             </Flex>
           </Box>
 
-          <form className="w-full" onSubmit={handleSubmit(uploadFiles)}>
+          <form className="w-full" onSubmit={handleSubmit(bookAppointment)}>
             <Box className="mt-3 bg-white border border-gray2 p-4 justify-start  rounded-md">
               <Text size="2" as="p" weight="medium" className="text-gray12">
                 Appointment Details
@@ -307,7 +312,9 @@ const Schedule = () => {
               size="3"
               variant="solid"
               radius="medium"
-              className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer  mx-6"
+              disabled={isPending || bookAppointmentMutation.isPending}
+              loading={isPending || bookAppointmentMutation.isPending}
+              className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer mx-6"
             >
               Proceed to Pay
             </Button>

@@ -4,10 +4,9 @@ import DashboardLayout from "../components/layouts/DashboardLayout";
 import { CustomText } from "../components/ui/CustomText";
 import { DashboardHeader } from "../components/ui/DashboardHeader";
 import sampleDoctor from "../assets/sampleDoctorOne.svg";
-import { MeetingCard } from "../components/cards/MeetingCard";
 import MeetingCardTwo from "../components/cards/MeetingCardTwo";
 import { DashboardIcon } from "@radix-ui/react-icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../lib/store";
 import { DoctorDashboardHeader } from "../components/ui/DoctorDashboardHeader";
 import { Flex, Text } from "@radix-ui/themes";
@@ -18,18 +17,38 @@ import Review from "../components/cards/Review";
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
 import { countriesData } from "../utils/data";
 import MobileSlider from "../components/ui/MobileSlider";
-import { useGetData, useGetDoctorProfile } from "../lib/apiCalls";
+import {
+  useGetData,
+  useGetDoctorProfile,
+  useGetPatientProfile,
+} from "../lib/apiCalls";
 import { getFullName } from "../utils/util";
 import { Loader } from "../components/ui/Loader";
+import { useEffect, useMemo } from "react";
+import { setPublicId } from "../lib/features/authSlice";
+import { useForm } from "react-hook-form";
+import { useLocation } from "react-router";
+// import { UpComingAppointments } from "../components/ui/UpComingAppointments";
 // import { decodeLogin } from "../utils/util";
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const { control, getValues } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
+
+  const searchParams = useMemo(() => {
+    return new URLSearchParams(location.search);
+  }, [location.search]);
+
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile(userType === "doctor");
+  const { data: patientProfileData } = useGetPatientProfile(
+    userType === "patient"
+  );
   const { data: doctorData, isLoading: doctorDataIsLoading } = useGetData({
-    url: `appointment/api/doctors?page=0&size=20`,
-    queryKey: ["GetAllDoctors"],
+    url: `appointment/api/doctors?${searchParams.toString()}&page=0&size=20`,
+    queryKey: ["GetAllDoctors", searchParams.toString()],
     enabled: userType === "patient",
   });
 
@@ -39,11 +58,31 @@ const Dashboard = () => {
     enabled: userType === "doctor",
   });
 
-  // console.log(reviewsData?.data?.content);
+  useEffect(() => {
+    dispatch(
+      setPublicId(
+        userType === "patient"
+          ? patientProfileData?.data?.publicId
+          : doctorProfile?.data?.publicId
+      )
+    );
+  }, [
+    dispatch,
+    doctorProfile?.data?.publicId,
+    patientProfileData?.data?.publicId,
+    userType,
+  ]);
+
   return (
     <DashboardLayout ifHeader={false}>
       {userType === "patient" ? (
-        <DashboardHeader Icon={DashboardIcon} routeName="Dashboard" />
+        <DashboardHeader
+          Icon={DashboardIcon}
+          routeName="Dashboard"
+          control={control}
+          getValues={getValues}
+          // setQueryString={setQueryString}
+        />
       ) : (
         <DoctorDashboardHeader
           name={`Hello 👋  ${getFullName(
@@ -119,31 +158,14 @@ const Dashboard = () => {
                       View your upcoming appointments
                     </CustomText>
                   </div>
-                  <MeetingCard
-                    title="Second Opinion on scheduled Cancer surgery"
-                    date="Today"
-                    time="11:30PM GMT+1 ( In 30 min)"
-                    doctorName="Dr. Alison Ogaga"
-                    speciality="General Practioner"
-                  />
-                  <MeetingCardTwo
-                    title="Second Opinion on scheduled Cancer surge.."
-                    date="1 July 2023"
-                    time="11:30PM GMT+1"
-                    doctorName="Dr. Alison Ogaga"
-                  />
-                  <MeetingCardTwo
-                    title="Second Opinion on scheduled Cancer surge.."
-                    date="1 July 2023"
-                    time="11:30PM GMT+1"
-                    doctorName="Dr. Alison Ogaga"
-                  />
-                  <MeetingCardTwo
-                    title="Second Opinion on scheduled Cancer surge.."
-                    date="1 July 2023"
-                    time="11:30PM GMT+1"
-                    doctorName="Dr. Alison Ogaga"
-                  />
+
+                  {/* <UpComingAppointments
+                    sortedAppointments={sortedAppointments}
+                    toggleCancel={toggleCancel}
+                    toggleMeetingCardTwoModal={toggleMeetingCardTwoModal}
+                    toggleModal={toggleModal}
+                    toggleRescheduleModal={toggleRescheduleModal}
+                  /> */}
                 </section>
               </div>
             </section>

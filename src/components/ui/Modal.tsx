@@ -9,7 +9,7 @@ const Modal = ({ show, toggleModal, children }: any) => {
     <>
       {show && (
         <div
-          className="fixed inset-0 bg-transparent bg-black bg-opacity-50 backdrop-blur-sm"
+          className="fixed inset-0 bg-transparent bg-black bg-opacity-50 backdrop-blur-sm z-50"
           onClick={toggleModal}
         ></div>
       )}

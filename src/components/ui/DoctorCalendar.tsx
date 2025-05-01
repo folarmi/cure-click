@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // // /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -22,12 +23,13 @@ import CustomSelect from "./CustomSelect";
 import { monthsOfTheYear } from "../../utils/data";
 import { getCurrencySymbol } from "../../utils/util";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface DoctorCalendarProps {
   singleDoctorData: any;
   ifPrice?: boolean;
   customSubmit?: boolean;
-  submitFunction?: () => void;
+  submitFunction?: (payload: any) => void;
   scheduleData: {
     sessions: Array<{
       publicId: string;
@@ -93,17 +95,15 @@ const DoctorCalendar = ({
 
   const CustomDateHeader = ({ date }: { date: Date; value: Date }) => {
     const hasEvents = hasEventsOnDate(date);
-    const isCurrentMonth =
-      date.getMonth() === new Date(scheduleData?.date).getMonth();
+    // const isCurrentMonth =
+    //   date.getMonth() === new Date(scheduleData?.date).getMonth();
     const isSelected = selectedDate && isSameDay(date, selectedDate);
     const isToday = isSameDay(date, new Date());
 
     const handleClick = (e: React.MouseEvent) => {
       e.stopPropagation();
-      if (isCurrentMonth) {
-        setSelectedDate(date);
-        handleSelectedDay(date);
-      }
+      setSelectedDate(date);
+      handleSelectedDay(date);
     };
 
     return (
@@ -112,7 +112,6 @@ const DoctorCalendar = ({
           type="button"
           className={`rbc-button-link 
             ${hasEvents ? "date-has-events" : "date-no-events"} 
-            ${!isCurrentMonth ? "date-other-month" : ""}
             ${isToday ? "date-today" : ""}
             ${isSelected ? "date-selected" : ""}`}
         >
@@ -142,12 +141,29 @@ const DoctorCalendar = ({
   };
 
   const handleSelectedTimeSlot = () => {
-    dispatch(updateDoctorId(id || ""));
-    dispatch(updateTimeSlot(selectedTimeSlot || ""));
-    if (selectedDate) {
-      dispatch(updateDate(selectedDate.toISOString()));
+    if (!selectedTimeSlot || !selectedDate) {
+      toast.error("Missing required data: Time slot or date not selected");
+      return;
     }
-    navigate("/dashboard/schedule");
+
+    const payload = {
+      timeSlot: selectedTimeSlot,
+      date: selectedDate?.toISOString(),
+    };
+
+    try {
+      dispatch(updateDoctorId(id || ""));
+      dispatch(updateTimeSlot(selectedTimeSlot || ""));
+      dispatch(updateDate(selectedDate.toISOString()));
+
+      if (customSubmit && submitFunction) {
+        submitFunction?.(payload);
+      } else {
+        navigate("/dashboard/schedule");
+      }
+    } catch (error: any) {
+      toast.error("Failed to handle time slot selection:", error);
+    }
   };
 
   const dayMap: Record<string, string> = {
@@ -252,7 +268,7 @@ const DoctorCalendar = ({
       </div>
 
       <div className="grid grid-cols-2">
-        {availableTimes.map(({ timeSlot }) => {
+        {availableTimes?.map(({ timeSlot }) => {
           return (
             <Box
               className="mt-2 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer"
@@ -277,11 +293,11 @@ const DoctorCalendar = ({
         size="3"
         variant="solid"
         radius="medium"
-        onClick={customSubmit ? submitFunction : handleSelectedTimeSlot}
+        onClick={handleSelectedTimeSlot}
         disabled={!selectedTimeSlot}
         className="bg-grass9 w-full font-medium mt-8 text-base cursor-pointer"
       >
-        Book a Session
+        {ifPrice ? "Book a Session" : "Reschedule"}
       </Button>
     </div>
   );

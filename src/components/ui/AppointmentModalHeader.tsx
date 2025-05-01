@@ -17,7 +17,7 @@ const AppointmentModalHeader = ({
         <Text as="p" className="font-semibold text-gray12" size="4">
           {text}
         </Text>
-        <BiX onClick={toggleModal} className="cursor-pointer" />
+        <BiX onClick={toggleModal} className="cursor-pointer w-6 h-6" />
       </Flex>
     </div>
   );

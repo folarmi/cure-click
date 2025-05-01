@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IoWalletOutline } from "react-icons/io5";
 import { CustomText } from "./CustomText";
 import sampleImage from "../../assets/sampleImage.svg";
@@ -6,27 +7,44 @@ import { sampleSpecializations } from "../../utils/data";
 import { CustomButton } from "./CustomButton";
 import { CalendarIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { CustomInput } from "./CustomInput";
-import { useNavigate } from "react-router";
 import { BackgroundHeader } from "./BackgroundHeader";
 import Breadcrumb from "./BreadCrumb";
-import { useForm } from "react-hook-form";
 import { decodeLogin, getAllCountryOptions } from "../../utils/util";
 import { useMemo } from "react";
+import { useNavigate } from "react-router";
 
 type Prop = {
   ifNameAndWalletBalance?: boolean;
   routeName: string;
   Icon: React.ComponentType<{ className?: string }>;
+  control: any;
+  getValues: any;
 };
 
 const DashboardHeader = ({
   ifNameAndWalletBalance = true,
   routeName,
   Icon,
+  control,
+  getValues,
 }: Prop) => {
   const navigate = useNavigate();
-  const { control } = useForm();
   const countryOptions = useMemo(() => getAllCountryOptions(), []);
+
+  const generateQueryString = () => {
+    const rawValues = getValues();
+
+    const filteredValues = Object.fromEntries(
+      Object.entries(rawValues)
+        .filter(
+          ([, value]) => value !== undefined && value !== null && value !== ""
+        )
+        .map(([key, value]) => [key, String(value)]) // cast values to string
+    );
+
+    const queryString = new URLSearchParams(filteredValues).toString();
+    navigate(`/dashboard/?${queryString}`);
+  };
 
   return (
     <BackgroundHeader>
@@ -101,31 +119,32 @@ const DashboardHeader = ({
             ifGrayBg
             // className="hidden md:block"
           />
+
+          <CustomInput
+            icon={<MagnifyingGlassIcon />}
+            label=""
+            placeholder="Search by Firstname"
+            type="text"
+            className="bg-alpha_3"
+            ifGrayBg
+            control={control}
+            name="firstname"
+          />
           <CustomInput
             label=""
-            placeholder="Search by Availability"
+            placeholder="Search by Lastname"
             icon={<CalendarIcon />}
             className="bg-alpha_3 hidden md:block"
             type="text"
             ifGrayBg
             control={control}
-            name="availability"
-          />
-          <CustomInput
-            icon={<MagnifyingGlassIcon />}
-            label=""
-            placeholder="Search Workplace"
-            type="text"
-            className="bg-alpha_3"
-            ifGrayBg
-            control={control}
-            name="workplace"
+            name="lastname"
           />
           <CustomButton
             icon={<MagnifyingGlassIcon />}
             variant="primary"
             className="whitespace-nowrap cursor-pointer"
-            onClick={() => navigate("/dashboard/results")}
+            onClick={generateQueryString}
           >
             Search For a Specialist
           </CustomButton>

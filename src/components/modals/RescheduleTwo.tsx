@@ -20,6 +20,7 @@ const RescheduleTwo = ({ toggleModal }: any) => {
           patientName="Kemi Ukpong"
           ifView={false}
           ifSpaceBetween={false}
+          ifButtons
         />
         <Box className="mt-6 px-6">
           <Text size="3" className="text-gray12">

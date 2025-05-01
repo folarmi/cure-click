@@ -16,7 +16,7 @@ const ForgotPassword = () => {
     endpoint: `appointment/api/${
       userType === "patient" ? "patients" : "doctors"
     }/forget-password`,
-    successMessage: () => "Registration successful!",
+    successMessage: () => "Reset Password Link Sent!",
     errorMessage: (error: any) => error?.response?.data?.remark,
     onSuccessCallback: (data) => {
       // navigate("/login");

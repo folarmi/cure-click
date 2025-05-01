@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Badge,
-  Box,
-  // Button,
-  // ChevronDownIcon,
-  Tabs,
-  Text,
-} from "@radix-ui/themes";
+import { Badge, Box, Tabs, Text } from "@radix-ui/themes";
 import { CustomText } from "../../components/ui/CustomText";
 import { RootState } from "../../lib/store";
 import { useSelector } from "react-redux";
@@ -16,53 +9,40 @@ import avatar from "../../assets/avatar.svg";
 import { getFullName } from "../../utils/util";
 import { format, parse } from "date-fns";
 import { EmptyAppointment } from "../../components/emptyStates/EmptyAppointment";
-import CustomSelect from "../../components/ui/CustomSelect";
-import { useForm } from "react-hook-form";
-import { testActions } from "../../utils/data";
-import { useState } from "react";
-import { useCustomMutation } from "../../lib/apiCalls";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  Appointment,
+  appointmentStatusLabels,
+  getStatusClassName,
+  handleStatusAction,
+} from "../../utils/types";
 
 type Prop = {
   appointmentsData: any;
   appointmentsDataIsLoading: boolean;
+  selectedAppointment?: Appointment;
+  toggleModal: () => void;
+  toggleCancel: () => void;
+  toggleCancelledDetails: () => void;
+  toggleUpcomingDetails: () => void;
+  toggleRescheduleTwoModal: () => void;
+  setSelectedAppointment?: (appointment: Appointment) => void;
 };
 
 const TableContent = ({
   appointmentsData,
   appointmentsDataIsLoading,
+  toggleModal,
+  toggleCancel,
+  toggleCancelledDetails,
+  toggleUpcomingDetails,
+  toggleRescheduleTwoModal,
+  setSelectedAppointment,
 }: Prop) => {
-  const { control } = useForm();
-  const queryClient = useQueryClient();
-
+  // const { control } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
 
-  const [selectedId, setSelectedId] = useState("");
-
-  const acceptAppointmentMutation = useCustomMutation({
-    endpoint: `appointment/api/doctors/appointment/accept/${selectedId}`,
-    successMessage: () => "Appointment Updated sucessfully",
-    onSuccessCallback: () => {
-      queryClient.invalidateQueries({ queryKey: ["GetAllAppointments"] });
-    },
-  });
-
-  const cancelAppointmentMutation = useCustomMutation({
-    endpoint: `appointment/api/doctors/appointment/decline/${selectedId}`,
-    successMessage: () => "Appointment Updated sucessfully",
-    onSuccessCallback: () => {
-      queryClient.invalidateQueries({ queryKey: ["GetAllAppointments"] });
-    },
-  });
-
-  const handleAction = (item: string, id: string) => {
-    setSelectedId(id);
-
-    if (item === "Accept") {
-      acceptAppointmentMutation.mutate({});
-    } else if (item === "Cancel") {
-      cancelAppointmentMutation.mutate({});
-    }
+  const handleAction = (item: Appointment) => {
+    setSelectedAppointment?.(item);
   };
 
   const columnHelper = createColumnHelper<any>();
@@ -148,34 +128,101 @@ const TableContent = ({
         <Badge
           size="2"
           variant="soft"
-          className={`font-medium ${
-            info.getValue() === "UPCOMING"
-              ? "bg-blueA3 text-blueA11"
-              : "bg-tomatoA3 text-tomatoA11"
-          }`}
+          className={getStatusClassName(info.getValue())}
         >
-          {info.getValue().toLowerCase()}
+          {appointmentStatusLabels[info.getValue()]}
         </Badge>
       ),
     }),
 
     columnHelper.accessor("publicId", {
       header: "",
-      cell: (info) => (
-        <CustomSelect
-          options={testActions}
-          placeholder="Actions"
-          name="availabilityStatus"
-          control={control}
-          className="w-[346px]"
-          customOnChange={(item) => {
-            const id = info.getValue();
-            handleAction(item, id);
-          }}
-        />
-      ),
+      cell: (info) => {
+        const status = info.row.original?.appointmentStatus;
+
+        return (
+          <p
+            className="cursor-pointer"
+            onClick={() => {
+              handleAction(info.row.original);
+              handleStatusAction(status, {
+                toggleModal: () => toggleModal(),
+                toggleCancel: () => toggleCancel(),
+                toggleCancelledDetails: () => toggleCancelledDetails(),
+                toggleUpcomingDetails: () => toggleUpcomingDetails(),
+                toggleRescheduleTwoModal: () => toggleRescheduleTwoModal(),
+              });
+            }}
+          >
+            View
+          </p>
+        );
+      },
     }),
   ];
+
+  // const testAppointments = [
+  //   ...appointmentsData?.data,
+  //   {
+  //     doctor: {
+  //       publicId: "131738A1205K6988",
+  //       createdDate: null,
+  //       lastModifiedDate: "2025-04-17T16:30:19.931603",
+  //       createdBy: null,
+  //       modifiedBy: null,
+  //       username: "raqaxines",
+  //       firstname: "Hayes",
+  //       lastname: "Hayes",
+  //       biography: "I am who i am by God",
+  //       email: "doctorTwo@mailinator.com",
+  //       profilePictureUrl:
+  //         "http://res.cloudinary.com/dkkelxvme/image/upload/v1744921812/meikzybqlnuwtt4ickxd.png",
+  //       yearsOfExperience: 8,
+  //       pricing: "1000",
+  //       specialization: "Endocrinology",
+  //       currency: "EURO",
+  //       country: null,
+  //       gender: "FEMALE",
+  //       availabilityStatus: "AVAILABLE",
+  //       hospitalWorkPlace: "Test workplace",
+  //       languages: ["Arabic", "Armenian"],
+  //       files: {},
+  //     },
+  //     patient: {
+  //       publicId: "10085709HO7F27468",
+  //       createdDate: "2025-04-16T10:08:57.217555",
+  //       lastModifiedDate: "2025-04-16T10:08:57.217555",
+  //       createdBy: null,
+  //       modifiedBy: null,
+  //       username: "hijic",
+  //       firstname: "Phillip",
+  //       lastname: "Slater",
+  //       email: "realPatient@mailinator.com",
+  //       country: null,
+  //       gender: null,
+  //       profilePictureUrl: null,
+  //       files: {},
+  //     },
+  //     topic: "ggg",
+  //     details: "jbhjbjh",
+  //     active: true,
+  //     appointmentStatus: "REQUESTED_RESCHEDULE",
+  //     meetingLink: null,
+  //     transactionId: "string",
+  //     appointmentDate: "2025-04-30",
+  //     appointmentTime: "07:00:00",
+  //     doctorCancellationReason: null,
+  //     patientCancellationReason: null,
+  //     doctorReschedulingReason: null,
+  //     patientReschedulingReason: null,
+  //     publicId: "1253229Z7MN514112",
+  //     createdDate: "2025-04-28T12:53:22.95947",
+  //     lastModifiedDate: "2025-04-28T13:13:00.842133",
+  //     createdBy: "hijic",
+  //     modifiedBy: null,
+  //     attachments: [],
+  //   },
+  // ];
 
   return (
     <>
@@ -224,7 +271,7 @@ const TableContent = ({
             {userType === "doctor" && (
               <Table
                 columns={columns}
-                // data={doctorSampleData}
+                // data={testAppointments}
                 data={appointmentsData?.data}
                 isLoading={appointmentsDataIsLoading}
               />

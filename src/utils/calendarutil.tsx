@@ -61,7 +61,7 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
   let startDate = new Date();
   try {
     if (scheduleData?.date) {
-      const parsed = parseISO(scheduleData.date);
+      const parsed = parseISO(scheduleData?.date);
       if (isValid(parsed)) startDate = parsed;
     }
   } catch (e) {
@@ -228,16 +228,27 @@ export const getTotalAvailableTimes = (weeklyData: any[]): number => {
 export const sortUpcomingAppointments = (
   data: Appointment[]
 ): Appointment[] => {
-  return (
-    data
-      ?.filter((app) => app?.appointmentStatus === "UPCOMING")
-      // ?.filter((app) => app?.appointmentStatus)
-      .sort((a, b) => {
-        const dateTimeA = new Date(`${a.appointmentDate}T${a.appointmentTime}`);
-        const dateTimeB = new Date(`${b.appointmentDate}T${b.appointmentTime}`);
-        return dateTimeA.getTime() - dateTimeB.getTime();
-      })
-  );
+  const currentDateTime = new Date();
+
+  // return data
+  //   ?.filter((app) => app?.appointmentStatus === "UPCOMING"
+  // )
+  return data
+    ?.filter((app) => {
+      // Check if status is UPCOMING AND date/time is in the future
+      const isUpcoming = app?.appointmentStatus === "UPCOMING";
+      if (!isUpcoming) return false;
+
+      const appointmentDateTime = new Date(
+        `${app?.appointmentDate}T${app?.appointmentTime}`
+      );
+      return appointmentDateTime > currentDateTime; // Only keep future appointments
+    })
+    .sort((a, b) => {
+      const dateTimeA = new Date(`${a.appointmentDate}T${a.appointmentTime}`);
+      const dateTimeB = new Date(`${b.appointmentDate}T${b.appointmentTime}`);
+      return dateTimeA.getTime() - dateTimeB.getTime();
+    });
 };
 
 export const formatAppointmentTime = (date: string, time: string) => {
@@ -247,3 +258,38 @@ export const formatAppointmentTime = (date: string, time: string) => {
 
   return `${formattedTime} (${relative})`;
 };
+
+// utils/formatDate.ts
+
+export function formatDateToReadableString(dateString: string): string {
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    return "Invalid Date";
+  }
+
+  const day = date.getDate();
+  const month = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
+
+// utils/formatTime.ts
+
+export function formatTimeTo12Hour(timeString: string): string {
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  if (isNaN(hours) || isNaN(minutes)) {
+    return "Invalid Time";
+  }
+
+  const date = new Date();
+  date.setHours(hours, minutes);
+
+  return date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}

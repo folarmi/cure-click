@@ -6,6 +6,7 @@ import { AppointmentSubCard } from "../ui/AppointmentSubCard";
 const MeetingTwoDetailsCard = ({
   toggleModal,
   toggleMeetingTwoCancel,
+  selectedAppointment,
 }: any) => {
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
@@ -21,7 +22,11 @@ const MeetingTwoDetailsCard = ({
         ifSpaceBetween={false}
       />
 
-      <AppointmentSubCard />
+      <AppointmentSubCard
+        status={selectedAppointment?.appointmentStatus}
+        date={selectedAppointment?.appointmentDate}
+        time={selectedAppointment?.appointmentTime}
+      />
     </div>
   );
 };

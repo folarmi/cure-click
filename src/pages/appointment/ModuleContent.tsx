@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Flex, Text } from "@radix-ui/themes";
+import { Box, Flex } from "@radix-ui/themes";
 import { CustomText } from "../../components/ui/CustomText";
-import { MeetingCard } from "../../components/cards/MeetingCard";
 
-import MeetingCardTwo from "../../components/cards/MeetingCardTwo";
 import Modal from "../../components/ui/Modal";
 import { RescheduleTwo } from "../../components/modals/RescheduleTwo";
 import { Reschedule } from "../../components/modals/Reschedule";
@@ -13,38 +11,52 @@ import CompletedAppointment from "../../components/modals/CompletedAppointment";
 import { MeetingTwoDetailsCard } from "../../components/modals/MeetingTwoDetailsCard";
 import AppointmentDetails from "../../components/modals/AppointmentDetails";
 import { useState } from "react";
-import {
-  formatAppointmentTime,
-  sortUpcomingAppointments,
-} from "../../utils/calendarutil";
-import { getFullName } from "../../utils/util";
+import { sortUpcomingAppointments } from "../../utils/calendarutil";
 import { Appointment } from "../../utils/types";
-import { format, parse } from "date-fns";
+import { UpcomingAppointment } from "../../components/modals/UpcomingAppointment";
+import { UpComingAppointments } from "../../components/ui/UpComingAppointments";
 
 type Prop = {
   appointmentsData: any;
+  modal: boolean;
+  cancelAppointment: boolean;
+  cancelledDetails: boolean;
+  upcomingDetails: boolean;
+  rescheduleModal: boolean;
+  rescheduleModalTwo: boolean;
+  toggleModal: () => void;
+  toggleCancel: () => void;
+  toggleCancelledDetails: () => void;
+  toggleUpcomingDetails: () => void;
+  toggleRescheduleModal: () => void;
+  toggleRescheduleTwoModal: () => void;
+  selectedAppointment: Appointment;
 };
 
-const ModuleContent = ({ appointmentsData }: Prop) => {
-  const [modal, setModal] = useState(false);
+const ModuleContent = ({
+  appointmentsData,
+  modal,
+  cancelAppointment,
+  selectedAppointment,
+  cancelledDetails,
+  upcomingDetails,
+  rescheduleModalTwo,
+  rescheduleModal,
+  toggleModal,
+  toggleCancel,
+  toggleUpcomingDetails,
+  toggleCancelledDetails,
+  toggleRescheduleTwoModal,
+  toggleRescheduleModal,
+}: Prop) => {
   const [meetingCardTwoModal, setMeetingCardTwoModal] = useState(false);
-  const [cancelAppointment, setCancelAppointment] = useState(false);
   const [completedAppointment, setCompletedAppointment] = useState(false);
   const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
-  const [rescheduleModal, setRescheduleModal] = useState(false);
-  const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
 
   const sortedAppointments = sortUpcomingAppointments(appointmentsData?.data);
-  const toggleModal = () => {
-    setModal(!modal);
-  };
 
   const toggleMeetingCardTwoModal = () => {
     setMeetingCardTwoModal(!meetingCardTwoModal);
-  };
-
-  const toggleCancel = () => {
-    setCancelAppointment(!cancelAppointment);
   };
 
   const toggleCompletedAppointment = () => {
@@ -57,15 +69,6 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
     }
     setMeetingTwoCancel(!meetingTwoCancel);
   };
-
-  const toggleRescheduleModal = () => {
-    setRescheduleModal(!rescheduleModal);
-  };
-
-  const toggleRescheduleTwoModal = () => {
-    setRescheduleModalTwo(!rescheduleModalTwo);
-  };
-
   return (
     <Flex className="flex-col md:flex-row">
       <Box>
@@ -82,57 +85,23 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
           </CustomText>
         </div>
 
-        {sortedAppointments?.[0] === undefined ? (
-          <Text as="p" weight="regular" className="text-gray11 text-xl">
-            You have no upcoming appointments
-          </Text>
-        ) : (
-          <MeetingCard
-            title={sortedAppointments?.[0]?.topic}
-            date={sortedAppointments?.[0]?.appointmentDate}
-            time={formatAppointmentTime(
-              sortedAppointments?.[0]?.appointmentDate,
-              sortedAppointments?.[0]?.appointmentTime
-            )}
-            doctorName={getFullName(
-              sortedAppointments?.[0]?.doctor?.firstname,
-              sortedAppointments?.[0]?.doctor?.lastname
-            )}
-            patientName={getFullName(
-              sortedAppointments?.[0]?.patient?.firstname,
-              sortedAppointments?.[0]?.patient?.lastname
-            )}
-            speciality={sortedAppointments?.[0]?.doctor?.specialization}
-            onClick={toggleModal}
-            cancelOnClick={toggleCancel}
-            rescheduleOnClick={toggleRescheduleModal}
-          />
-        )}
-
-        {sortedAppointments?.slice(1).map((item: Appointment) => {
-          return (
-            <div key={item?.publicId}>
-              <MeetingCardTwo
-                title={item?.topic}
-                date={item?.appointmentDate}
-                time={format(
-                  parse(item?.appointmentTime, "HH:mm:ss", new Date()),
-                  "h:mm a"
-                )}
-                doctorName={getFullName(
-                  item?.doctor?.firstname,
-                  item?.doctor?.lastname
-                )}
-                onClick={toggleMeetingCardTwoModal}
-              />
-            </div>
-          );
-        })}
+        <UpComingAppointments
+          sortedAppointments={sortedAppointments}
+          toggleCancel={toggleCancel}
+          toggleMeetingCardTwoModal={toggleMeetingCardTwoModal}
+          toggleModal={toggleModal}
+          toggleRescheduleModal={toggleRescheduleModal}
+        />
       </Box>
 
+      {/* Pending and Active Appointment Details Page */}
       <Modal show={modal} toggleModal={toggleModal}>
         <div className="p-4">
-          <AppointmentDetails toggleModal={toggleModal} />
+          <AppointmentDetails
+            toggleModal={toggleModal}
+            selectedAppointment={selectedAppointment}
+            toggleCancel={toggleCancel}
+          />
         </div>
       </Modal>
 
@@ -141,6 +110,7 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
           <MeetingTwoDetailsCard
             toggleModal={toggleMeetingCardTwoModal}
             toggleMeetingTwoCancel={toggleMeetingTwoCancel}
+            selectedAppointment={selectedAppointment}
           />
         </div>
       </Modal>
@@ -152,7 +122,31 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
         <div className="p-4">
           <CompletedAppointment
             toggleModal={toggleCompletedAppointment}
-            // ifCompleted={false}
+            selectedAppointment={selectedAppointment}
+          />
+        </div>
+      </Modal>
+
+      {/* Cancelled Appointment Details Page */}
+      <Modal show={cancelledDetails} toggleModal={toggleCancelledDetails}>
+        <div className="p-4">
+          <CompletedAppointment
+            toggleModal={toggleCancelledDetails}
+            ifCompleted={false}
+            selectedAppointment={selectedAppointment}
+          />
+        </div>
+      </Modal>
+
+      {/* Upcoming Appointment Details Page */}
+      <Modal show={upcomingDetails} toggleModal={toggleUpcomingDetails}>
+        <div className="p-4">
+          <UpcomingAppointment
+            toggleModal={toggleUpcomingDetails}
+            selectedAppointment={selectedAppointment}
+            toggleCancel={toggleCancel}
+            toggleRescheduleModal={toggleRescheduleModal}
+            toggleRescheduleTwoModal={toggleRescheduleTwoModal}
           />
         </div>
       </Modal>
@@ -175,7 +169,8 @@ const ModuleContent = ({ appointmentsData }: Prop) => {
       <Modal show={rescheduleModal} toggleModal={toggleRescheduleModal}>
         <div className="p-4">
           <Reschedule
-            details={sortedAppointments?.[0]}
+            // details={sortedAppointments?.[0] || selectedAppointment} - find a fix for passing the selected appointment to the blue/green card on the left
+            details={selectedAppointment}
             toggleModal={toggleRescheduleModal}
           />
         </div>

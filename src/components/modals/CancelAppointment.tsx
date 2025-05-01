@@ -12,7 +12,11 @@ import { getFullName } from "../../utils/util";
 import { useState } from "react";
 import { CustomRadioGroup } from "../CustomRadioGroup";
 import { reasonsForCancelling } from "../../utils/data";
-import { useCustomMutation, useGetPatientProfile } from "../../lib/apiCalls";
+import {
+  useCustomMutation,
+  useGetDoctorProfile,
+  useGetPatientProfile,
+} from "../../lib/apiCalls";
 
 type Prop = {
   toggleModal: () => void;
@@ -26,8 +30,14 @@ const CancelAppointment = ({ toggleModal, details }: Prop) => {
   const { data: patientProfileData } = useGetPatientProfile(
     userType === "patient"
   );
+  const { data: doctorProfile } = useGetDoctorProfile(userType === "doctor");
+
   const cancelAppointmentMutation = useCustomMutation({
-    endpoint: `/appointments/cancel/${patientProfileData?.data?.publicId}`,
+    endpoint: `/appointments/cancel/${
+      userType === "patient"
+        ? patientProfileData?.data?.publicId
+        : doctorProfile?.data?.publicId
+    }`,
     successMessage: () => "Profile Updated sucessfully",
     errorMessage: (error: any) => error?.response?.message,
     method: "put",
@@ -58,7 +68,7 @@ const CancelAppointment = ({ toggleModal, details }: Prop) => {
             Are you sure you want to cancel the appointment scheduled below?
           </Text>
         </Box>
-        <BiX onClick={toggleModal} className="cursor-pointer" />
+        <BiX onClick={toggleModal} className="cursor-pointer w-6 h-6" />
       </Flex>
 
       <MeetingCard

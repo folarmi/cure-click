@@ -13,6 +13,7 @@ type Props = {
   patientName?: string;
   onClick?: () => void;
   cancelOnClick?: () => void;
+  rescheduleOnClick?: () => void;
   ifButtons?: boolean;
   ifView?: boolean;
   ifDocDetails?: boolean;
@@ -27,6 +28,7 @@ const MeetingCardTwo = ({
   patientName,
   onClick,
   cancelOnClick,
+  rescheduleOnClick,
   ifButtons,
   ifView = true,
   ifDocDetails = true,
@@ -128,6 +130,7 @@ const MeetingCardTwo = ({
             </Button>
             <Button
               size="3"
+              onClick={rescheduleOnClick}
               style={{
                 border: "1px solid var(--meeting-card-two-border-color)",
               }}

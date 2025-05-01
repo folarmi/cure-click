@@ -1,18 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Text } from "@radix-ui/themes";
 import AppointmentModalHeader from "../ui/AppointmentModalHeader";
 import { MeetingCard } from "../cards/MeetingCard";
-import { useSelector } from "react-redux";
 import { RootState } from "../../lib/store";
 import { CustomTextarea } from "../ui/CustomTextArea";
 import { useForm } from "react-hook-form";
 import { Appointment } from "../../utils/types";
 import { DoctorCalendar } from "../ui/DoctorCalendar";
-import { useGetDoctorAvailableSessions } from "../../lib/apiCalls";
+import {
+  useCustomMutation,
+  useGetDoctorAvailableSessions,
+} from "../../lib/apiCalls";
 import {
   formatAppointmentTime,
   getTotalAvailableTimes,
 } from "../../utils/calendarutil";
-import { getFullName } from "../../utils/util";
+import { convertStartTimeToBackendFormat, getFullName } from "../../utils/util";
+import { useAppSelector } from "../../lib/hook";
+import { format, parseISO } from "date-fns";
 
 type Prop = {
   toggleModal: () => void;
@@ -20,16 +25,54 @@ type Prop = {
 };
 
 const Reschedule = ({ toggleModal, details }: Prop) => {
-  const { control } = useForm();
+  const { control, handleSubmit, getValues } = useForm();
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
     details?.doctor?.publicId
   );
-  const userType = useSelector((state: RootState) => state.auth.userType);
+  const { userType, publicId } = useAppSelector(
+    (state: RootState) => state.auth
+  );
 
   const scheduleData = {
     ...doctorAvailableSessions?.data,
-    // ...test,
     date: doctorAvailableSessions?.date,
+  };
+
+  const requestRescheduleMutation = useCustomMutation({
+    endpoint: `appointment/api/appointments/request-reschedule/${publicId}`,
+    successMessage: () => "Profile Updated sucessfully",
+    method: "put",
+    onSuccessCallback: () => {
+      toggleModal();
+    },
+  });
+
+  const rescheduleMutation = useCustomMutation({
+    endpoint: `appointment/api/appointments/reschedule/${publicId}`,
+    successMessage: () => "Profile Updated sucessfully",
+    method: "put",
+    onSuccessCallback: () => {
+      toggleModal();
+    },
+    onError: () => {
+      toggleModal();
+    },
+  });
+
+  const submitForm = (data: any) => {
+    requestRescheduleMutation.mutate({
+      who: userType === "doctor" ? "DOCTOR" : "PATIENT",
+      reason: data?.reason,
+    });
+  };
+
+  const submitRescheduleForm = (data: { timeSlot: string; date: string }) => {
+    rescheduleMutation.mutate({
+      who: userType === "doctor" ? "DOCTOR" : "PATIENT",
+      reason: getValues("reason"),
+      appointmentDate: format(parseISO(data?.date), "yyyy-MM-dd"),
+      appointmentTime: convertStartTimeToBackendFormat(data?.timeSlot),
+    });
   };
 
   return (
@@ -63,6 +106,16 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
         <Box className="mt-6">
           {userType === "patient" ? (
             <>
+              <CustomTextarea
+                label="Reason for rescheduling"
+                className="mb-6"
+                placeholder="Input your Reasons"
+                control={control}
+                name="reason"
+                rules={{
+                  required: "Reason for Rescheduling is required",
+                }}
+              />
               <Text size="3" className="text-gray12">
                 Select New Date ({" "}
                 {getTotalAvailableTimes(
@@ -71,34 +124,38 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
                 Available Sessions )
               </Text>
 
-              <div className="mt-6">
+              <div className="">
                 <DoctorCalendar
                   singleDoctorData={details?.doctor}
                   scheduleData={scheduleData}
                   customSubmit
-                  submitFunction={() => console.log("jhbfjhdsbhf")}
+                  submitFunction={submitRescheduleForm}
                 />
               </div>
             </>
           ) : (
-            <>
+            <form onSubmit={handleSubmit(submitForm)}>
               <CustomTextarea
                 label="Reason for rescheduling"
                 className=""
                 placeholder="Input your Reasons"
                 control={control}
-                name="biography"
+                name="reason"
+                rules={{
+                  required: "Reason for Rescheduling is required",
+                }}
               />
 
               <Button
-                // onClick={toggleModal}
+                loading={requestRescheduleMutation.isPending}
+                disabled={requestRescheduleMutation.isPending}
                 variant="solid"
                 size="3"
                 className="font-medium text-white text-base bg-grass_9 w-full my-6"
               >
-                Schedule
+                Reschedule
               </Button>
-            </>
+            </form>
           )}
         </Box>
       </Box>
