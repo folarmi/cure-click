@@ -134,9 +134,18 @@ export const transformToCalendarEvents = (scheduleData: ScheduleData) => {
     // Handle non-recurring schedule - just generate for the current week
     sessions.forEach((session) => {
       if (session?.localTimes.length > 0) {
+        // const dayIndex = dayNameToIndex[session?.dayOfTheWeek];
+        // const daysToAdd = (dayIndex - startDate.getDay() + 7) % 7;
+        // const eventDate = addDays(startDate, daysToAdd);
+
+        const scheduleDate = new Date(scheduleData?.date);
+        const scheduleWeekStart = new Date(scheduleDate);
+        scheduleWeekStart.setDate(
+          scheduleDate.getDate() - scheduleDate.getDay()
+        ); // Sunday of that week
+
         const dayIndex = dayNameToIndex[session?.dayOfTheWeek];
-        const daysToAdd = (dayIndex - startDate.getDay() + 7) % 7;
-        const eventDate = addDays(startDate, daysToAdd);
+        const eventDate = addDays(scheduleWeekStart, dayIndex);
 
         // Sort times to ensure earliest is first
         const sortedTimes = [...session.localTimes].sort();
