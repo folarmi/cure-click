@@ -48,8 +48,8 @@ const SingleDoctor = () => {
 
   const scheduleData = {
     ...doctorAvailableSessions?.data,
-    // date: doctorAvailableSessions?.date,
-    date: doctorAvailableSessions?.lastModifiedDate,
+    date: doctorAvailableSessions?.date,
+    // date: doctorAvailableSessions?.lastModifiedDate,
   };
 
   return (

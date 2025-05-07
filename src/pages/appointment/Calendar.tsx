@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
@@ -10,7 +11,13 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  // useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { DayScheduleItem } from "./DaySchedule";
 import { CalendarFormValues, DaySchedule } from "../../utils/types";
 import {
@@ -23,7 +30,6 @@ import {
   convertToLocalTimeFormat,
   getFullDayNameFromPublicId,
   transformScheduleToFormDefaults,
-  // getTimeZoneInfo,
 } from "../../utils/util";
 import { CustomCheckBox } from "../../components/ui/CustomCheckBox";
 import { availableTimes } from "../../utils/data";
@@ -35,13 +41,14 @@ import { AppointmentTab } from "../../components/atoms/AppointmentTab";
 import { RootState } from "../../lib/store";
 import { useAppSelector } from "../../lib/hook";
 import api from "../../lib/axios";
+import { toast } from "react-toastify";
 
 const Calendar = () => {
   const queryClient = useQueryClient();
-
   const { publicId } = useAppSelector((state: RootState) => state.auth);
-
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
+  // const expandedDayRef = useRef(expandedDay);
+
   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
     useState(true);
 
@@ -51,7 +58,6 @@ const Calendar = () => {
 
   const { data: doctorProfile, isLoading: doctorProfileIsLoading } =
     useGetDoctorProfile();
-
   const {
     data: doctorAvailableSessions,
     isLoading: doctorAvailableSessionsIsLoading,
@@ -128,25 +134,58 @@ const Calendar = () => {
     }
   }, [doctorAvailableSessions?.data, reset]);
 
-  const submitAvailableSessions = async () => {
-    const scheduleData = getValues("schedule");
-    const dayIdOrder = Object.keys(getValues("schedule"));
-    const payload = {
-      doctorPublicId: doctorProfile?.data?.publicId,
-      dayOfTheWeek: getFullDayNameFromPublicId(expandedDay, dayIdOrder),
-      localTimes:
-        expandedDay &&
-        scheduleData[expandedDay]?.localTimes.map(
-          (slot: { startTime: string; endTime: string }) =>
-            convertToLocalTimeFormat(slot.startTime)
+  // const submitAvailableSessions = async () => {
+  //   const scheduleData = getValues("schedule");
+  //   const dayIdOrder = Object.keys(getValues("schedule"));
+  //   const day = expandedDayRef.current;
+
+  //   if (!day) {
+  //     console.warn("No expanded day selected");
+  //     return;
+  //   }
+
+  //   const payload = {
+  //     doctorPublicId: doctorProfile?.data?.publicId,
+  //     dayOfTheWeek: getFullDayNameFromPublicId(day, dayIdOrder),
+  //     localTimes:
+  //       expandedDay &&
+  //       scheduleData[day]?.localTimes.map(
+  //         (slot: { startTime: string; endTime: string }) =>
+  //           convertToLocalTimeFormat(slot.startTime)
+  //       ),
+  //     available: getValues(`schedule.${day}.available`) || false,
+  //     timeZone: "Africa/Lagos",
+  //   };
+  //   console.log(scheduleData[day]);
+  // };
+
+  const submitAvailableSessions = useCallback(
+    async (specificDay?: string) => {
+      // Use parameter if provided, otherwise fall back to state
+      const targetDay = specificDay ?? expandedDay;
+
+      if (!targetDay) {
+        console.warn("No day selected");
+        return;
+      }
+
+      const scheduleData = getValues("schedule");
+      const dayIdOrder = Object.keys(scheduleData);
+
+      const payload = {
+        doctorPublicId: doctorProfile?.data?.publicId,
+        dayOfTheWeek: getFullDayNameFromPublicId(targetDay, dayIdOrder),
+        localTimes: scheduleData[targetDay]?.localTimes?.map((slot) =>
+          convertToLocalTimeFormat(slot.startTime)
         ),
-      available: getValues(`schedule.${expandedDay}.available`) || false,
-      timeZone: "Africa/Lagos",
-    };
-    console.log(scheduleData[expandedDay]);
-    // updateDoctorAvailableSessionMutation.mutateAsync(payload);
-    // console.log(expandedDay, scheduleData[expandedDay]);
-  };
+        available: getValues(`schedule.${targetDay}.available`) || false,
+        timeZone: "Africa/Lagos",
+      };
+
+      await updateDoctorAvailableSessionMutation.mutateAsync(payload);
+    },
+    [expandedDay, doctorProfile?.data?.publicId, getValues]
+  );
 
   return (
     <>
@@ -190,7 +229,10 @@ const Calendar = () => {
                         setExpandedDay(id === expandedDay ? null : id)
                       }
                       setValue={setValue}
-                      submitAvailableSessions={submitAvailableSessions}
+                      // submitAvailableSessions={submitAvailableSessions}
+                      submitAvailableSessions={(dayId: string | undefined) =>
+                        submitAvailableSessions(dayId)
+                      }
                       isAvailable={day?.available}
                     />
                   )
@@ -210,7 +252,13 @@ const Calendar = () => {
                 className="bg-grass9 text-base font-medium my-4"
                 loading={updateDoctorAvailableSessionMutation.isPending}
                 disabled={updateDoctorAvailableSessionMutation.isPending}
-                onClick={submitAvailableSessions}
+                onClick={() => {
+                  if (!expandedDay) {
+                    toast.warn("No day selected");
+                    return;
+                  }
+                  submitAvailableSessions(expandedDay);
+                }}
               >
                 Save Schedule{" "}
               </Button>

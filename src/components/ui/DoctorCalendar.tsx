@@ -175,97 +175,6 @@ const DoctorCalendar = ({
     Saturday: "SATURDAY",
   };
 
-  // const handleSelectedDay = (day: Date) => {
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0); // Normalize to midnight
-
-  //   const selectedDay = new Date(day);
-  //   selectedDay.setHours(0, 0, 0, 0);
-
-  //   if (selectedDay < today) {
-  //     // Show warning (toast, alert, etc.)
-  //     toast.warning("You cannot select a past date.");
-  //     return;
-  //   }
-
-  //   const dayOfWeek = day.toLocaleDateString("en-US", { weekday: "long" });
-  //   const backendDay = dayMap[dayOfWeek];
-  //   const matched = scheduleData?.sessions.find(
-  //     (item: any) => item.dayOfTheWeek === backendDay
-  //   );
-
-  //   const formattedTimes =
-  //     matched?.localTimes.map((time: string) => {
-  //       const [hours, minutes] = time.split(":").map(Number);
-  //       const start = new Date();
-  //       start.setHours(hours, minutes);
-
-  //       const end = new Date(start);
-  //       end.setHours(end.getHours() + 1); // 1-hour slot
-
-  //       const startTime = start.toLocaleTimeString([], {
-  //         hour: "numeric",
-  //         minute: "2-digit",
-  //         // hour12: true,
-  //       });
-
-  //       const endTime = end.toLocaleTimeString([], {
-  //         hour: "numeric",
-  //         minute: "2-digit",
-  //         hour12: true,
-  //       });
-
-  //       return { timeSlot: `${startTime} - ${endTime}` };
-  //     }) ?? [];
-  //   setAvailableTimes(formattedTimes);
-  // };
-
-  // const handleSelectedDay = (day: Date) => {
-  //   const today = new Date();
-  //   const weekStart = new Date(today);
-  //   weekStart.setDate(today.getDate() - today.getDay()); // Sunday
-  //   const weekEnd = new Date(weekStart);
-  //   weekEnd.setDate(weekStart.getDate() + 6); // Saturday
-
-  //   if (!scheduleData?.recurring && (day < weekStart || day > weekEnd)) {
-  //     toast.warn("This schedule only applies to this week.");
-  //     setAvailableTimes([]); // clear times
-  //     return;
-  //   }
-
-  //   const dayOfWeek = day.toLocaleDateString("en-US", { weekday: "long" });
-  //   const backendDay = dayMap[dayOfWeek];
-
-  //   const matched = scheduleData?.sessions.find(
-  //     (item: any) => item.dayOfTheWeek === backendDay
-  //   );
-
-  //   const formattedTimes =
-  //     matched?.localTimes.map((time: string) => {
-  //       const [hours, minutes] = time.split(":").map(Number);
-  //       const start = new Date();
-  //       start.setHours(hours, minutes);
-
-  //       const end = new Date(start);
-  //       end.setHours(end.getHours() + 1); // 1-hour slot
-
-  //       const startTime = start.toLocaleTimeString([], {
-  //         hour: "numeric",
-  //         minute: "2-digit",
-  //       });
-
-  //       const endTime = end.toLocaleTimeString([], {
-  //         hour: "numeric",
-  //         minute: "2-digit",
-  //         hour12: true,
-  //       });
-
-  //       return { timeSlot: `${startTime} - ${endTime}` };
-  //     }) ?? [];
-
-  //   setAvailableTimes(formattedTimes);
-  // };
-
   const handleSelectedDay = (day: Date) => {
     // 🧭 Get the schedule's base date (start of the week)
     const baseDate = new Date(scheduleData.date);
@@ -275,11 +184,22 @@ const DoctorCalendar = ({
     const baseWeekEnd = new Date(baseWeekStart);
     baseWeekEnd.setDate(baseWeekStart.getDate() + 6); // Saturday of that week
 
-    // 🚫 If not recurring and selected day is outside this week, show warning
-    if (!scheduleData.recurring && (day < baseWeekStart || day > baseWeekEnd)) {
-      toast.warn("Selected date is outside of doctor's schedule.");
-      setAvailableTimes([]); // clear available times
-      return;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // strip time to compare only dates
+
+    // 🚫 If not recurring and selected day is outside this week or in the past, show warning
+    if (!scheduleData.recurring) {
+      if (day < today) {
+        toast.warn("Selected date is in the past.");
+        setAvailableTimes([]);
+        return;
+      }
+
+      if (day < baseWeekStart || day > baseWeekEnd) {
+        toast.warn("Selected date is outside of doctor's schedule.");
+        setAvailableTimes([]);
+        return;
+      }
     }
 
     const dayOfWeek = day.toLocaleDateString("en-US", { weekday: "long" });

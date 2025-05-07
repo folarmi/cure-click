@@ -20,7 +20,7 @@ interface DayScheduleItemProps {
   isExpanded: boolean;
   isAvailable: boolean;
   onToggle: (id: string) => void;
-  submitAvailableSessions: any;
+  submitAvailableSessions: (dayId: string) => Promise<void>;
 }
 
 const DayScheduleItem = ({
@@ -28,7 +28,7 @@ const DayScheduleItem = ({
   control,
   watch,
   isExpanded,
-  isAvailable,
+  // isAvailable,
   onToggle,
   setValue,
   submitAvailableSessions,
@@ -40,7 +40,7 @@ const DayScheduleItem = ({
 
   const currentAvailability = watch(`schedule.${day.publicId}.available`);
   const currentLocalTimes = watch(`schedule.${day.publicId}.localTimes`);
-  console.log(watch());
+
   const handleAddPeriod = () => {
     append({
       startTime: "09:00:00",
@@ -59,9 +59,9 @@ const DayScheduleItem = ({
       );
       return;
     }
-    submitAvailableSessions();
-    // if (isAvailable) {
     setValue(`schedule.${day.publicId}.available`, checked);
+    submitAvailableSessions(day.publicId);
+    // if (isAvailable) {
     // }
   };
 
