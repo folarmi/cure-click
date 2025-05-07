@@ -4,22 +4,19 @@ import { CustomButton } from "../components/ui/CustomButton";
 import { CustomInput } from "../components/ui/CustomInput";
 import bannerTwo from "../assets/bannerTwo.svg";
 import { useForm } from "react-hook-form";
-import { RootState } from "../lib/store";
-import { useAppSelector } from "../lib/hook";
 import { useCustomMutation } from "../lib/apiCalls";
+import { useNavigate } from "react-router";
 
 const ForgotPassword = () => {
   const { control, handleSubmit } = useForm();
-  const { userType } = useAppSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   const forgotPasswordMutation = useCustomMutation({
-    endpoint: `appointment/api/${
-      userType === "patient" ? "patients" : "doctors"
-    }/forget-password`,
-    successMessage: () => "Reset Password Link Sent!",
+    endpoint: `appointment/api/auth/forget-password`,
+    successMessage: () => "A Reset password link has been sent to your email",
     errorMessage: (error: any) => error?.response?.data?.remark,
-    onSuccessCallback: (data) => {
-      // navigate("/login");
+    onSuccessCallback: () => {
+      navigate("/login");
     },
   });
 

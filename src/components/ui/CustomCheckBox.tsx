@@ -7,12 +7,14 @@ interface RHFCheckboxProps {
   name: string;
   control: Control<any>;
   text: string;
+  onClick?: () => void;
 }
 
 const CustomCheckBox: React.FC<RHFCheckboxProps> = ({
   name,
   control,
   text,
+  onClick,
 }) => {
   const {
     field: { value, onChange },
@@ -23,7 +25,7 @@ const CustomCheckBox: React.FC<RHFCheckboxProps> = ({
   });
 
   return (
-    <label className="flex items-center cursor-pointer">
+    <label className="flex items-center cursor-pointer" onClick={onClick}>
       <Checkbox.Root
         checked={!!value}
         onCheckedChange={(val) => onChange(!!val)}

@@ -3,28 +3,33 @@ import { useForm } from "react-hook-form";
 import { AuthTwoLayout } from "../components/layouts/AuthTwoLayout";
 import { CustomButton } from "../components/ui/CustomButton";
 import { CustomInput } from "../components/ui/CustomInput";
-import { useAppSelector } from "../lib/hook";
-import { RootState } from "../lib/store";
 import { useCustomMutation } from "../lib/apiCalls";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ResetPassword = () => {
-  const { control, handleSubmit } = useForm();
-  const { userType } = useAppSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+  const { control, handleSubmit, watch } = useForm();
+  const [searchParams] = useSearchParams();
+  const [password, confirmPassword] = watch(["password", "confirmPassword"]);
 
   const resetPasswordMutation = useCustomMutation({
-    endpoint: `appointment/api/${
-      userType === "patient" ? "patients" : "doctors"
-    }/password-reset`,
-    successMessage: () => "Registration successful!",
+    endpoint: `appointment/api/auth/reset-password?token=${searchParams.get(
+      "token"
+    )},`,
+    successMessage: () => "Password reset successful!",
     errorMessage: (error: any) => error?.response?.data?.remark,
+    method: "put",
     onSuccessCallback: (data) => {
       console.log(data);
-      // navigate("/login");
+      navigate("/login");
     },
   });
 
   const submitForm = (data: any) => {
-    console.log(data);
+    const formData = {
+      password: data.password,
+    };
+    resetPasswordMutation.mutate(formData);
   };
 
   return (
@@ -41,14 +46,23 @@ const ResetPassword = () => {
           type="password"
           className="mb-6"
           control={control}
-          name="firstname"
+          name="password"
         />
         <CustomInput
           label="Re-Type Password"
           placeholder="Re-type your new password"
           type="password"
           control={control}
-          name="firstname"
+          name="confirmPassword"
+          rules={{
+            required: "Confirm Password is required",
+            minLength: {
+              value: 8,
+              message: "Minimum of 8 characters",
+            },
+            validate: () =>
+              password === confirmPassword || "Passwords do not match",
+          }}
         />
 
         <CustomButton

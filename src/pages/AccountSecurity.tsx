@@ -10,9 +10,10 @@ import { useForm } from "react-hook-form";
 import { useCustomMutation } from "../lib/apiCalls";
 
 const AccountSecurity = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, watch } = useForm();
   const userType = useSelector((state: RootState) => state.auth.userType);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+  const [password, confirmPassword] = watch(["password", "confirmPassword"]);
 
   const handleSwitchChange = () => {
     setIsSwitchEnabled((prevState) => !prevState);
@@ -23,7 +24,7 @@ const AccountSecurity = () => {
       userType === "patient" ? "patients" : "doctors"
     }/reset-password`,
     method: "put",
-    successMessage: () => "Registration successful!",
+    successMessage: () => "Password reset successful!",
     onSuccessCallback: (data) => {
       console.log(data);
       // navigate("/login");
@@ -31,7 +32,11 @@ const AccountSecurity = () => {
   });
 
   const submitForm = (data: any) => {
-    changePasswordMutation.mutate(data);
+    const formData = {
+      oldPassword: data.oldPassword,
+      password: data.password,
+    };
+    changePasswordMutation.mutate(formData);
   };
 
   return (
@@ -68,8 +73,8 @@ const AccountSecurity = () => {
 
       <form onSubmit={handleSubmit(submitForm)} className="mt-4">
         <CustomInput
-          label="Password"
-          placeholder="Input your password"
+          label="Old Password"
+          placeholder="********"
           type="password"
           control={control}
           name="oldPassword"
@@ -78,14 +83,32 @@ const AccountSecurity = () => {
           }}
         />
         <CustomInput
-          label="Confirm Password"
-          placeholder="re type new password"
+          label="New Password"
+          placeholder="********"
           type="password"
           className="mt-6"
           control={control}
           name="password"
           rules={{
             required: "New Password is required",
+          }}
+        />
+
+        <CustomInput
+          label="Confirm New Password"
+          placeholder="********"
+          type="password"
+          className="mt-6"
+          control={control}
+          name="confirmPassword"
+          rules={{
+            required: "Confirm Password is required",
+            minLength: {
+              value: 8,
+              message: "Minimum of 8 characters",
+            },
+            validate: () =>
+              password === confirmPassword || "Passwords do not match",
           }}
         />
 

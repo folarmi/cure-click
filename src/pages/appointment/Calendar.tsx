@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
@@ -9,7 +10,7 @@ import {
   Text,
 } from "@radix-ui/themes";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DayScheduleItem } from "./DaySchedule";
 import { CalendarFormValues, DaySchedule } from "../../utils/types";
 import {
@@ -31,9 +32,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
 import { DoctorDashboardHeader } from "../../components/ui/DoctorDashboardHeader";
 import { AppointmentTab } from "../../components/atoms/AppointmentTab";
+import { RootState } from "../../lib/store";
+import { useAppSelector } from "../../lib/hook";
+import api from "../../lib/axios";
 
 const Calendar = () => {
   const queryClient = useQueryClient();
+
+  const { publicId } = useAppSelector((state: RootState) => state.auth);
+
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
   const [isBlockedOutDaysSwitchEnabled, setIsBlockedOutDaysSwitchEnabled] =
     useState(true);
@@ -59,6 +66,7 @@ const Calendar = () => {
       queryClient.invalidateQueries({
         queryKey: ["GetDoctorAvailableSessions"],
       });
+      // setValue(`schedule.${day.publicId}.available`, checked);
     },
   });
 
@@ -68,6 +76,45 @@ const Calendar = () => {
         doctorAvailableSessions?.data?.sessions ?? []
       ),
     });
+
+  const getValuesRef = useRef(getValues);
+  getValuesRef.current = getValues;
+
+  const updateRecurringSessionMutation = useCustomMutation({
+    // endpoint: `appointment/api/doctors/${publicId}/available-sessions/recurring-sessions?recurring=true`,
+    endpoint: "dummy-endpoint",
+    successMessage: () => "Reoccurrence updated sucessfully",
+    errorMessage: (error: any) => error?.response?.data?.remark,
+    method: "patch",
+    onSuccessCallback: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["GetDoctorAvailableSessions"],
+      });
+    },
+  });
+
+  const handleRecurringToggle = () => {
+    const currentRecurring = getValues("recurring");
+    const actualEndpoint = `appointment/api/doctors/${publicId}/available-sessions/recurring-sessions?recurring=${currentRecurring}`;
+
+    // 3. Use axios directly with the mutation's options
+    api
+      .patch(
+        actualEndpoint,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        updateRecurringSessionMutation.isSuccess;
+      })
+      .catch(() => {
+        updateRecurringSessionMutation.isError;
+      });
+  };
 
   useEffect(() => {
     if (doctorAvailableSessions?.data) {
@@ -94,11 +141,11 @@ const Calendar = () => {
             convertToLocalTimeFormat(slot.startTime)
         ),
       available: getValues(`schedule.${expandedDay}.available`) || false,
-      recurring: getValues(`recurring`),
-      // timeZone: getTimeZoneInfo(),
       timeZone: "Africa/Lagos",
     };
-    updateDoctorAvailableSessionMutation.mutateAsync(payload);
+    console.log(scheduleData[expandedDay]);
+    // updateDoctorAvailableSessionMutation.mutateAsync(payload);
+    // console.log(expandedDay, scheduleData[expandedDay]);
   };
 
   return (
@@ -144,6 +191,7 @@ const Calendar = () => {
                       }
                       setValue={setValue}
                       submitAvailableSessions={submitAvailableSessions}
+                      isAvailable={day?.available}
                     />
                   )
                 )}
@@ -153,7 +201,8 @@ const Calendar = () => {
                 <CustomCheckBox
                   name={`recurring`}
                   control={control}
-                  text="   Make Recurring"
+                  text="Make Recurring"
+                  onClick={handleRecurringToggle}
                 />
               </div>
 

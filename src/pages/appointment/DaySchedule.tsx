@@ -18,6 +18,7 @@ interface DayScheduleItemProps {
   watch: any;
   setValue: any;
   isExpanded: boolean;
+  isAvailable: boolean;
   onToggle: (id: string) => void;
   submitAvailableSessions: any;
 }
@@ -27,6 +28,7 @@ const DayScheduleItem = ({
   control,
   watch,
   isExpanded,
+  isAvailable,
   onToggle,
   setValue,
   submitAvailableSessions,
@@ -38,7 +40,7 @@ const DayScheduleItem = ({
 
   const currentAvailability = watch(`schedule.${day.publicId}.available`);
   const currentLocalTimes = watch(`schedule.${day.publicId}.localTimes`);
-
+  console.log(watch());
   const handleAddPeriod = () => {
     append({
       startTime: "09:00:00",
@@ -57,8 +59,10 @@ const DayScheduleItem = ({
       );
       return;
     }
-    setValue(`schedule.${day.publicId}.available`, checked);
     submitAvailableSessions();
+    // if (isAvailable) {
+    setValue(`schedule.${day.publicId}.available`, checked);
+    // }
   };
 
   const handleStartTimeChange = (value: string, index: number) => {
@@ -90,7 +94,10 @@ const DayScheduleItem = ({
         <Switch
           checked={currentAvailability}
           onCheckedChange={handleAvailabilityChange}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle(day.publicId);
+          }}
         />
       </Flex>
 
