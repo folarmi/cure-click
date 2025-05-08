@@ -16,11 +16,14 @@ import {
   handleStatusAction,
 } from "../../utils/types";
 import { tabItems } from "../../utils/data";
+import Modal from "../../components/ui/Modal";
+import { Review } from "../../components/modals/Review";
+import { useState } from "react";
 
 type Prop = {
   appointmentsData: any;
   appointmentsDataIsLoading: boolean;
-  selectedAppointment?: Appointment;
+  selectedAppointment: Appointment;
   activeTab: string;
   toggleModal: () => void;
   toggleCancel: () => void;
@@ -42,8 +45,14 @@ const TableContent = ({
   setSelectedAppointment,
   activeTab,
   setActiveTab,
+  selectedAppointment,
 }: Prop) => {
   const userType = useSelector((state: RootState) => state.auth.userType);
+  const [reviewModal, setReviewModal] = useState(false);
+
+  const toggleReviewModal = () => {
+    setReviewModal(!reviewModal);
+  };
 
   const handleAction = (item: Appointment) => {
     setSelectedAppointment?.(item);
@@ -144,88 +153,36 @@ const TableContent = ({
         const status = info.row.original?.appointmentStatus;
 
         return (
-          <p
-            className="cursor-pointer"
-            onClick={() => {
-              handleAction(info.row.original);
-              handleStatusAction(status, {
-                toggleModal: () => toggleModal(),
-                toggleCancel: () => toggleCancel(),
-                toggleCancelledDetails: () => toggleCancelledDetails(),
-                toggleUpcomingDetails: () => toggleUpcomingDetails(),
-                toggleRescheduleTwoModal: () => toggleRescheduleTwoModal(),
-              });
-            }}
-          >
-            View
-          </p>
+          <div className="flex items-center">
+            <p
+              className="cursor-pointer"
+              onClick={() => {
+                handleAction(info.row.original);
+                handleStatusAction(status, {
+                  toggleModal: () => toggleModal(),
+                  toggleCancel: () => toggleCancel(),
+                  toggleCancelledDetails: () => toggleCancelledDetails(),
+                  toggleUpcomingDetails: () => toggleUpcomingDetails(),
+                  toggleRescheduleTwoModal: () => toggleRescheduleTwoModal(),
+                });
+              }}
+            >
+              View
+            </p>
+            <p
+              className="cursor-pointer pl-4"
+              onClick={() => {
+                toggleReviewModal();
+                handleAction(info.row.original);
+              }}
+            >
+              Review
+            </p>
+          </div>
         );
       },
     }),
   ];
-
-  // const testAppointments = [
-  //   ...appointmentsData?.data,
-  //   {
-  //     doctor: {
-  //       publicId: "131738A1205K6988",
-  //       createdDate: null,
-  //       lastModifiedDate: "2025-04-17T16:30:19.931603",
-  //       createdBy: null,
-  //       modifiedBy: null,
-  //       username: "raqaxines",
-  //       firstname: "Hayes",
-  //       lastname: "Hayes",
-  //       biography: "I am who i am by God",
-  //       email: "doctorTwo@mailinator.com",
-  //       profilePictureUrl:
-  //         "http://res.cloudinary.com/dkkelxvme/image/upload/v1744921812/meikzybqlnuwtt4ickxd.png",
-  //       yearsOfExperience: 8,
-  //       pricing: "1000",
-  //       specialization: "Endocrinology",
-  //       currency: "EURO",
-  //       country: null,
-  //       gender: "FEMALE",
-  //       availabilityStatus: "AVAILABLE",
-  //       hospitalWorkPlace: "Test workplace",
-  //       languages: ["Arabic", "Armenian"],
-  //       files: {},
-  //     },
-  //     patient: {
-  //       publicId: "10085709HO7F27468",
-  //       createdDate: "2025-04-16T10:08:57.217555",
-  //       lastModifiedDate: "2025-04-16T10:08:57.217555",
-  //       createdBy: null,
-  //       modifiedBy: null,
-  //       username: "hijic",
-  //       firstname: "Phillip",
-  //       lastname: "Slater",
-  //       email: "realPatient@mailinator.com",
-  //       country: null,
-  //       gender: null,
-  //       profilePictureUrl: null,
-  //       files: {},
-  //     },
-  //     topic: "ggg",
-  //     details: "jbhjbjh",
-  //     active: true,
-  //     appointmentStatus: "REQUESTED_RESCHEDULE",
-  //     meetingLink: null,
-  //     transactionId: "string",
-  //     appointmentDate: "2025-04-30",
-  //     appointmentTime: "07:00:00",
-  //     doctorCancellationReason: null,
-  //     patientCancellationReason: null,
-  //     doctorReschedulingReason: null,
-  //     patientReschedulingReason: null,
-  //     publicId: "1253229Z7MN514112",
-  //     createdDate: "2025-04-28T12:53:22.95947",
-  //     lastModifiedDate: "2025-04-28T13:13:00.842133",
-  //     createdBy: "hijic",
-  //     modifiedBy: null,
-  //     attachments: [],
-  //   },
-  // ];
 
   const renderTable = () => {
     return (
@@ -280,6 +237,15 @@ const TableContent = ({
               </Tabs.Content>
             ))}
         </Tabs.Root>
+
+        <Modal show={reviewModal} toggleModal={toggleReviewModal}>
+          <div className="p-4">
+            <Review
+              details={selectedAppointment}
+              toggleModal={toggleReviewModal}
+            />
+          </div>
+        </Modal>
       </div>
     </>
   );

@@ -226,6 +226,7 @@ const Appointments = () => {
                     toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
+                    selectedAppointment={selectedAppointment}
                   />
                 </Box>
               </Flex>
@@ -269,6 +270,7 @@ const Appointments = () => {
                   toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
+                  selectedAppointment={selectedAppointment}
                 />
               </Box>
             </Flex>

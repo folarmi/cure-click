@@ -3,7 +3,6 @@ import DoctorCard from "../components/cards/DoctorCard";
 import DashboardLayout from "../components/layouts/DashboardLayout";
 import { CustomText } from "../components/ui/CustomText";
 import { DashboardHeader } from "../components/ui/DashboardHeader";
-import sampleDoctor from "../assets/sampleDoctorOne.svg";
 import MeetingCardTwo from "../components/cards/MeetingCardTwo";
 import { DashboardIcon } from "@radix-ui/react-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,8 +53,8 @@ const Dashboard = () => {
   });
 
   const { data: reviewsData, isLoading: reviewsDataIsLoading } = useGetData({
-    url: `appointment/api/reviews?page=0&size=20`,
-    queryKey: ["GetAllDoctors"],
+    url: `appointment/api/reviews?publicId=${doctorProfile?.data?.publicId}&page=0&size=20`,
+    queryKey: ["GetDoctorsReviews"],
     enabled: userType === "doctor",
   });
 
@@ -123,7 +122,7 @@ const Dashboard = () => {
                     doctorData.data.content.map((item: any) => (
                       <DoctorCard
                         key={item?.publicId}
-                        image={item?.profilePictureUrl || sampleDoctor}
+                        image={item?.profilePictureUrl}
                         doctorName={`${getFullName(
                           item?.firstname,
                           item?.lastname

@@ -3,6 +3,7 @@ import { CustomText } from "../ui/CustomText";
 import { CustomButton } from "../ui/CustomButton";
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
+import { getInitials } from "../../utils/randomUtil";
 
 type DoctorCardProp = {
   image: string;
@@ -32,14 +33,33 @@ const DoctorCard = ({
 }: DoctorCardProp) => {
   return (
     <div className={`mb-6 mr-6`} style={{ width: `${cardWidth}px` }}>
-      <div className="w-[318px] h-[172px] overflow-hidden">
+      {/* <div className="w-[318px] h-[172px] overflow-hidden">
         <img
           src={image}
           className="w-full h-full object-cover object-center"
           loading="lazy"
           alt="Doctor Profile Image"
         />
+      </div> */}
+      <div
+        className="relative w-[318px] h-[172px] bg-gray2 overflow-hidden rounded-lg flex items-center justify-center"
+        role="img"
+        aria-label={image ? "Doctor profile photo" : "Doctor profile initials"}
+      >
+        {image ? (
+          <img
+            src={image}
+            alt="Doctor Profile Image"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            loading="lazy"
+          />
+        ) : (
+          <span className="text-4xl font-semibold text-gray10 z-10">
+            {getInitials(doctorName)}
+          </span>
+        )}
       </div>
+
       <CustomText className="text-iris_12 pt-2" size="medium" weight="semibold">
         {doctorName}
       </CustomText>

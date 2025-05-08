@@ -19,6 +19,7 @@ import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
 import {
+  useGetData,
   useGetDoctorAvailableSessions,
   useGetSingleDoctorData,
 } from "../lib/apiCalls";
@@ -42,10 +43,15 @@ const SingleDoctor = () => {
     useGetSingleDoctorData(userType === "patient", id || "");
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(id);
 
+  const { data: reviewsData, isLoading: reviewsDataIsLoading } = useGetData({
+    url: `appointment/api/reviews?publicId=${id}&page=0&size=20`,
+    queryKey: ["GetDoctorsReviews"],
+  });
+  // console.log(reviewsData);
   const toggleModal = () => {
     setModal(!modal);
   };
-
+  console.log(reviewsData);
   const scheduleData = {
     ...doctorAvailableSessions?.data,
     date: doctorAvailableSessions?.date,
@@ -54,7 +60,7 @@ const SingleDoctor = () => {
 
   return (
     <>
-      {singleDoctorDataIsLoading ? (
+      {singleDoctorDataIsLoading || reviewsDataIsLoading ? (
         <Loader />
       ) : (
         <DashboardLayout ifHeader={false}>

@@ -1,16 +1,9 @@
-export const queryParamsToAdd = (param: string, filter: string) => {
-  let returnedQueryParam;
-  if (param === "Ministries, Departments, Agencies (MDAs)") {
-    returnedQueryParam = `mdaName=${filter}`;
-  } else if (param === "Political actors") {
-    returnedQueryParam = `politicalActorName=${filter}`;
-  } else if (param === "State") {
-    returnedQueryParam = `stateName=${filter}`;
-  } else if (param === "Local Govt Area (LGA)") {
-    returnedQueryParam = `lgaName=${filter}`;
-  } else if (param === "") {
-    returnedQueryParam = `name=${filter}`;
-  }
+export function getInitials(fullName: string): string {
+  if (!fullName) return "";
 
-  return returnedQueryParam;
-};
+  const parts = fullName.trim().split(/\s+/); // Split by any whitespace
+  const firstInitial = parts[0]?.[0] ?? "";
+  const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
+
+  return (firstInitial + lastInitial).toUpperCase();
+}
