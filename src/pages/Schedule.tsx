@@ -20,6 +20,7 @@ import { useAppSelector } from "../lib/hook";
 import {
   useCustomMutation,
   useFileUpload,
+  useGetPatientProfile,
   useGetSingleDoctorData,
 } from "../lib/apiCalls";
 import { useNavigate, useParams } from "react-router";
@@ -58,6 +59,9 @@ const Schedule = () => {
     userType === "patient",
     id || ""
   );
+  const { data: patientProfileData } = useGetPatientProfile(
+    userType === "patient"
+  );
 
   const toggleModal = () => {
     setModal(!modal);
@@ -77,7 +81,29 @@ const Schedule = () => {
     },
   });
 
+  const createPaymentLinkMutation = useCustomMutation({
+    endpoint: "payment/api/flutterwave/payment-link",
+    successMessage: (data: any) => data?.remark,
+    errorMessage: (error: any) =>
+      error?.response?.data?.remark || error?.response?.data,
+
+    onSuccessCallback: (data) => {
+      // handleOpenNewTab(data?.checkoutUrl);
+      // dispatch(updateReferenceNumber(data?.paymentReferenceId));
+    },
+  });
+
   const bookAppointment = (data: any) => {
+    // const paymentFormData = {
+    //   amount: singleDoctorData?.data?.pricing,
+    //   senderEmail: patientProfileData?.data?.email,
+    //   senderPhone: patientProfileData?.data?.email,
+    //   senderNames: getFullName(
+    //     patientProfileData?.data?.firstname,
+    //     patientProfileData?.data?.lastname
+    //   ),
+    // };
+
     const formData = {
       doctorPublicId: doctorId,
       topic: data.topic,
@@ -88,7 +114,6 @@ const Schedule = () => {
     };
 
     if (!isUploadedFileEmpty(uploadedFile)) {
-      // First upload file, then update profile
       uploadFile(
         { file: uploadedFile },
         {
@@ -102,9 +127,10 @@ const Schedule = () => {
         }
       );
     } else {
-      // No file to upload, just update profile
       bookAppointmentMutation.mutate(formData);
     }
+
+    // createPaymentLinkMutation.mutate(paymentFormData);
   };
 
   return (
@@ -312,8 +338,16 @@ const Schedule = () => {
               size="3"
               variant="solid"
               radius="medium"
-              disabled={isPending || bookAppointmentMutation.isPending}
-              loading={isPending || bookAppointmentMutation.isPending}
+              disabled={
+                isPending ||
+                bookAppointmentMutation.isPending ||
+                createPaymentLinkMutation.isPending
+              }
+              loading={
+                isPending ||
+                bookAppointmentMutation.isPending ||
+                createPaymentLinkMutation.isPending
+              }
               className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer mx-6"
             >
               Proceed to Pay
