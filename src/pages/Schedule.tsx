@@ -42,6 +42,10 @@ const Schedule = () => {
   const [modal, setModal] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File[]>([]);
 
+  const handleOpenNewTab = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   const userType = useAppSelector((state: RootState) => state.auth.userType);
   const { doctorId, timeSlot, selectedDate } = useAppSelector(
     (state: RootState) => state.schedule
@@ -88,22 +92,22 @@ const Schedule = () => {
       error?.response?.data?.remark || error?.response?.data,
 
     onSuccessCallback: (data) => {
-      // handleOpenNewTab(data?.checkoutUrl);
+      handleOpenNewTab(data?.data?.data?.link);
+      console.log(data?.data?.data?.link);
       // dispatch(updateReferenceNumber(data?.paymentReferenceId));
     },
   });
 
   const bookAppointment = (data: any) => {
-    // const paymentFormData = {
-    //   amount: singleDoctorData?.data?.pricing,
-    //   senderEmail: patientProfileData?.data?.email,
-    //   senderPhone: patientProfileData?.data?.email,
-    //   senderNames: getFullName(
-    //     patientProfileData?.data?.firstname,
-    //     patientProfileData?.data?.lastname
-    //   ),
-    // };
-
+    const paymentFormData = {
+      amount: singleDoctorData?.data?.pricing,
+      senderEmail: patientProfileData?.data?.email,
+      senderPhone: patientProfileData?.data?.email,
+      senderNames: getFullName(
+        patientProfileData?.data?.firstname,
+        patientProfileData?.data?.lastname
+      ),
+    };
     const formData = {
       doctorPublicId: doctorId,
       topic: data.topic,
@@ -113,24 +117,24 @@ const Schedule = () => {
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
     };
 
-    if (!isUploadedFileEmpty(uploadedFile)) {
-      uploadFile(
-        { file: uploadedFile },
-        {
-          onSuccess: (uploadResponse) => {
-            console.log(uploadResponse);
-            bookAppointmentMutation.mutate({
-              ...formData,
-              attachments: uploadResponse.data.url,
-            });
-          },
-        }
-      );
-    } else {
-      bookAppointmentMutation.mutate(formData);
-    }
+    // if (!isUploadedFileEmpty(uploadedFile)) {
+    //   uploadFile(
+    //     { file: uploadedFile },
+    //     {
+    //       onSuccess: (uploadResponse) => {
+    //         console.log(uploadResponse);
+    //         bookAppointmentMutation.mutate({
+    //           ...formData,
+    //           attachments: uploadResponse.data.url,
+    //         });
+    //       },
+    //     }
+    //   );
+    // } else {
+    //   bookAppointmentMutation.mutate(formData);
+    // }
 
-    // createPaymentLinkMutation.mutate(paymentFormData);
+    createPaymentLinkMutation.mutate(paymentFormData);
   };
 
   return (
