@@ -47,11 +47,11 @@ const SingleDoctor = () => {
     url: `appointment/api/reviews?publicId=${id}&page=0&size=20`,
     queryKey: ["GetDoctorsReviews"],
   });
-  // console.log(reviewsData);
+
   const toggleModal = () => {
     setModal(!modal);
   };
-  console.log(reviewsData);
+
   const scheduleData = {
     ...doctorAvailableSessions?.data,
     date: doctorAvailableSessions?.date,
