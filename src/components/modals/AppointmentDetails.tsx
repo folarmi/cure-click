@@ -8,6 +8,8 @@ import { getFullName } from "../../utils/util";
 import { useCustomMutation } from "../../lib/apiCalls";
 import { useQueryClient } from "@tanstack/react-query";
 import { ReportButton } from "../ui/ReportButton";
+import { useAppSelector } from "../../lib/hook";
+import { RootState } from "../../lib/store";
 
 type Prop = {
   toggleModal: () => void;
@@ -21,6 +23,7 @@ const AppointmentDetails = ({
   toggleCancel,
 }: Prop) => {
   const queryClient = useQueryClient();
+  const userType = useAppSelector((state: RootState) => state.auth.userType);
 
   const acceptAppointmentMutation = useCustomMutation({
     endpoint: `appointment/api/doctors/appointment/accept/${selectedAppointment?.publicId}`,
@@ -35,11 +38,11 @@ const AppointmentDetails = ({
     toggleModal();
     toggleCancel();
   };
+  // Active appointments shouldn't be cancelled or rescheduled
 
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />
-
       <Box className="mt-4">
         <MeetingCard
           date={selectedAppointment?.appointmentDate}
@@ -60,6 +63,7 @@ const AppointmentDetails = ({
           ifModal
           acceptOnClick={() => acceptAppointmentMutation.mutate({})}
           acceptLoading={acceptAppointmentMutation.isPending}
+          acceptDisabled={userType === "patient" ? true : false}
           cancelOnClick={handleCancel}
           rescheduleOnClick={handleCancel}
           joinDisabled={
@@ -67,6 +71,12 @@ const AppointmentDetails = ({
           }
           ifPending={
             selectedAppointment?.appointmentStatus === "PENDING" ? true : false
+          }
+          cancelDisabled={
+            selectedAppointment?.appointmentStatus === "ACTIVE" ? true : false
+          }
+          rescheduleDisbaled={
+            selectedAppointment?.appointmentStatus === "ACTIVE" ? true : false
           }
         />
 

@@ -44,14 +44,14 @@ const SingleDoctor = () => {
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(id);
 
   const { data: reviewsData, isLoading: reviewsDataIsLoading } = useGetData({
-    url: `appointment/api/reviews?publicId=${id}&page=0&size=20`,
+    url: `appointment/api/reviews?doctorPublicId=${id}&page=0&size=20`,
     queryKey: ["GetDoctorsReviews"],
   });
   // console.log(reviewsData);
   const toggleModal = () => {
     setModal(!modal);
   };
-  console.log(reviewsData);
+
   const scheduleData = {
     ...doctorAvailableSessions?.data,
     date: doctorAvailableSessions?.date,

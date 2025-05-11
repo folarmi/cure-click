@@ -187,14 +187,15 @@ const DoctorCalendar = ({
     const today = new Date();
     today.setHours(0, 0, 0, 0); // strip time to compare only dates
 
-    // 🚫 If not recurring and selected day is outside this week or in the past, show warning
-    if (!scheduleData.recurring) {
-      if (day < today) {
-        toast.warn("Selected date is in the past.");
-        setAvailableTimes([]);
-        return;
-      }
+    // Disallow booking in the past regardless of recurrence
+    if (day < today) {
+      toast.warn("Selected date is in the past.");
+      setAvailableTimes([]);
+      return;
+    }
 
+    // For non-recurring schedules, also check the doctor's availability window
+    if (!scheduleData.recurring) {
       if (day < baseWeekStart || day > baseWeekEnd) {
         toast.warn("Selected date is outside of doctor's schedule.");
         setAvailableTimes([]);
@@ -208,6 +209,11 @@ const DoctorCalendar = ({
     const matched = scheduleData?.sessions.find(
       (item: any) => item.dayOfTheWeek === backendDay
     );
+
+    if (!matched?.available) {
+      toast.warn("Doctor isn't available");
+      return;
+    }
 
     const formattedTimes =
       matched?.localTimes.map((time: string) => {
