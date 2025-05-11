@@ -33,6 +33,8 @@ import {
 import { DoctorCalendar } from "../components/ui/DoctorCalendar";
 import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
+import { DefaultProfile } from "../components/ui/DefaultProfile";
+import { getFirstAndLastInitials } from "../utils/randomUtil";
 
 const SingleDoctor = () => {
   const { id } = useParams();
@@ -79,12 +81,24 @@ const SingleDoctor = () => {
 
           <div className="md:flex gap-x-4 md:space-x-0 md:px-[50px] bg-gray_bg">
             <section className="w-full px-4 md:px-0 md:w-[25%]">
-              <Box className="w-[100px] h-[100px] relative rounded-lg">
-                <img
-                  src={sampleDoctor}
-                  className="w-[100px] h-[100px] object-cover rounded-lg absolute md:-top-10"
+              {singleDoctorData?.data?.profilePictureUrl ? (
+                <Box className="w-[100px] h-[100px] relative rounded-lg">
+                  <img
+                    src={
+                      singleDoctorData?.data?.profilePictureUrl || sampleDoctor
+                    }
+                    className="w-[100px] h-[100px] object-cover rounded-lg absolute md:-top-6"
+                  />
+                </Box>
+              ) : (
+                <DefaultProfile
+                  size="w-16 h-16"
+                  initials={getFirstAndLastInitials(
+                    singleDoctorData?.data?.firstname,
+                    singleDoctorData?.data?.lastname
+                  )}
                 />
-              </Box>
+              )}
 
               <Flex align="center" className="">
                 <Text

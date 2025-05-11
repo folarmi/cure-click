@@ -14,7 +14,7 @@ type Prop = {
   toggleModal: () => void;
   selectedAppointment: Appointment;
   toggleCancel: () => void;
-  toggleRescheduleTwoModal: () => void;
+  // toggleRescheduleTwoModal: () => void;
   toggleRescheduleModal: () => void;
 };
 const UpcomingAppointment = ({

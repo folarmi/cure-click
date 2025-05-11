@@ -7,3 +7,12 @@ export function getInitials(fullName: string): string {
 
   return (firstInitial + lastInitial).toUpperCase();
 }
+
+export const getFirstAndLastInitials = (
+  firstName: string,
+  lastName: string
+) => {
+  const firstInitial = firstName?.[0] || "";
+  const lastInitial = lastName?.[0] || "";
+  return (firstInitial + lastInitial).toUpperCase();
+};

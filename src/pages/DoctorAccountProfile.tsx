@@ -1,5 +1,4 @@
 import { Badge, Box, Button, Flex, Tabs, Text } from "@radix-ui/themes";
-import sampleDoctor from "../assets/sampleDoctorOne.svg";
 import BadgeIcon from "../assets/icons/Badge.svg";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { HiLocationMarker, HiOutlineTranslate } from "react-icons/hi";
@@ -22,6 +21,8 @@ import {
   renderCommaSeparatedSpans,
 } from "../utils/util";
 import { useGetDoctorProfile } from "../lib/apiCalls";
+import { getFirstAndLastInitials } from "../utils/randomUtil";
+import { DefaultProfile } from "../components/ui/DefaultProfile";
 
 const DoctorAccountProfile = () => {
   const [modal, setModal] = useState(false);
@@ -42,10 +43,28 @@ const DoctorAccountProfile = () => {
             <>
               <Flex align="center" justify="between">
                 <Box>
-                  <img
-                    src={sampleDoctor}
-                    className="w-[100px] h-[100px] object-cover rounded-lg"
-                  />
+                  <>
+                    {doctorProfile?.data?.profilePictureUrl ? (
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 overflow-hidden rounded-lg bg-gray-100">
+                        <img
+                          src={doctorProfile?.data?.profilePictureUrl}
+                          alt="Doctor Profile"
+                          className="w-full h-full object-cover"
+                          onError={(e) =>
+                            (e.currentTarget.style.display = "none")
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <DefaultProfile
+                        size="w-16 h-16"
+                        initials={getFirstAndLastInitials(
+                          doctorProfile?.data?.firstname,
+                          doctorProfile?.data?.lastname
+                        )}
+                      />
+                    )}
+                  </>
                   <Flex align="center" className="mt-4">
                     <Text
                       as="p"

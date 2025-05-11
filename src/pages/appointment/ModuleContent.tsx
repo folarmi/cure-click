@@ -53,7 +53,7 @@ const ModuleContent = ({
   const [completedAppointment, setCompletedAppointment] = useState(false);
   const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
 
-  const sortedAppointments = sortUpcomingAppointments(appointmentsData?.data);
+  const sortedAppointments = sortUpcomingAppointments(appointmentsData);
 
   const toggleMeetingCardTwoModal = () => {
     setMeetingCardTwoModal(!meetingCardTwoModal);
@@ -146,7 +146,7 @@ const ModuleContent = ({
             selectedAppointment={selectedAppointment}
             toggleCancel={toggleCancel}
             toggleRescheduleModal={toggleRescheduleModal}
-            toggleRescheduleTwoModal={toggleRescheduleTwoModal}
+            // toggleRescheduleTwoModal={toggleRescheduleTwoModal}
           />
         </div>
       </Modal>
@@ -176,9 +176,15 @@ const ModuleContent = ({
         </div>
       </Modal>
 
+      {/* Request Rescheduled Details Page */}
       <Modal show={rescheduleModalTwo} toggleModal={toggleRescheduleTwoModal}>
         <div className="p-4">
-          <RescheduleTwo toggleModal={toggleRescheduleTwoModal} />
+          <RescheduleTwo
+            toggleModal={toggleRescheduleTwoModal}
+            toggleRescheduleModal={toggleRescheduleModal}
+            toggleCancel={toggleCancel}
+            details={selectedAppointment}
+          />
         </div>
       </Modal>
     </Flex>
