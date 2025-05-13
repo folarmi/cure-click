@@ -33,6 +33,8 @@ import {
 import { format, parseISO } from "date-fns";
 import { getDayWithSuffix } from "../utils/calendarutil";
 import FileUploader from "../components/FileUploader";
+import { DefaultProfile } from "../components/ui/DefaultProfile";
+import { getFirstAndLastInitials } from "../utils/randomUtil";
 
 const Schedule = () => {
   const { id } = useParams();
@@ -93,10 +95,10 @@ const Schedule = () => {
         { file: uploadedFile },
         {
           onSuccess: (uploadResponse) => {
-            console.log(uploadResponse);
+            // console.log(uploadResponse?.data?.);
             bookAppointmentMutation.mutate({
               ...formData,
-              attachments: uploadResponse.data.url,
+              attachments: uploadResponse?.data?.map((file: any) => file.url),
             });
           },
         }
@@ -126,12 +128,29 @@ const Schedule = () => {
         justify="end"
       >
         <Box className="flex flex-col items-center ml-auto ">
-          <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
+          {/* <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
               className="w-[100px] h-[100px] md:top-52 object-cover rounded-lg absolute"
             />
-          </Box>
+          </Box> */}
+
+          {singleDoctorData?.data?.profilePictureUrl ? (
+            <Box className="w-[100px] h-[100px] relative rounded-lg">
+              <img
+                src={singleDoctorData?.data?.profilePictureUrl || sampleDoctor}
+                className="w-[100px] h-[100px] object-cover rounded-lg absolute md:-top-6"
+              />
+            </Box>
+          ) : (
+            <DefaultProfile
+              size="w-16 h-16"
+              initials={getFirstAndLastInitials(
+                singleDoctorData?.data?.firstname,
+                singleDoctorData?.data?.lastname
+              )}
+            />
+          )}
 
           <Text as="p" size="7" className="text-indigo_12 font-semibold">
             {getFullName(
@@ -293,6 +312,7 @@ const Schedule = () => {
                   maxSizeMB={5}
                   acceptFormats={["png", "jpeg", "jpg", "gif", "webp"]}
                   onFileUpload={setUploadedFile}
+                  multiple
                 />
               </Flex>
 

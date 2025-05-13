@@ -111,6 +111,7 @@ interface FileUploaderProps {
   acceptFormats: string[];
   onFileUpload: (files: File[]) => void;
   defaultFiles?: string[];
+  multiple?: boolean;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({
@@ -118,6 +119,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   acceptFormats,
   onFileUpload,
   defaultFiles,
+  multiple = false,
 }) => {
   const [previews, setPreviews] = useState<
     Array<{ url: string; name: string }>
@@ -176,9 +178,14 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       name: file.name,
     }));
 
-    setPreviews([...previews, ...newPreviews]);
-    setFiles([...files, ...validFiles]);
-    onFileUpload([...files, ...validFiles]);
+    const finalPreviews = multiple
+      ? [...previews, ...newPreviews]
+      : newPreviews;
+    const finalFiles = multiple ? [...files, ...validFiles] : validFiles;
+
+    setPreviews(finalPreviews);
+    setFiles(finalFiles);
+    onFileUpload(finalFiles);
   };
 
   const removeFile = (index: number) => {
@@ -222,7 +229,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
             className="hidden"
             onChange={handleFileChange}
             accept={acceptFormats.map((ext) => `.${ext}`).join(",")}
-            multiple
+            multiple={multiple}
+            // multiple={false}
           />
         </label>
       </div>
