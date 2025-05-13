@@ -154,7 +154,7 @@ export const useFileUpload = ({
   return useMutation<
     any,
     AxiosError,
-    { file: File | File[] | null; extraData?: Record<string, any> }
+    { file: File | File[] | null | undefined; extraData?: Record<string, any> }
   >({
     mutationFn: async ({ file, extraData }) => {
       const formData = new FormData();
@@ -162,7 +162,7 @@ export const useFileUpload = ({
       // Handle both single file and array of files
       if (Array.isArray(file)) {
         file.forEach((file) => {
-          formData.append(`file`, file);
+          formData.append(`files`, file);
         });
       } else {
         formData.append("file", file);

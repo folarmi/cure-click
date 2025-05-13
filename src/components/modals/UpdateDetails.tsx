@@ -65,9 +65,13 @@ const UpdateDetails = ({ toggleModal }: any) => {
       yearsOfExperience: stringToNumber(data?.yearsOfExperience),
     };
     if (!isUploadedFileEmpty(uploadedFile)) {
+      let singleFile;
+      if (Array.isArray(uploadedFile)) {
+        singleFile = uploadedFile[0];
+      }
       // First upload file, then update profile
       uploadFile(
-        { file: uploadedFile },
+        { file: singleFile },
         {
           onSuccess: (uploadResponse) => {
             updateDoctorProfileMutation.mutate({
