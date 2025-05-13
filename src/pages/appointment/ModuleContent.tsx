@@ -53,7 +53,7 @@ const ModuleContent = ({
   const [completedAppointment, setCompletedAppointment] = useState(false);
   const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
 
-  const sortedAppointments = sortUpcomingAppointments(appointmentsData?.data);
+  const sortedAppointments = sortUpcomingAppointments(appointmentsData);
 
   const toggleMeetingCardTwoModal = () => {
     setMeetingCardTwoModal(!meetingCardTwoModal);

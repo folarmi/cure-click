@@ -64,6 +64,9 @@ const UpcomingAppointment = ({
       setUsername(data?.data?.username);
       setInCall(true);
     },
+    onError: () => {
+      toggleModal();
+    },
   });
 
   const joinMeeting = () => {
