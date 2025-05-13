@@ -303,7 +303,7 @@ const DoctorCalendar = ({
         {availableTimes?.map(({ timeSlot }) => {
           return (
             <Box
-              className="mt-2 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer"
+              className="mt-2 mr-4 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer"
               key={timeSlot}
               onClick={() => setSelectedTimeSlot(timeSlot)}
             >
