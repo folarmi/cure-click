@@ -53,16 +53,25 @@ const DayScheduleItem = ({
   };
 
   const handleAvailabilityChange = (checked: boolean) => {
+    // if (checked && fields.length === 0) {
+    //   toast.error(
+    //     "Please add at least one time period before making this day available"
+    //   );
+    //   return;
+    // }
+
     if (checked && fields.length === 0) {
-      toast.error(
-        "Please add at least one time period before making this day available"
-      );
+      if (!isExpanded) {
+        toast.error(
+          "Please add at least one time period before making this day available"
+        );
+        onToggle(day.publicId); // or your own expand handler
+      }
       return;
     }
+
     setValue(`schedule.${day.publicId}.available`, checked);
     submitAvailableSessions(day.publicId);
-    // if (isAvailable) {
-    // }
   };
 
   const handleStartTimeChange = (value: string, index: number) => {

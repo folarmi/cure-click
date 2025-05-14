@@ -5,7 +5,6 @@ import { RootState } from "../../lib/store";
 import { useSelector } from "react-redux";
 import Table from "../../components/ui/Table";
 import { createColumnHelper } from "@tanstack/react-table";
-import avatar from "../../assets/avatar.svg";
 import { getFullName } from "../../utils/util";
 import { format, parse } from "date-fns";
 import { EmptyAppointment } from "../../components/emptyStates/EmptyAppointment";
@@ -19,6 +18,8 @@ import { tabItems } from "../../utils/data";
 import Modal from "../../components/ui/Modal";
 import { Review } from "../../components/modals/Review";
 import { useState } from "react";
+import { getFirstAndLastInitials } from "../../utils/randomUtil";
+import { DefaultProfile } from "../../components/ui/DefaultProfile";
 
 type Prop = {
   appointmentsData: any;
@@ -67,10 +68,37 @@ const TableContent = ({
         const docType = info.row.original?.doctor?.specialization;
         const patientFirstName = info.row.original?.patient?.firstname;
         const patientLastName = info.row.original?.patient?.lastname;
+        const doctorFirstName = info.row.original?.doctor?.firstname;
+        const doctorLastName = info.row.original?.doctor?.lastname;
+        const patientProfilePicture =
+          info.row.original?.patient?.profilePictureUrl;
+        const doctorProfilePicture =
+          info.row.original?.doctor?.profilePictureUrl;
+
+        const profilePicture =
+          userType === "patient"
+            ? patientProfilePicture || null // leave null to handle fallback in JSX
+            : doctorProfilePicture || null;
+
+        const initials =
+          userType === "patient"
+            ? getFirstAndLastInitials(doctorFirstName, doctorLastName)
+            : getFirstAndLastInitials(patientFirstName, patientLastName);
 
         return (
           <div className="flex items-center">
-            <img src={avatar} />
+            {profilePicture ? (
+              <img
+                className="w-16 h-16 rounded-full object-cover p-0.5"
+                src={profilePicture}
+                alt="User profile avatar"
+                loading="lazy"
+                width={64}
+                height={64}
+              />
+            ) : (
+              <DefaultProfile size="w-12 h-12" initials={initials} />
+            )}
             <div className="ml-2">
               <CustomText
                 className="text-iris12 font-semibold"

@@ -187,7 +187,6 @@ export const useFileUpload = ({
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       if (data?.isSuccess) {
         const message =
           typeof successToast === "function"

@@ -1,6 +1,4 @@
 import { Badge, Box, Flex, Text } from "@radix-ui/themes";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../lib/store";
 import { AppointmentStatus, getStatusClassName } from "../../utils/types";
 import { capitalize } from "../../utils/util";
 import {

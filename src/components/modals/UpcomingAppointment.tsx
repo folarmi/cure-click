@@ -14,7 +14,7 @@ type Prop = {
   toggleModal: () => void;
   selectedAppointment: Appointment;
   toggleCancel: () => void;
-  toggleRescheduleTwoModal: () => void;
+  // toggleRescheduleTwoModal: () => void;
   toggleRescheduleModal: () => void;
 };
 const UpcomingAppointment = ({
@@ -32,7 +32,6 @@ const UpcomingAppointment = ({
     toggleModal();
     toggleRescheduleModal();
   };
-
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:min-w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />

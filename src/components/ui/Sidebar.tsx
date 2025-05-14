@@ -1,5 +1,4 @@
 import logo from "../../assets/icons/logo.svg";
-import avatar from "../../assets/avatar.svg";
 import { navBarItems, sampleNotifications } from "../../utils/data";
 import { BellIcon } from "@radix-ui/react-icons";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -17,12 +16,23 @@ import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useAuth } from "../../context/AuthContext";
 import { decodeLogin } from "../../utils/util";
+import { RootState } from "../../lib/store";
+import { useAppSelector } from "../../lib/hook";
+import { useGetDoctorProfile, useGetPatientProfile } from "../../lib/apiCalls";
+import { ProfilePicture } from "../atoms/ProfilePicture";
 
 const Sidebar = () => {
   const { logout } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const userType = useAppSelector((state: RootState) => state.auth.userType);
+
+  const { data: patientProfileData } = useGetPatientProfile(
+    userType === "patient"
+  );
+  const { data: doctorProfile } = useGetDoctorProfile(userType === "doctor");
+
   const [selectedValue, setSelectedValue] = useState("unread");
   const [showSideBar, setShowSideBar] = useState(false);
 
@@ -96,7 +106,7 @@ const Sidebar = () => {
       <div className="flex items-center">
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <BellIcon className="w-6 h-6 cursor-pointer" />
+            <BellIcon className="w-6 h-6 cursor-pointer mr-3" />
           </DropdownMenu.Trigger>
           <BiMenu
             onClick={() => toggleMobileSideBar()}
@@ -206,11 +216,25 @@ const Sidebar = () => {
           </DropdownMenu.Content>
         </DropdownMenu.Root>
 
-        <img
-          src={avatar}
-          alt="avatar"
-          className="w-10 h-10 ml-6 hidden md:block"
+        <ProfilePicture
+          firstName={
+            userType === "patient"
+              ? patientProfileData?.data?.firstname
+              : doctorProfile?.data?.firstname
+          }
+          lastName={
+            userType === "patient"
+              ? patientProfileData?.data?.lastname
+              : doctorProfile?.data?.lastname
+          }
+          profilePicture={
+            userType === "patient"
+              ? patientProfileData?.data?.profilePictureUrl
+              : doctorProfile?.data?.profilePictureUrl
+          }
+          size={48}
         />
+
         <Text
           size="2"
           className="text-gray12 px-2 hidden md:block"

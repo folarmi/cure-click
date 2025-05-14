@@ -1,9 +1,34 @@
-import { Box, Text } from "@radix-ui/themes";
+import { Box } from "@radix-ui/themes";
 import AppointmentModalHeader from "../ui/AppointmentModalHeader";
 import MeetingCardTwo from "../cards/MeetingCardTwo";
+import { Appointment } from "../../utils/types";
+import { AppointmentSubCard } from "../ui/AppointmentSubCard";
+import { formatAppointmentTime } from "../../utils/calendarutil";
+import { getFullName } from "../../utils/util";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const RescheduleTwo = ({ toggleModal }: any) => {
+type Prop = {
+  toggleModal: () => void;
+  toggleRescheduleModal: () => void;
+  toggleCancel: () => void;
+  details: Appointment;
+};
+
+const RescheduleTwo = ({
+  toggleModal,
+  details,
+  toggleRescheduleModal,
+  toggleCancel,
+}: Prop) => {
+  const handleReschedule = () => {
+    toggleModal();
+    toggleRescheduleModal();
+  };
+
+  const handleCancel = () => {
+    toggleModal();
+    toggleCancel();
+  };
+
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader
@@ -13,20 +38,32 @@ const RescheduleTwo = ({ toggleModal }: any) => {
 
       <Box className="mt-4">
         <MeetingCardTwo
-          title="Second Opinion on scheduled Cancer surge.."
-          date="1 July 2023"
-          time="11:30PM GMT+1"
-          doctorName="Dr. Alison Ogaga"
-          patientName="Kemi Ukpong"
+          title={details?.topic}
+          date={details?.appointmentDate}
+          time={formatAppointmentTime(
+            details?.appointmentDate,
+            details?.appointmentTime
+          )}
+          doctorName={getFullName(
+            details?.doctor?.firstname,
+            details?.doctor?.lastname
+          )}
+          patientName={getFullName(
+            details?.patient?.firstname,
+            details?.patient?.lastname
+          )}
           ifView={false}
           ifSpaceBetween={false}
           ifButtons
+          rescheduleOnClick={handleReschedule}
+          cancelOnClick={handleCancel}
         />
-        <Box className="mt-6 px-6">
-          <Text size="3" className="text-gray12">
-            Select New Date (24 Available Sessions)
-          </Text>
-        </Box>
+
+        <AppointmentSubCard
+          status={details?.appointmentStatus}
+          date={details?.appointmentDate}
+          time={details?.appointmentTime}
+        />
       </Box>
     </div>
   );

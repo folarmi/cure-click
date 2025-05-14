@@ -34,7 +34,7 @@ const VerifyEmail = () => {
   return (
     <AuthLayout
       mainText="Verify your Email"
-      subText={`we sent a token to ${searchParams.get("email")}`}
+      subText={`we sent a mail to ${searchParams.get("email")}`}
     >
       <form
         onSubmit={handleSubmit(submitForm)}

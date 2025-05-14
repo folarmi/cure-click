@@ -29,9 +29,7 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
   const { data: doctorAvailableSessions } = useGetDoctorAvailableSessions(
     details?.doctor?.publicId
   );
-  const { userType, publicId } = useAppSelector(
-    (state: RootState) => state.auth
-  );
+  const { userType } = useAppSelector((state: RootState) => state.auth);
 
   const scheduleData = {
     ...doctorAvailableSessions?.data,
@@ -39,8 +37,8 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
   };
 
   const requestRescheduleMutation = useCustomMutation({
-    endpoint: `appointment/api/appointments/request-reschedule/${publicId}`,
-    successMessage: () => "Profile Updated sucessfully",
+    endpoint: `appointment/api/appointments/request-reschedule/${details?.publicId}`,
+    successMessage: () => "Appointment Updated sucessfully",
     method: "put",
     onSuccessCallback: () => {
       toggleModal();
@@ -48,8 +46,8 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
   });
 
   const rescheduleMutation = useCustomMutation({
-    endpoint: `appointment/api/appointments/reschedule/${publicId}`,
-    successMessage: () => "Profile Updated sucessfully",
+    endpoint: `appointment/api/appointments/reschedule/${details.publicId}`,
+    successMessage: () => "Appointment Updated sucessfully",
     method: "put",
     onSuccessCallback: () => {
       toggleModal();
@@ -76,7 +74,7 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
   };
 
   return (
-    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
+    <div className="rounded-lg p-4 bg-white w-auto md:w-[522px] max-h-[700px] overflow-y-auto my-12">
       <AppointmentModalHeader
         text="Reschedule Session"
         toggleModal={toggleModal}
@@ -147,8 +145,14 @@ const Reschedule = ({ toggleModal, details }: Prop) => {
               />
 
               <Button
-                loading={requestRescheduleMutation.isPending}
-                disabled={requestRescheduleMutation.isPending}
+                loading={
+                  requestRescheduleMutation.isPending ||
+                  rescheduleMutation.isPending
+                }
+                disabled={
+                  requestRescheduleMutation.isPending ||
+                  rescheduleMutation.isPending
+                }
                 variant="solid"
                 size="3"
                 className="font-medium text-white text-base bg-grass_9 w-full my-6"
