@@ -28,6 +28,7 @@ import {
   capitalize,
   convertStartTimeToBackendFormat,
   getFullName,
+  getTimeZoneInfo,
   isUploadedFileEmpty,
   renderCommaSeparatedSpans,
 } from "../utils/util";
@@ -107,6 +108,7 @@ const Schedule = () => {
         patientProfileData?.data?.firstname,
         patientProfileData?.data?.lastname
       ),
+      itemId: "string",
     };
     const formData = {
       doctorPublicId: doctorId,
@@ -115,6 +117,7 @@ const Schedule = () => {
       details: data.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
+      timeSlot: getTimeZoneInfo().id,
     };
 
     // if (!isUploadedFileEmpty(uploadedFile)) {
