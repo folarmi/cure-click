@@ -27,6 +27,7 @@ import {
   capitalize,
   convertStartTimeToBackendFormat,
   getFullName,
+  getTimeZoneInfo,
   isUploadedFileEmpty,
   renderCommaSeparatedSpans,
 } from "../utils/util";
@@ -85,6 +86,7 @@ const Schedule = () => {
       details: data.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
+      timeZone: getTimeZoneInfo().id,
     };
 
     if (!isUploadedFileEmpty(uploadedFile)) {
