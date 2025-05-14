@@ -86,7 +86,7 @@ const Schedule = () => {
       details: data.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
-      timeZone: getTimeZoneInfo().id,
+      timezone: getTimeZoneInfo().id,
     };
 
     if (!isUploadedFileEmpty(uploadedFile)) {
