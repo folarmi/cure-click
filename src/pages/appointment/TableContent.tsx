@@ -58,6 +58,7 @@ const TableContent = ({
   const handleAction = (item: Appointment) => {
     setSelectedAppointment?.(item);
   };
+
   const columnHelper = createColumnHelper<any>();
   const columns = [
     columnHelper.accessor("doctor", {
