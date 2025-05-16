@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // // /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Calendar } from "react-big-calendar";
+import { Calendar, DateHeaderProps } from "react-big-calendar";
 import { format, isSameDay } from "date-fns";
 import {
   getTotalAvailableTimes,
@@ -61,7 +61,7 @@ const DoctorCalendar = ({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [availableTimes, setAvailableTimes] = useState([]);
+  const [availableTimes, setAvailableTimes] = useState<any>([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState();
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -79,7 +79,16 @@ const DoctorCalendar = ({
     return events.some((event) => {
       if (event.resource.recurring) {
         // For recurring events, check if the day of week matches
-        return date.getDay() === event.resource.dayOfTheWeek;
+        const dayNames = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        return dayNames[date.getDay()] === event.resource.dayOfTheWeek;
       } else {
         // For non-recurring events, do exact date match
         const eventDate = new Date(event.start);
@@ -92,7 +101,7 @@ const DoctorCalendar = ({
     });
   };
 
-  const CustomDateHeader = ({ date }: { date: Date; value: Date }) => {
+  const CustomDateHeader = ({ date }: DateHeaderProps) => {
     const hasEvents = hasEventsOnDate(date);
     // const isCurrentMonth =
     //   date.getMonth() === new Date(scheduleData?.date).getMonth();
@@ -300,7 +309,7 @@ const DoctorCalendar = ({
       </div>
 
       <div className="grid grid-cols-2">
-        {availableTimes?.map(({ timeSlot }) => {
+        {availableTimes?.map(({ timeSlot }: any) => {
           return (
             <Box
               className="mt-2 mr-4 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer"

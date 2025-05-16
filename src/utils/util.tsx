@@ -326,7 +326,9 @@ export function getFullDayNameFromPublicId(
   dayIdOrder: string[]
 ): string {
   const index = publicId && dayIdOrder.indexOf(publicId);
-  return index !== -1 ? fullDayNames[index] : "Unknown Day";
+  return typeof index === "number" && index >= 0 && index < 7 && index !== -1
+    ? fullDayNames[index]
+    : "Unknown Day";
 }
 
 export const getTimeZoneInfo = () => {

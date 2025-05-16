@@ -44,7 +44,8 @@ const UpdateDetails = ({ toggleModal }: any) => {
 
   const { mutate: uploadFile, isPending } = useFileUpload({
     successToast: () => `File uploaded successfully!`,
-    errorToast: (error) => error.response?.data?.message || "Upload failed",
+    errorToast: (error: any) =>
+      error.response?.data?.message || "Upload failed",
   });
 
   const updateDoctorProfileMutation = useCustomMutation({

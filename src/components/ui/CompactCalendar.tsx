@@ -4,11 +4,17 @@ import "../../css/compact-calendar.css";
 import { Link } from "react-router-dom";
 import { Button } from "@radix-ui/themes";
 
+interface CompactCalendarProps {
+  startDate: string | Date;
+  availableDates: string[];
+  onDayClick: (date: string | Date) => void;
+}
+
 const CompactCalendar = ({
   startDate,
   availableDates,
   onDayClick,
-}: PropTypes) => {
+}: CompactCalendarProps) => {
   // Generate the 2-week period
   const dates = [];
   for (let i = 0; i < 14; i++) {

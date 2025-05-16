@@ -1,4 +1,4 @@
-const res = {
+export const res = {
   sessions: [
     {
       publicId: "131738V7F1WZ6988",
@@ -68,7 +68,7 @@ const res = {
   date: "2025-04-30T21:35:08.0716999",
 };
 
-const single = {
+export const single = {
   sessions: [
     {
       publicId: "131738V7F1WZ6988",

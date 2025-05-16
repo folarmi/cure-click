@@ -154,7 +154,10 @@ export const useFileUpload = ({
   return useMutation<
     any,
     AxiosError,
-    { file: File | File[] | null | undefined; extraData?: Record<string, any> }
+    {
+      file: File | File[] | null | undefined | any;
+      extraData?: Record<string, any>;
+    }
   >({
     mutationFn: async ({ file, extraData }) => {
       const formData = new FormData();
@@ -186,9 +189,9 @@ export const useFileUpload = ({
       });
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       if (data?.isSuccess) {
-        const message =
+        const message: any =
           typeof successToast === "function"
             ? successToast(data)
             : successToast;
@@ -196,7 +199,7 @@ export const useFileUpload = ({
       }
       onSuccess?.(data);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       if (errorToast) {
         const message =
           typeof errorToast === "function" ? errorToast(error) : errorToast;

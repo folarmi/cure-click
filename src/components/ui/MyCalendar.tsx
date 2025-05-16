@@ -105,9 +105,9 @@ const MyCalendar = ({ currentDate, events }: CalendarProps) => {
         formats={formats}
         eventPropGetter={eventStyleGetter}
         components={{
-          month: {
-            dateCellWrapper: CustomDayCell,
-          },
+          // month: {
+          dateCellWrapper: CustomDayCell,
+          // },
         }}
       />
     </div>

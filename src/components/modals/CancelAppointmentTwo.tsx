@@ -1,13 +1,16 @@
-import { Box, Button, Checkbox, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { BiX } from "react-icons/bi";
 import { reasonsForCancelling } from "../../utils/data";
-import { CustomTextarea } from "../ui/CustomTextArea";
 import MeetingCardTwo from "../cards/MeetingCardTwo";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
+import { CustomRadioGroup } from "../CustomRadioGroup";
+import { useState } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const CancelAppointmentTwo = ({ toggleModal }: any) => {
-  const { control } = useForm();
+  // const { control } = useForm();
+  const [selectedReason, setSelectedReason] = useState("");
+
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px] overflow-scroll h-[700px]">
       <Flex justify="between" align="center" className="mb-4">
@@ -72,7 +75,7 @@ const CancelAppointmentTwo = ({ toggleModal }: any) => {
           Help us Improve our service
         </Text>
 
-        {reasonsForCancelling.map(({ reason }) => {
+        {/* {reasonsForCancelling.map(({ reason }) => {
           return (
             <>
               <Flex
@@ -96,7 +99,15 @@ const CancelAppointmentTwo = ({ toggleModal }: any) => {
               )}
             </>
           );
-        })}
+        })} */}
+        <div className="mt-4">
+          <CustomRadioGroup
+            options={reasonsForCancelling}
+            value={selectedReason}
+            onValueChange={setSelectedReason}
+            name="gender"
+          />
+        </div>
 
         <Flex align="center" justify="between" mt="4" mb="4">
           <Button

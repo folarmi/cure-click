@@ -29,7 +29,6 @@ import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
 import { EmptyDoctorSearch } from "../components/emptyStates/EmptyDoctorSearch";
 import { MeetingCard } from "../components/cards/MeetingCard";
-import { Appointment } from "../utils/types";
 // import { UpComingAppointments } from "../components/ui/UpComingAppointments";
 // import { decodeLogin } from "../utils/util";
 
@@ -59,7 +58,7 @@ const Dashboard = () => {
     queryKey: ["GetDoctorsReviews"],
     enabled: userType === "doctor",
   });
-
+  console.log(reviewsData);
   useEffect(() => {
     dispatch(
       setPublicId(
@@ -90,6 +89,7 @@ const Dashboard = () => {
             doctorProfile?.data?.firstname,
             doctorProfile?.data?.lastname
           )}`}
+          Icon={() => null}
         />
       )}
 
