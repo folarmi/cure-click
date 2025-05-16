@@ -1,0 +1,103 @@
+image: docker:20.10.17-dind
+
+services:
+  - docker:20.10.17-dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+  DOCKER_IMAGE_NAME: cure-click-frontend-$CI_COMMIT_REF_SLUG
+  DOCKER_REGISTRY: registry.gitlab.com/biyartech1/cure-click-apps/cure-click-frontend:$CI_COMMIT_REF_SLUG
+  DOCKER_REGISTRY_SERVER: "registry.gitlab.com"
+
+stages:
+  - build
+  - test
+  - push
+  - cleanup
+  - deploy
+
+before_script:
+  # Install Node.js and npm
+  - echo "Installing Node.js and npm..."
+  - apk add --no-cache nodejs npm
+
+  # Confirm installations
+  - node -v
+  - npm -v
+
+cache:
+  paths:
+    - node_modules/
+
+build_and_push:
+  stage: build
+  script:
+    - echo "CI_COMMIT_REF_SLUG - $CI_COMMIT_REF_SLUG"
+    - echo "DOCKER_REGISTRY in build stage:" $DOCKER_REGISTRY
+    - echo "Installing dependencies..."
+    - npm install
+    - echo "Building the React app..."
+    - npm run build
+    - echo "Logging into Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $DOCKER_REGISTRY_SERVER
+    - echo "Building Docker image..."
+    - docker build -t $DOCKER_REGISTRY .
+    - echo "Pushing Docker image..."
+    - docker image
+    - docker push "$DOCKER_REGISTRY"
+    - echo "Docker image $DOCKER_REGISTRY built and pushed successfully."
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 week
+
+test:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - npm test -- --watchAll=false
+    - echo "Tests passed."
+
+#cleanup:
+#  stage: cleanup
+#  script:
+#    - echo "Cleaning up old images..."
+#    - docker image prune -af || true
+
+cleanup:
+  stage: cleanup
+  script:
+    - echo "$CI_DEPLOY_PASSWORD" | docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull "$DOCKER_REGISTRY"
+    - docker-compose version
+    - docker compose version
+    - |
+      $CONTAINER_NAMES = docker ps --format '{{.Names}}' | ForEach-Object { $_.Trim() }
+      echo "Running Containers: $CONTAINER_NAMES"
+      echo "Running Containers: $DOCKER_IMAGE_NAME"
+
+      if ($CONTAINER_NAMES -like "*$DOCKER_IMAGE_NAME*") {
+        docker stop $DOCKER_IMAGE_NAME
+        docker rm $DOCKER_IMAGE_NAME
+        Write-Host "CONTAINER_NAMES contains DOCKER_IMAGE_NAME"
+      }
+
+#deploy:
+#  stage: deploy
+#  script:
+#    - echo "Deploying application..."
+#    - |
+#      docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME down
+#      docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME up -d
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Logging into Docker registry..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - export DOCKER_TAG=$CI_COMMIT_REF_SLUG
+    - echo "Deploying application with tag $DOCKER_TAG..."
+    - docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME down
+    - docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME up -d

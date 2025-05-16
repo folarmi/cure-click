@@ -94,14 +94,14 @@ const Schedule = () => {
     errorMessage: (error: any) =>
       error?.response?.data?.remark || error?.response?.data,
 
-    onSuccessCallback: (data) => {
-      handleOpenNewTab(data?.data?.data?.link);
-      console.log(data?.data?.data?.link);
-      // dispatch(updateReferenceNumber(data?.paymentReferenceId));
-    },
+    // onSuccessCallback: (data) => {
+    //   handleOpenNewTab(data?.data?.data?.link);
+    //   bookAppointment();
+    //   // dispatch(updateReferenceNumber(data?.paymentReferenceId));
+    // },
   });
 
-  const bookAppointment = (data: any) => {
+  const generatePaymentLink = (formValues: any) => {
     const paymentFormData = {
       amount: singleDoctorData?.data?.pricing,
       senderEmail: patientProfileData?.data?.email,
@@ -112,34 +112,42 @@ const Schedule = () => {
       ),
       itemId: "string",
     };
+
+    createPaymentLinkMutation.mutate(paymentFormData, {
+      onSuccess: (data) => {
+        handleOpenNewTab(data?.data?.data?.link);
+        bookAppointment(formValues);
+      },
+    });
+  };
+
+  const bookAppointment = (formValues: any) => {
     const formData = {
       doctorPublicId: doctorId,
-      topic: data.topic,
+      topic: formValues.topic,
       transactionId: "string",
-      details: data.details,
+      details: formValues.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
-      timeSlot: getTimeZoneInfo().id,
+      timezone: getTimeZoneInfo().id,
     };
 
-    // if (!isUploadedFileEmpty(uploadedFile)) {
-    //   uploadFile(
-    //     { file: uploadedFile },
-    //     {
-    //       onSuccess: (uploadResponse) => {
-    //         console.log(uploadResponse);
-    //         bookAppointmentMutation.mutate({
-    //           ...formData,
-    //           attachments: uploadResponse.data.url,
-    //         });
-    //       },
-    //     }
-    //   );
-    // } else {
-    //   bookAppointmentMutation.mutate(formData);
-    // }
-
-    createPaymentLinkMutation.mutate(paymentFormData);
+    if (!isUploadedFileEmpty(uploadedFile)) {
+      uploadFile(
+        { file: uploadedFile },
+        {
+          onSuccess: (uploadResponse) => {
+            console.log(uploadResponse);
+            bookAppointmentMutation.mutate({
+              ...formData,
+              attachments: uploadResponse.data.url,
+            });
+          },
+        }
+      );
+    } else {
+      bookAppointmentMutation.mutate(formData);
+    }
   };
 
   return (
@@ -295,7 +303,7 @@ const Schedule = () => {
             </Flex>
           </Box>
 
-          <form className="w-full" onSubmit={handleSubmit(bookAppointment)}>
+          <form className="w-full" onSubmit={handleSubmit(generatePaymentLink)}>
             <Box className="mt-3 bg-white border border-gray2 p-4 justify-start  rounded-md">
               <Text size="2" as="p" weight="medium" className="text-gray12">
                 Appointment Details
