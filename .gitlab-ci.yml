@@ -54,7 +54,7 @@ deploy_static_files:
     - main
   script:
     - echo "Exporting Static files"
-    - ls -la
+    - ls -Force
     - echo "Replacing files in the fan-farm folder in Tomcat"
     - |
       $TOMCAT_DIR = "C:\Program Files\Apache Software Foundation\Tomcat 11.0_Tomcat\webapps\ROOT"
