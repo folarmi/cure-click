@@ -1,28 +1,13 @@
-# Stage 1: Build the React app
-FROM node:18-alpine AS build
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+SHELL ["powershell", "-Command"]
+WORKDIR C:\nginx
+RUN $ProgressPreference='SilentlyContinue'; `
+    Invoke-WebRequest 'https://nginx.org/download/nginx-1.24.0.zip' -OutFile 'nginx.zip'; `
+    Expand-Archive -Path 'nginx.zip' -DestinationPath '.'; `
+    Remove-Item -Force 'nginx.zip'
 
-WORKDIR /app
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the app
-RUN npm run build
-
-# Stage 2: Serve the app with Nginx
-FROM nginx:alpine
-
-# Copy the build output to Nginx's HTML directory
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80
+COPY --from=builder C:\app\build C:\nginx\nginx-1.24.0\html
+ENV PATH="C:\\nginx\\nginx-1.24.0;${PATH}"
 EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR C:\nginx\nginx-1.24.0
+CMD ["nginx.exe", "-g", "daemon off;"]

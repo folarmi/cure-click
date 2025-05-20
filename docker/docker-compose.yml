@@ -1,0 +1,30 @@
+volumes:
+  biyar-network:
+
+services:
+  cureclick-frontend:
+    container_name: cureclick-frontend-dev
+    image: registry.gitlab.com/biyartech1/cure-click-apps/cure-click-frontend:release-1.0.0
+    # Add any environment variables needed by your React app
+    ports:
+      - "80:80" # Map host port 80 to container port 80 (Nginx default)
+    networks:
+      - biyar-network
+
+networks:
+  biyar-network:
+    external: true
+    name: nat
+#version: '3.8'
+#
+#services:
+#  fanfam-frontend:
+#    image: registry.gitlab.com/biyartech1/fan-fam-apps/fanfam-frontend:${DOCKER_TAG}
+#    ports:
+#      - "80:80"
+#    networks:
+#      - biyar-network
+#
+#networks:
+#  biyar-network:
+#    name: biyar-network

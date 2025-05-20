@@ -1,45 +1,43 @@
-image: docker:20.10.17-dind
-
-services:
-  - docker:20.10.17-dind
+stages:
+  - build_project
+  - build_and_push_image
+  - deploy_static
+  - deploy_image
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
+  # DOCKER_HOST: tcp://docker:2375
+  # DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
-  DOCKER_IMAGE_NAME: cure-click-frontend-$CI_COMMIT_REF_SLUG
-  DOCKER_REGISTRY: registry.gitlab.com/biyartech1/cure-click-apps/cure-click-frontend:$CI_COMMIT_REF_SLUG
+  DOCKER_IMAGE_NAME: $(echo "cureclick-frontend-$CI_COMMIT_REF_NAME" | tr '.' '-')
+  DOCKER_REGISTRY: registry.gitlab.com/biyartech1/cure-click-apps/cure-click-frontend:$CI_COMMIT_REF_NAME
   DOCKER_REGISTRY_SERVER: "registry.gitlab.com"
-
-stages:
-  - build
-  - test
-  - push
-  - cleanup
-  - deploy
-
-before_script:
-  # Install Node.js and npm
-  - echo "Installing Node.js and npm..."
-  - apk add --no-cache nodejs npm
-
-  # Confirm installations
-  - node -v
-  - npm -v
+  STATIC_ARTIFACT_NAME: cureclick-frontend-static
 
 cache:
   paths:
     - node_modules/
 
-build_and_push:
-  stage: build
+build_project:
+  stage: build_project
   script:
-    - echo "CI_COMMIT_REF_SLUG - $CI_COMMIT_REF_SLUG"
+    - echo "CI_COMMIT_REF_NAME - $CI_COMMIT_REF_NAME"
     - echo "DOCKER_REGISTRY in build stage:" $DOCKER_REGISTRY
     - echo "Installing dependencies..."
     - npm install
     - echo "Building the React app..."
     - npm run build
+    - echo "Build completed. Listing files..."
+    - ls -Force
+  artifacts:
+    paths:
+      - out/
+    expire_in: 1 week
+
+build_image:
+  stage: build_and_push_image
+  only:
+    - main
+  script:
     - echo "Logging into Docker registry..."
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $DOCKER_REGISTRY_SERVER
     - echo "Building Docker image..."
@@ -48,56 +46,33 @@ build_and_push:
     - docker image
     - docker push "$DOCKER_REGISTRY"
     - echo "Docker image $DOCKER_REGISTRY built and pushed successfully."
-  artifacts:
-    paths:
-      - build/
-    expire_in: 1 week
 
-test:
-  stage: test
+deploy_static_files:
+  stage: deploy_static
+  except:
+    - main
   script:
-    - echo "Running tests..."
-    - npm test -- --watchAll=false
-    - echo "Tests passed."
-
-#cleanup:
-#  stage: cleanup
-#  script:
-#    - echo "Cleaning up old images..."
-#    - docker image prune -af || true
-
-cleanup:
-  stage: cleanup
-  script:
-    - echo "$CI_DEPLOY_PASSWORD" | docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull "$DOCKER_REGISTRY"
-    - docker-compose version
-    - docker compose version
+    - echo "Exporting Static files"
+    - ls -Force
+    - echo "Replacing files in the fan-farm folder in Tomcat"
     - |
-      $CONTAINER_NAMES = docker ps --format '{{.Names}}' | ForEach-Object { $_.Trim() }
-      echo "Running Containers: $CONTAINER_NAMES"
-      echo "Running Containers: $DOCKER_IMAGE_NAME"
+      $TOMCAT_DIR = "C:\Program Files\Apache Software Foundation\Tomcat 11.0_Tomcat\webapps\ROOT"
+      $OUT_DIR = "out"
 
-      if ($CONTAINER_NAMES -like "*$DOCKER_IMAGE_NAME*") {
-        docker stop $DOCKER_IMAGE_NAME
-        docker rm $DOCKER_IMAGE_NAME
-        Write-Host "CONTAINER_NAMES contains DOCKER_IMAGE_NAME"
+      # Ensure TOMCAT_DIR exists
+      if (-Not (Test-Path -Path $TOMCAT_DIR)) {
+          Write-Host "Directory does not exist. Creating: $TOMCAT_DIR"
+          New-Item -ItemType Directory -Path $TOMCAT_DIR -Force | Out-Null
+      } else {
+          Write-Host "Directory already exists: $TOMCAT_DIR"
       }
 
-#deploy:
-#  stage: deploy
-#  script:
-#    - echo "Deploying application..."
-#    - |
-#      docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME down
-#      docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME up -d
+      # Remove existing files in TOMCAT_DIR
+      Write-Host "Removing existing files in $TOMCAT_DIR"
+      Remove-Item "$TOMCAT_DIR\*" -Recurse -Force
 
-deploy:
-  stage: deploy
-  script:
-    - echo "Logging into Docker registry..."
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-    - export DOCKER_TAG=$CI_COMMIT_REF_SLUG
-    - echo "Deploying application with tag $DOCKER_TAG..."
-    - docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME down
-    - docker-compose -f docker/docker-compose.yml -p $DOCKER_IMAGE_NAME up -d
+      # Copy new files to TOMCAT_DIR
+      Write-Host "Copying files from $OUT_DIR to $TOMCAT_DIR"
+      Copy-Item "$OUT_DIR\*" -Destination $TOMCAT_DIR -Recurse
+
+      Write-Host "fan-farm folder in Tomcat replaced with new build files."
