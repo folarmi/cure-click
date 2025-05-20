@@ -19,6 +19,7 @@ cache:
 
 build_project:
   stage: build_project
+  image: node:18-alpine
   script:
     - echo "CI_COMMIT_REF_NAME - $CI_COMMIT_REF_NAME"
     - echo "DOCKER_REGISTRY in build stage:" $DOCKER_REGISTRY
