@@ -28,7 +28,7 @@ build_project:
     - echo "Building the React app..."
     - npm run build
     - echo "Build completed. Listing files..."
-    - ls -Force
+    - ls -la
   artifacts:
     paths:
       - out/
