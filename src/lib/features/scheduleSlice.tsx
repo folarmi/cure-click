@@ -5,6 +5,7 @@ interface ScheduleState {
   timeSlot: string | undefined;
   selectedDate: string | undefined;
   appointmentPublicId: string | undefined;
+  doctorPricing: string | undefined;
 }
 
 const initialState: ScheduleState = {
@@ -12,6 +13,7 @@ const initialState: ScheduleState = {
   timeSlot: "",
   selectedDate: "",
   appointmentPublicId: "",
+  doctorPricing: "",
 };
 
 const scheduleSlice = createSlice({

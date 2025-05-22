@@ -13,7 +13,7 @@ import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import Modal from "../components/ui/Modal";
 import Availability from "../components/modals/Availability";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RootState } from "../lib/store";
 import { useAppSelector } from "../lib/hook";
@@ -23,7 +23,7 @@ import {
   useGetPatientProfile,
   useGetSingleDoctorData,
 } from "../lib/apiCalls";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import {
   capitalize,
   convertStartTimeToBackendFormat,
@@ -37,22 +37,31 @@ import { getDayWithSuffix } from "../utils/calendarutil";
 import FileUploader from "../components/FileUploader";
 import { DefaultProfile } from "../components/ui/DefaultProfile";
 import { getFirstAndLastInitials } from "../utils/randomUtil";
+import { PaymentConfirmationModal } from "../components/modals/PaymentConfirmationModal";
 
 const Schedule = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { control, handleSubmit } = useForm();
-  const [modal, setModal] = useState(false);
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const { control, handleSubmit, getValues } = useForm();
+  const [showModal, setShowModal] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File[]>([]);
+  const [modal, setModal] = useState(false);
 
   const handleOpenNewTab = (url: string) => {
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open(url, "_self", "noopener,noreferrer");
   };
+
+  const status = queryParams.get("status");
+  const txRef = queryParams.get("tx_ref");
+  const transactionId = queryParams.get("transaction_id");
 
   const userType = useAppSelector((state: RootState) => state.auth.userType);
   const { doctorId, timeSlot, selectedDate } = useAppSelector(
     (state: RootState) => state.schedule
   );
+
   const date =
     typeof selectedDate === "string" ? parseISO(selectedDate) : selectedDate;
   const formatted =
@@ -72,6 +81,10 @@ const Schedule = () => {
 
   const toggleModal = () => {
     setModal(!modal);
+  };
+
+  const togglePaymentModal = () => {
+    setShowModal(!showModal);
   };
 
   const { mutate: uploadFile, isPending } = useFileUpload({
@@ -101,7 +114,7 @@ const Schedule = () => {
     // },
   });
 
-  const generatePaymentLink = (formValues: any) => {
+  const generatePaymentLink = () => {
     const paymentFormData = {
       amount: singleDoctorData?.data?.pricing,
       senderEmail: patientProfileData?.data?.email,
@@ -110,22 +123,20 @@ const Schedule = () => {
         patientProfileData?.data?.firstname,
         patientProfileData?.data?.lastname
       ),
-      itemId: "string",
+      currency: "NGN",
     };
 
     createPaymentLinkMutation.mutate(paymentFormData, {
       onSuccess: (data) => {
         handleOpenNewTab(data?.data?.data?.link);
-        bookAppointment(formValues);
       },
     });
   };
-
   const bookAppointment = (formValues: any) => {
     const formData = {
       doctorPublicId: doctorId,
       topic: formValues.topic,
-      transactionId: "string",
+      transactionId: txRef,
       details: formValues.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
@@ -137,7 +148,6 @@ const Schedule = () => {
         { file: uploadedFile },
         {
           onSuccess: (uploadResponse) => {
-            console.log(uploadResponse);
             bookAppointmentMutation.mutate({
               ...formData,
               attachments: uploadResponse.data.url,
@@ -149,6 +159,12 @@ const Schedule = () => {
       bookAppointmentMutation.mutate(formData);
     }
   };
+
+  useEffect(() => {
+    if (status && txRef && transactionId) {
+      setShowModal(true);
+    }
+  }, [status, txRef, transactionId]);
 
   return (
     <DashboardLayout ifHeader={false}>
@@ -405,8 +421,27 @@ const Schedule = () => {
           <Availability toggleModal={toggleModal} />
         </div>
       </Modal>
+
+      <Modal show={showModal} toggleModal={togglePaymentModal}>
+        <div className="p-4">
+          <PaymentConfirmationModal
+            status={status}
+            toggleModal={togglePaymentModal}
+            createAppointment={() => bookAppointment(getValues())}
+            transactionID={transactionId}
+            serviceFee={singleDoctorData?.data?.pricing}
+          />
+        </div>
+      </Modal>
     </DashboardLayout>
   );
 };
 
 export default Schedule;
+
+// http://localhost:5175/appointment/payment?status=completed&tx_ref=tx-0dff035a-d9f1-4a32-a283-6269419b2bf2&transaction_id=9377350
+// - create a payment link - done
+// - ⁠customer confirms payment - done
+// - ⁠redirect to schedule(maybe) page - done
+// - ⁠call verify payment link to persist payment in db
+// - ⁠call appointment endpoint

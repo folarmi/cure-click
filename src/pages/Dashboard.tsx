@@ -58,7 +58,7 @@ const Dashboard = () => {
     queryKey: ["GetDoctorsReviews"],
     enabled: userType === "doctor",
   });
-  console.log(reviewsData);
+
   useEffect(() => {
     dispatch(
       setPublicId(

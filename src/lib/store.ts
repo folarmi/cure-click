@@ -16,7 +16,7 @@ import rootReducer from "./reducers";
 const persistConfig = {
   key: "cureClick",
   version: 1,
-  whitelist: ["auth"],
+  whitelist: ["auth", "schedule"],
   storage,
 };
 
