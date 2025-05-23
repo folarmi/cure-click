@@ -49,7 +49,11 @@ const SingleDoctor = () => {
     url: `appointment/api/reviews?doctorPublicId=${id}&page=0&size=20`,
     queryKey: ["GetDoctorsReviews"],
   });
+<<<<<<< HEAD
   console.log(reviewsData);
+=======
+
+>>>>>>> videocalling
   const toggleModal = () => {
     setModal(!modal);
   };

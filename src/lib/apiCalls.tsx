@@ -19,6 +19,7 @@ import {
 // import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 interface MutationResponse {
+  [x: string]: any;
   status: number;
   data: {
     remark: string;

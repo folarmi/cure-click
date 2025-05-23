@@ -445,3 +445,30 @@ export default Schedule;
 // - ⁠redirect to schedule(maybe) page - done
 // - ⁠call verify payment link to persist payment in db
 // - ⁠call appointment endpoint
+// {
+//   "date": "2025-05-09T03:50:25.0897541",
+//   "data": {
+//       "doctorCredentials": {
+//           "room_id": null,
+//           "nbf": "Fri May 09 09:00:00 EDT 2025",
+//           "user_id": "053013N42HSF25472",
+//           "secret": "77545aebf428ee6ca2b4d6e6842b5729",
+//           "app_id": "576590338",
+//           "email": "bestDoc@mailinator.com",
+//           "username": "fygabubuh"
+//       },
+//       "patientCredentials": {
+//           "room_id": null,
+//           "nbf": "Fri May 09 09:00:00 EDT 2025",
+//           "user_id": "10085709HO7F27468",
+//           "secret": "77545aebf428ee6ca2b4d6e6842b5729",
+//           "app_id": "576590338",
+//           "email": "realPatient@mailinator.com",
+//           "username": "hijic"
+//       }
+//   },
+//   "isSuccess": true,
+//   "isError": false,
+//   "message": "Operation Completed Successfully",
+//   "status": "SUCCESS"
+// }

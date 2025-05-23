@@ -22,6 +22,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "@tanstack/react-query": "^5.68.0",
     "@tanstack/react-table": "^8.20.5",
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.3-beta",
     "axios": "^1.8.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
