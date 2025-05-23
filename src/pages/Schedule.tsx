@@ -136,7 +136,7 @@ const Schedule = () => {
     const formData = {
       doctorPublicId: doctorId,
       topic: formValues.topic,
-      transactionId: txRef,
+      transactionReference: txRef,
       details: formValues.details,
       appointmentDate: format(parseISO(selectedDate), "yyyy-MM-dd"),
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
