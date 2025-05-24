@@ -31,7 +31,7 @@ build_project:
     - ls -la
   artifacts:
     paths:
-      - out/
+      - public/
     expire_in: 1 week
 
 build_image:
