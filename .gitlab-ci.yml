@@ -29,9 +29,10 @@ build_project:
     - npm run build
     - echo "Build completed. Listing files..."
     - ls -la
+    - ls -la /dist
   artifacts:
     paths:
-      - public/
+      - dist/
     expire_in: 1 week
 
 build_image:
@@ -60,7 +61,7 @@ deploy_static_files:
     - echo "Replacing files in the fan-farm folder in Tomcat"
     - |
       $TOMCAT_DIR = "C:\Program Files\Apache Software Foundation\Tomcat 11.0_Tomcat\webapps\ROOT"
-      $OUT_DIR = "public"
+      $OUT_DIR = "dist"
 
       # Ensure TOMCAT_DIR exists
       if (-Not (Test-Path -Path $TOMCAT_DIR)) {
