@@ -52,5 +52,30 @@ deploy_static_files:
   stage: deploy_static
   tags:
     - windows # Your actual Windows runner tag
+  except:
+    - main
   script:
-    - powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./deploy.ps1
+    - echo "Exporting Static files"
+    - ls -Force
+    - echo "Replacing files in the fan-farm folder in Tomcat"
+    - |
+      $TOMCAT_DIR = "C:\Program Files\Apache Software Foundation\Tomcat 11.0_Tomcat\webapps\ROOT"
+      $OUT_DIR = "public"
+
+      # Ensure TOMCAT_DIR exists
+      if (-Not (Test-Path -Path $TOMCAT_DIR)) {
+          Write-Host "Directory does not exist. Creating: $TOMCAT_DIR"
+          New-Item -ItemType Directory -Path $TOMCAT_DIR -Force | Out-Null
+      } else {
+          Write-Host "Directory already exists: $TOMCAT_DIR"
+      }
+
+      # Remove existing files in TOMCAT_DIR
+      Write-Host "Removing existing files in $TOMCAT_DIR"
+      Remove-Item "$TOMCAT_DIR\*" -Recurse -Force
+
+      # Copy new files to TOMCAT_DIR
+      Write-Host "Copying files from $OUT_DIR to $TOMCAT_DIR"
+      Copy-Item "$OUT_DIR\*" -Destination $TOMCAT_DIR -Recurse
+
+      Write-Host "fan-farm folder in Tomcat replaced with new build files."
