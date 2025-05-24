@@ -99,7 +99,7 @@ export type StatusClassNames = {
 
 const statusClassNames: StatusClassNames = {
   UPCOMING: "bg-accent_alpha_3 text-accent_alpha_11",
-  COMPLETED: "bg-greenA3 text-greenA11",
+  COMPLETED: "bg-[#3E63DD] text-white",
   CANCELLED: "text-tomato_alpha_11 bg-tomato_alpha_3",
   PENDING: "bg-warning_9 text-black_contrast",
   ACTIVE: "bg-accent_alpha_3 text-accent_alpha_11",
@@ -229,6 +229,7 @@ export type StatusHandlerOptions = {
   toggleCancelledDetails?: () => void;
   toggleUpcomingDetails?: () => void;
   toggleRescheduleTwoModal?: () => void;
+  toggleCompletedAppointment?: () => void;
 };
 
 export function handleStatusAction(
@@ -249,7 +250,7 @@ export function handleStatusAction(
       break;
 
     case "COMPLETED":
-      actions.toggleCancel?.();
+      actions.toggleCompletedAppointment?.();
       break;
 
     case "UPCOMING":

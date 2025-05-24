@@ -34,6 +34,7 @@ const Appointments = () => {
   const [upcomingDetails, setUpcomingDetails] = useState(false);
   const [rescheduleModal, setRescheduleModal] = useState(false);
   const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
+  const [completedAppointment, setCompletedAppointment] = useState(false);
   const [activeTab, setActiveTab] = useState("");
 
   const [selectedAppointment, setSelectedAppointment] =
@@ -82,6 +83,10 @@ const Appointments = () => {
 
   const toggleRescheduleModal = () => {
     setRescheduleModal(!rescheduleModal);
+  };
+
+  const toggleCompletedAppointment = () => {
+    setCompletedAppointment(!completedAppointment);
   };
 
   return (
@@ -187,10 +192,12 @@ const Appointments = () => {
                     upcomingDetails={upcomingDetails}
                     rescheduleModalTwo={rescheduleModalTwo}
                     rescheduleModal={rescheduleModal}
+                    completedAppointment={completedAppointment}
                     toggleCancelledDetails={toggleCancelledDetails}
                     toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                     toggleUpcomingDetails={toggleUpcomingDetails}
                     toggleRescheduleModal={toggleRescheduleModal}
+                    toggleCompletedAppointment={toggleCompletedAppointment}
                   />
                 </Box>
 
@@ -227,6 +234,7 @@ const Appointments = () => {
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     selectedAppointment={selectedAppointment}
+                    toggleCompletedAppointment={toggleCompletedAppointment}
                   />
                 </Box>
               </Flex>
@@ -251,10 +259,12 @@ const Appointments = () => {
                   upcomingDetails={upcomingDetails}
                   rescheduleModalTwo={rescheduleModalTwo}
                   rescheduleModal={rescheduleModal}
+                  completedAppointment={completedAppointment}
                   toggleCancelledDetails={toggleCancelledDetails}
                   toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                   toggleUpcomingDetails={toggleUpcomingDetails}
                   toggleRescheduleModal={toggleRescheduleModal}
+                  toggleCompletedAppointment={toggleCompletedAppointment}
                 />
               </Box>
 
@@ -268,6 +278,7 @@ const Appointments = () => {
                   toggleUpcomingDetails={toggleUpcomingDetails}
                   setSelectedAppointment={setSelectedAppointment}
                   toggleRescheduleTwoModal={toggleRescheduleTwoModal}
+                  toggleCompletedAppointment={toggleCompletedAppointment}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                   selectedAppointment={selectedAppointment}

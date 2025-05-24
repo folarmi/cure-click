@@ -31,6 +31,7 @@ type Prop = {
   toggleCancelledDetails: () => void;
   toggleUpcomingDetails: () => void;
   toggleRescheduleTwoModal: () => void;
+  toggleCompletedAppointment: () => void;
   setActiveTab: (arg0: string) => void;
   setSelectedAppointment?: (appointment: Appointment) => void;
 };
@@ -43,6 +44,7 @@ const TableContent = ({
   toggleCancelledDetails,
   toggleUpcomingDetails,
   toggleRescheduleTwoModal,
+  toggleCompletedAppointment,
   setSelectedAppointment,
   activeTab,
   setActiveTab,
@@ -193,6 +195,8 @@ const TableContent = ({
                   toggleCancelledDetails: () => toggleCancelledDetails(),
                   toggleUpcomingDetails: () => toggleUpcomingDetails(),
                   toggleRescheduleTwoModal: () => toggleRescheduleTwoModal(),
+                  toggleCompletedAppointment: () =>
+                    toggleCompletedAppointment(),
                 });
               }}
             >

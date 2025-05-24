@@ -24,12 +24,14 @@ type Prop = {
   upcomingDetails: boolean;
   rescheduleModal: boolean;
   rescheduleModalTwo: boolean;
+  completedAppointment: boolean;
   toggleModal: () => void;
   toggleCancel: () => void;
   toggleCancelledDetails: () => void;
   toggleUpcomingDetails: () => void;
   toggleRescheduleModal: () => void;
   toggleRescheduleTwoModal: () => void;
+  toggleCompletedAppointment: () => void;
   selectedAppointment: Appointment;
 };
 
@@ -42,25 +44,22 @@ const ModuleContent = ({
   upcomingDetails,
   rescheduleModalTwo,
   rescheduleModal,
+  completedAppointment,
   toggleModal,
   toggleCancel,
   toggleUpcomingDetails,
   toggleCancelledDetails,
   toggleRescheduleTwoModal,
   toggleRescheduleModal,
+  toggleCompletedAppointment,
 }: Prop) => {
   const [meetingCardTwoModal, setMeetingCardTwoModal] = useState(false);
-  const [completedAppointment, setCompletedAppointment] = useState(false);
   const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
 
   const sortedAppointments = sortUpcomingAppointments(appointmentsData);
 
   const toggleMeetingCardTwoModal = () => {
     setMeetingCardTwoModal(!meetingCardTwoModal);
-  };
-
-  const toggleCompletedAppointment = () => {
-    setCompletedAppointment(!completedAppointment);
   };
 
   const toggleMeetingTwoCancel = () => {
@@ -115,6 +114,7 @@ const ModuleContent = ({
         </div>
       </Modal>
 
+      {/* Completed Appointment Details Page */}
       <Modal
         show={completedAppointment}
         toggleModal={toggleCompletedAppointment}

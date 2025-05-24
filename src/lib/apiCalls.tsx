@@ -109,7 +109,7 @@ export const useCustomMutation = <
           !message ||
           (typeof message === "object" && !Object.keys(message).length)
         ) {
-          message = "An unexpected error occurred";
+          message = "An unexpected error occurredbbb";
         }
 
         showErrorToast(message);

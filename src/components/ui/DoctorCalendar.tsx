@@ -236,6 +236,7 @@ const DoctorCalendar = ({
         const startTime = start.toLocaleTimeString([], {
           hour: "numeric",
           minute: "2-digit",
+          hour12: true,
         });
 
         const endTime = end.toLocaleTimeString([], {
@@ -312,7 +313,7 @@ const DoctorCalendar = ({
         {availableTimes?.map(({ timeSlot }: any) => {
           return (
             <Box
-              className="mt-2 mr-4 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer"
+              className="mt-2 mr-4 border border-gray3 rounded-md hover:bg-grassA2 hover:border hover:border-grassA3 cursor-pointer whitespace-nowrap"
               key={timeSlot}
               onClick={() => setSelectedTimeSlot(timeSlot)}
             >
@@ -321,7 +322,7 @@ const DoctorCalendar = ({
                 size="3"
                 weight="medium"
                 align="center"
-                className="text-gray11 py-2"
+                className="text-gray11 py-2 w-full h-full"
               >
                 {timeSlot}
               </Text>

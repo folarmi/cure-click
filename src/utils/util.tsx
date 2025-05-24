@@ -20,6 +20,9 @@ interface DecodedToken {
   azp: string;
   sid: string;
   acr: string;
+  room_id?: string | undefined;
+  username?: string | undefined;
+  user_id?: string | undefined;
   "allowed-origins": string[];
   realm_access: Access;
   resource_access: Record<string, Access>;
@@ -38,13 +41,13 @@ export const applyUserTheme = (user: UserType) => {
   }
 };
 
-export const decodeLogin = (): DecodedToken | null => {
-  if (!sessionStorage.getItem("token")) return null;
+export const decodeLogin = (token?: string): DecodedToken | null => {
+  const finalToken = token ?? sessionStorage.getItem("token");
+
+  if (!finalToken) return null;
 
   try {
-    const decoded: DecodedToken = jwtDecode(
-      sessionStorage.getItem("token") ?? ""
-    );
+    const decoded: DecodedToken = jwtDecode(finalToken);
     return decoded;
   } catch (error) {
     console.error("Error decoding token:", error);

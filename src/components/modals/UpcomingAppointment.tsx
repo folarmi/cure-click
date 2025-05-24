@@ -3,7 +3,7 @@ import MeetingCardTwo from "../cards/MeetingCardTwo";
 import AppointmentModalHeader from "../ui/AppointmentModalHeader";
 import { AppointmentSubCard } from "../ui/AppointmentSubCard";
 import { Appointment } from "../../utils/types";
-import { getFullName } from "../../utils/util";
+import { decodeLogin, getFullName } from "../../utils/util";
 import {
   formatDateToReadableString,
   formatTimeTo12Hour,
@@ -12,6 +12,8 @@ import { ReportButton } from "../ui/ReportButton";
 import ZegoVideoCall from "../../hooks/ZegoVideoCall";
 import { useState } from "react";
 import { useCustomMutation } from "../../lib/apiCalls";
+import { useAppSelector } from "../../lib/hook";
+import { RootState } from "../../lib/store";
 
 type Prop = {
   toggleModal: () => void;
@@ -27,23 +29,15 @@ const UpcomingAppointment = ({
   toggleCancel,
   toggleRescheduleModal,
 }: Prop) => {
+  const { publicId, userType } = useAppSelector(
+    (state: RootState) => state.auth
+  );
   const [inCall, setInCall] = useState(false);
-  // const [roomID] = useState(
-  //   () => "room_" + Math.random().toString(36).substring(2, 7)
-  // );
-  const [roomID, setRoomID] = useState("");
-  const [userID, setUserID] = useState("");
-  const [username, setUsername] = useState("");
-  // const [meetingData, setMeetingData] = useState<{
-  //   roomID: string | null;
-  //   userID: string | null;
-  //   username: string | null;
-  // }>({
-  //   roomID: null,
-  //   userID: null,
-  //   username: null
-  // });
 
+  const [roomID, setRoomID] = useState("");
+  const [username, setUsername] = useState<string | undefined>("");
+
+  console.log(userType);
   const handleCancel = () => {
     toggleModal();
     toggleCancel();
@@ -53,17 +47,20 @@ const UpcomingAppointment = ({
     toggleModal();
     toggleRescheduleModal();
   };
-<<<<<<< HEAD
-=======
 
   const startMeetingMutation = useCustomMutation({
     endpoint: `appointment/api/appointments/${selectedAppointment.publicId}/start-session`,
     method: "put",
     errorMessage: (error: any) => error?.response?.data?.message,
     onSuccessCallback: (data: any) => {
-      setRoomID(data?.data?.room_id);
-      setUserID(data?.data?.user_id);
-      setUsername(data?.data?.username);
+      console.log(decodeLogin(data?.data?.patientToken));
+      const meetingDetails = decodeLogin(
+        userType === "patient"
+          ? data?.data?.patientToken
+          : data?.data?.doctorToken
+      );
+      setRoomID(data?.data?.roomId);
+      setUsername(meetingDetails?.username);
       setInCall(true);
     },
     onError: () => {
@@ -95,7 +92,7 @@ const UpcomingAppointment = ({
             inset: 0, // shorthand for top: 0, right: 0, bottom: 0, left: 0
           }}
         >
-          <ZegoVideoCall userID={userID} username={username} />
+          <ZegoVideoCall userID={publicId} username={username} />
         </div>
 
         {/* Leave button overlay */}
@@ -127,7 +124,6 @@ const UpcomingAppointment = ({
     );
   }
 
->>>>>>> videocalling
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:min-w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />
@@ -163,3 +159,17 @@ const UpcomingAppointment = ({
 };
 
 export { UpcomingAppointment };
+
+// {
+//   "room_id": "null1937c1fc-d9ae-44fe-b6e1-0fb138f1714e",
+//   "nbf": "Fri May 23 06:00:00 EDT 2025",
+//   "effective_time_in_seconds": "3600",
+//   "user_id": "10085709HO7F27468",
+//   "secret": "77545aebf428ee6ca2b4d6e6842b5729",
+//   "app_id": "576590338",
+//   "email": "realPatient@mailinator.com",
+//   "username": "hijic",
+//   "sub": "realPatient@mailinator.com",
+//   "iat": 1747992966,
+//   "exp": 1747993866
+// }

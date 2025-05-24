@@ -23,7 +23,7 @@ import {
   useGetPatientProfile,
   useGetSingleDoctorData,
 } from "../lib/apiCalls";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import {
   capitalize,
   convertStartTimeToBackendFormat,
@@ -40,7 +40,6 @@ import { getFirstAndLastInitials } from "../utils/randomUtil";
 import { PaymentConfirmationModal } from "../components/modals/PaymentConfirmationModal";
 
 const Schedule = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
@@ -73,8 +72,10 @@ const Schedule = () => {
       : "";
   const { data: singleDoctorData } = useGetSingleDoctorData(
     userType === "patient",
-    id || ""
+    doctorId || ""
   );
+
+  // const singleDoctorData = {};
   const { data: patientProfileData } = useGetPatientProfile(
     userType === "patient"
   );
@@ -142,7 +143,7 @@ const Schedule = () => {
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
       timezone: getTimeZoneInfo().id,
     };
-
+    console.log(formData?.appointmentTime);
     if (!isUploadedFileEmpty(uploadedFile)) {
       uploadFile(
         { file: uploadedFile },
@@ -438,37 +439,3 @@ const Schedule = () => {
 };
 
 export default Schedule;
-
-// http://localhost:5175/appointment/payment?status=completed&tx_ref=tx-0dff035a-d9f1-4a32-a283-6269419b2bf2&transaction_id=9377350
-// - create a payment link - done
-// - ⁠customer confirms payment - done
-// - ⁠redirect to schedule(maybe) page - done
-// - ⁠call verify payment link to persist payment in db
-// - ⁠call appointment endpoint
-// {
-//   "date": "2025-05-09T03:50:25.0897541",
-//   "data": {
-//       "doctorCredentials": {
-//           "room_id": null,
-//           "nbf": "Fri May 09 09:00:00 EDT 2025",
-//           "user_id": "053013N42HSF25472",
-//           "secret": "77545aebf428ee6ca2b4d6e6842b5729",
-//           "app_id": "576590338",
-//           "email": "bestDoc@mailinator.com",
-//           "username": "fygabubuh"
-//       },
-//       "patientCredentials": {
-//           "room_id": null,
-//           "nbf": "Fri May 09 09:00:00 EDT 2025",
-//           "user_id": "10085709HO7F27468",
-//           "secret": "77545aebf428ee6ca2b4d6e6842b5729",
-//           "app_id": "576590338",
-//           "email": "realPatient@mailinator.com",
-//           "username": "hijic"
-//       }
-//   },
-//   "isSuccess": true,
-//   "isError": false,
-//   "message": "Operation Completed Successfully",
-//   "status": "SUCCESS"
-// }

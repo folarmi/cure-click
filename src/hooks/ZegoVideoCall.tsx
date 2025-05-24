@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
-import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import { ZegoUIKitPrebuilt, ZegoUser } from "@zegocloud/zego-uikit-prebuilt";
 import { useEffect, useRef } from "react";
 // import { useNavigate } from "react-router";
 
@@ -19,7 +19,7 @@ import { useEffect, useRef } from "react";
 
 type Prop = {
   userID: string;
-  username: string;
+  username: string | undefined;
 };
 export function getUrlParams(url = window.location.href) {
   const urlStr = url.split("?")[1];
@@ -29,7 +29,7 @@ export function getUrlParams(url = window.location.href) {
 export default function ZegoVideoCall({ userID, username }: Prop) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const roomID = getUrlParams().get("roomID");
-  // const navigate = useNavigate();
+  console.log(userID);
 
   // const myMeeting = async (element: any) => {
   //   // generate Kit Token
@@ -99,6 +99,8 @@ export default function ZegoVideoCall({ userID, username }: Prop) {
         scenario: {
           mode: ZegoUIKitPrebuilt.GroupCall,
         },
+        maxUsers: 2,
+        // onLiveEnd?: (user: ZegoUser) => void();
       });
 
       return () => {

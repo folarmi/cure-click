@@ -28,11 +28,7 @@ import { setPublicId } from "../lib/features/authSlice";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
 import { EmptyDoctorSearch } from "../components/emptyStates/EmptyDoctorSearch";
-<<<<<<< HEAD
 import { MeetingCard } from "../components/cards/MeetingCard";
-=======
-
->>>>>>> videocalling
 // import { UpComingAppointments } from "../components/ui/UpComingAppointments";
 // import { decodeLogin } from "../utils/util";
 

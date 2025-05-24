@@ -19,7 +19,12 @@ const PaymentConfirmationModal = ({
 }: Prop) => {
   const verifyPaymentMutation = useCustomMutation({
     endpoint: `payment/api/flutterwave/verify-payment?transactionId=${transactionID}`,
-    errorMessage: (error: any) => error?.response?.data?.message,
+    errorMessage: (error: any) => {
+      console.log(error);
+      // error?.response?.data?.message
+      const test = createAppointment();
+      console.log(test);
+    },
     onSuccessCallback: () => {
       createAppointment();
     },

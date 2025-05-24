@@ -21,6 +21,7 @@ const CompletedAppointment = ({
   toggleModal,
   selectedAppointment,
 }: Prop) => {
+  console.log(selectedAppointment);
   return (
     <div className="rounded-lg p-4 bg-white w-auto md:w-[522px]">
       <AppointmentModalHeader toggleModal={toggleModal} />
@@ -28,7 +29,10 @@ const CompletedAppointment = ({
         title={selectedAppointment?.topic}
         date={formatDateToReadableString(selectedAppointment?.appointmentDate)}
         time={formatTimeTo12Hour(selectedAppointment?.appointmentTime)}
-        doctorName="Dr. Alison Ogaga"
+        doctorName={getFullName(
+          selectedAppointment?.doctor?.firstname,
+          selectedAppointment?.doctor?.lastname
+        )}
         patientName={getFullName(
           selectedAppointment?.patient?.firstname,
           selectedAppointment?.patient?.lastname
