@@ -29,7 +29,7 @@ build_project:
     - npm run build
     - echo "Build completed. Listing files..."
     - ls -la
-    - ls -la /dist
+    - ls dist
   artifacts:
     paths:
       - dist/
