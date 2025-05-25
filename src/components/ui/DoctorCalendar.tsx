@@ -205,13 +205,27 @@ const DoctorCalendar = ({
 
     // For non-recurring schedules, also check the doctor's availability window
     if (!scheduleData.recurring) {
-      if (day < baseWeekStart || day > baseWeekEnd) {
+      // if (day < baseWeekStart || day > baseWeekEnd) {
+      //   toast.warn("Selected date is outside of doctor's schedule.");
+      //   setAvailableTimes([]);
+      //   return;
+      // }
+      // Normalize all dates to 00:00:00 for accurate comparison
+      const dayOnly = new Date(day);
+      dayOnly.setHours(0, 0, 0, 0);
+
+      const weekStartOnly = new Date(baseWeekStart);
+      weekStartOnly.setHours(0, 0, 0, 0);
+
+      const weekEndOnly = new Date(baseWeekEnd);
+      weekEndOnly.setHours(0, 0, 0, 0);
+
+      if (dayOnly < weekStartOnly || dayOnly > weekEndOnly) {
         toast.warn("Selected date is outside of doctor's schedule.");
         setAvailableTimes([]);
         return;
       }
     }
-
     const dayOfWeek = day.toLocaleDateString("en-US", { weekday: "long" });
     const backendDay = dayMap[dayOfWeek];
 

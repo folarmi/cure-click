@@ -19,20 +19,15 @@ const PaymentConfirmationModal = ({
 }: Prop) => {
   const verifyPaymentMutation = useCustomMutation({
     endpoint: `payment/api/flutterwave/verify-payment?transactionId=${transactionID}`,
-    errorMessage: (error: any) => {
-      console.log(error);
-      // error?.response?.data?.message
-      const test = createAppointment();
-      console.log(test);
-    },
+    errorMessage: (error: any) => error?.response?.data?.message,
     onSuccessCallback: () => {
       createAppointment();
     },
   });
-
+  console.log(serviceFee);
   const handleAppointmentBooking = () => {
     verifyPaymentMutation.mutate({
-      serviceFee: "6900",
+      serviceFee: serviceFee,
       currency: "NGN",
     });
   };
