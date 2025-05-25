@@ -2,7 +2,7 @@
 import { Badge, Box, Tabs, Text } from "@radix-ui/themes";
 import { CustomText } from "../../components/ui/CustomText";
 import { RootState } from "../../lib/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Table from "../../components/ui/Table";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getFullName } from "../../utils/util";
@@ -20,18 +20,20 @@ import { Review } from "../../components/modals/Review";
 import { useState } from "react";
 import { getFirstAndLastInitials } from "../../utils/randomUtil";
 import { DefaultProfile } from "../../components/ui/DefaultProfile";
+import {
+  triggerToggleCancelAppointment,
+  triggerToggleCancelledDetails,
+  triggerToggleCompletedAppointment,
+  triggerToggleModal,
+  triggerToggleRescheduleModalTwo,
+  triggerToggleUpcomingDetails,
+} from "../../utils/toggleFunctions";
 
 type Prop = {
   appointmentsData: any;
   appointmentsDataIsLoading: boolean;
   selectedAppointment: Appointment;
   activeTab: string;
-  toggleModal: () => void;
-  toggleCancel: () => void;
-  toggleCancelledDetails: () => void;
-  toggleUpcomingDetails: () => void;
-  toggleRescheduleTwoModal: () => void;
-  toggleCompletedAppointment: () => void;
   setActiveTab: (arg0: string) => void;
   setSelectedAppointment?: (appointment: Appointment) => void;
 };
@@ -39,17 +41,12 @@ type Prop = {
 const TableContent = ({
   appointmentsData,
   appointmentsDataIsLoading,
-  toggleModal,
-  toggleCancel,
-  toggleCancelledDetails,
-  toggleUpcomingDetails,
-  toggleRescheduleTwoModal,
-  toggleCompletedAppointment,
   setSelectedAppointment,
   activeTab,
   setActiveTab,
   selectedAppointment,
 }: Prop) => {
+  const dispatch = useDispatch();
   const userType = useSelector((state: RootState) => state.auth.userType);
   const [reviewModal, setReviewModal] = useState(false);
 
@@ -190,13 +187,16 @@ const TableContent = ({
               onClick={() => {
                 handleAction(info.row.original);
                 handleStatusAction(status, {
-                  toggleModal: () => toggleModal(),
-                  toggleCancel: () => toggleCancel(),
-                  toggleCancelledDetails: () => toggleCancelledDetails(),
-                  toggleUpcomingDetails: () => toggleUpcomingDetails(),
-                  toggleRescheduleTwoModal: () => toggleRescheduleTwoModal(),
+                  toggleModal: () => triggerToggleModal(dispatch),
+                  toggleCancel: () => triggerToggleCancelAppointment(dispatch),
+                  toggleCancelledDetails: () =>
+                    triggerToggleCancelledDetails(dispatch),
+                  toggleUpcomingDetails: () =>
+                    triggerToggleUpcomingDetails(dispatch),
+                  toggleRescheduleTwoModal: () =>
+                    triggerToggleRescheduleModalTwo(dispatch),
                   toggleCompletedAppointment: () =>
-                    toggleCompletedAppointment(),
+                    triggerToggleCompletedAppointment(dispatch),
                 });
               }}
             >

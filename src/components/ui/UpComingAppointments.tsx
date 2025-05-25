@@ -1,13 +1,18 @@
 import { format, parse } from "date-fns";
-import { formatAppointmentTime } from "../../utils/calendarutil";
+import {
+  formatAppointmentTime,
+  sortUpcomingAppointments,
+} from "../../utils/calendarutil";
 import { Appointment } from "../../utils/types";
 import { getFullName } from "../../utils/util";
 import { MeetingCard } from "../cards/MeetingCard";
 import MeetingCardTwo from "../cards/MeetingCardTwo";
 import { Text } from "@radix-ui/themes";
+import { useGetData } from "../../lib/apiCalls";
+import { useSelector } from "react-redux";
+import { RootState } from "../../lib/store";
 
 type Prop = {
-  sortedAppointments: Appointment[];
   toggleModal: () => void;
   toggleCancel: () => void;
   toggleRescheduleModal: () => void;
@@ -15,12 +20,24 @@ type Prop = {
 };
 
 const UpComingAppointments = ({
-  sortedAppointments,
   toggleCancel,
   toggleModal,
   toggleRescheduleModal,
   toggleMeetingCardTwoModal,
 }: Prop) => {
+  const { publicId } = useSelector((state: RootState) => state.auth);
+
+  const { data: appointmentsData } = useGetData({
+    url: `appointment/api/appointments?patient=${publicId}&page=0&size=20&sort=DESC`,
+    queryKey: ["GetAllAppointments"],
+  });
+
+  const sortedAppointments = sortUpcomingAppointments(
+    appointmentsData?.data?.content
+  );
+  // const sortedAppointments = [];
+  // console.log(appointmentsData?.data?.content);
+
   return (
     <div>
       {sortedAppointments?.[0] === undefined ? (

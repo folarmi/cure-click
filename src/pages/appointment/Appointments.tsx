@@ -28,13 +28,6 @@ import { useForm } from "react-hook-form";
 const Appointments = () => {
   const { control, getValues } = useForm();
 
-  const [modal, setModal] = useState(false);
-  const [cancelAppointment, setCancelAppointment] = useState(false);
-  const [cancelledDetails, setCancelledDetails] = useState(false);
-  const [upcomingDetails, setUpcomingDetails] = useState(false);
-  const [rescheduleModal, setRescheduleModal] = useState(false);
-  const [rescheduleModalTwo, setRescheduleModalTwo] = useState(false);
-  const [completedAppointment, setCompletedAppointment] = useState(false);
   const [activeTab, setActiveTab] = useState("");
 
   const [selectedAppointment, setSelectedAppointment] =
@@ -61,33 +54,33 @@ const Appointments = () => {
     enabled: !!publicId && userType === "doctor",
   });
 
-  const toggleModal = () => {
-    setModal(!modal);
-  };
+  // const toggleModal = () => {
+  //   setModal(!modal);
+  // };
 
-  const toggleCancel = () => {
-    setCancelAppointment(!cancelAppointment);
-  };
+  // const toggleCancel = () => {
+  //   setCancelAppointment(!cancelAppointment);
+  // };
 
-  const toggleCancelledDetails = () => {
-    setCancelledDetails(!cancelledDetails);
-  };
+  // const toggleCancelledDetails = () => {
+  //   setCancelledDetails(!cancelledDetails);
+  // };
 
-  const toggleUpcomingDetails = () => {
-    setUpcomingDetails(!upcomingDetails);
-  };
+  // const toggleUpcomingDetails = () => {
+  //   setUpcomingDetails(!upcomingDetails);
+  // };
 
-  const toggleRescheduleTwoModal = () => {
-    setRescheduleModalTwo(!rescheduleModalTwo);
-  };
+  // const toggleRescheduleTwoModal = () => {
+  //   setRescheduleModalTwo(!rescheduleModalTwo);
+  // };
 
-  const toggleRescheduleModal = () => {
-    setRescheduleModal(!rescheduleModal);
-  };
+  // const toggleRescheduleModal = () => {
+  //   setRescheduleModal(!rescheduleModal);
+  // };
 
-  const toggleCompletedAppointment = () => {
-    setCompletedAppointment(!completedAppointment);
-  };
+  // const toggleCompletedAppointment = () => {
+  //   setCompletedAppointment(!completedAppointment);
+  // };
 
   return (
     <>
@@ -183,21 +176,7 @@ const Appointments = () => {
                   </Box>
                   <ModuleContent
                     appointmentsData={bookingsData?.data?.content}
-                    modal={modal}
-                    toggleModal={toggleModal}
                     selectedAppointment={selectedAppointment}
-                    cancelAppointment={cancelAppointment}
-                    toggleCancel={toggleCancel}
-                    cancelledDetails={cancelledDetails}
-                    upcomingDetails={upcomingDetails}
-                    rescheduleModalTwo={rescheduleModalTwo}
-                    rescheduleModal={rescheduleModal}
-                    completedAppointment={completedAppointment}
-                    toggleCancelledDetails={toggleCancelledDetails}
-                    toggleRescheduleTwoModal={toggleRescheduleTwoModal}
-                    toggleUpcomingDetails={toggleUpcomingDetails}
-                    toggleRescheduleModal={toggleRescheduleModal}
-                    toggleCompletedAppointment={toggleCompletedAppointment}
                   />
                 </Box>
 
@@ -225,16 +204,10 @@ const Appointments = () => {
                   <TableContent
                     appointmentsData={bookingsData?.data?.content}
                     appointmentsDataIsLoading={bookingsDataIsLoading}
-                    toggleModal={toggleModal}
-                    toggleCancel={toggleCancel}
-                    toggleCancelledDetails={toggleCancelledDetails}
-                    toggleUpcomingDetails={toggleUpcomingDetails}
                     setSelectedAppointment={setSelectedAppointment}
-                    toggleRescheduleTwoModal={toggleRescheduleTwoModal}
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     selectedAppointment={selectedAppointment}
-                    toggleCompletedAppointment={toggleCompletedAppointment}
                   />
                 </Box>
               </Flex>
@@ -250,21 +223,7 @@ const Appointments = () => {
               <Box className="w-[28%]">
                 <ModuleContent
                   appointmentsData={appointmentsData?.data?.content}
-                  modal={modal}
-                  toggleModal={toggleModal}
                   selectedAppointment={selectedAppointment}
-                  cancelAppointment={cancelAppointment}
-                  toggleCancel={toggleCancel}
-                  cancelledDetails={cancelledDetails}
-                  upcomingDetails={upcomingDetails}
-                  rescheduleModalTwo={rescheduleModalTwo}
-                  rescheduleModal={rescheduleModal}
-                  completedAppointment={completedAppointment}
-                  toggleCancelledDetails={toggleCancelledDetails}
-                  toggleRescheduleTwoModal={toggleRescheduleTwoModal}
-                  toggleUpcomingDetails={toggleUpcomingDetails}
-                  toggleRescheduleModal={toggleRescheduleModal}
-                  toggleCompletedAppointment={toggleCompletedAppointment}
                 />
               </Box>
 
@@ -272,13 +231,7 @@ const Appointments = () => {
                 <TableContent
                   appointmentsData={appointmentsData?.data?.content}
                   appointmentsDataIsLoading={appointmentsDataIsLoading}
-                  toggleModal={toggleModal}
-                  toggleCancel={toggleCancel}
-                  toggleCancelledDetails={toggleCancelledDetails}
-                  toggleUpcomingDetails={toggleUpcomingDetails}
                   setSelectedAppointment={setSelectedAppointment}
-                  toggleRescheduleTwoModal={toggleRescheduleTwoModal}
-                  toggleCompletedAppointment={toggleCompletedAppointment}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                   selectedAppointment={selectedAppointment}

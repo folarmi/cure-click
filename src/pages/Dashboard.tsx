@@ -14,7 +14,7 @@ import TopAndBottomText from "../components/atoms/TopAndBottomText";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
 import Review from "../components/cards/Review";
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
-import { appointmentSampleData, countriesData } from "../utils/data";
+import { countriesData } from "../utils/data";
 import MobileSlider from "../components/ui/MobileSlider";
 import {
   useGetData,
@@ -28,7 +28,13 @@ import { setPublicId } from "../lib/features/authSlice";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
 import { EmptyDoctorSearch } from "../components/emptyStates/EmptyDoctorSearch";
-import { MeetingCard } from "../components/cards/MeetingCard";
+import { UpComingAppointments } from "../components/ui/UpComingAppointments";
+import {
+  triggerToggleCancelAppointment,
+  triggerToggleMeetingCardTwo,
+  triggerToggleModal,
+  triggerToggleRescheduleModal,
+} from "../utils/toggleFunctions";
 // import { UpComingAppointments } from "../components/ui/UpComingAppointments";
 // import { decodeLogin } from "../utils/util";
 
@@ -58,7 +64,7 @@ const Dashboard = () => {
     queryKey: ["GetDoctorsReviews"],
     enabled: userType === "doctor",
   });
-
+  console.log(reviewsData);
   useEffect(() => {
     dispatch(
       setPublicId(
@@ -161,41 +167,18 @@ const Dashboard = () => {
                     </CustomText>
                   </div>
 
-                  {/* <UpComingAppointments
-                    sortedAppointments={sortedAppointments}
-                    toggleCancel={toggleCancel}
-                    toggleMeetingCardTwoModal={toggleMeetingCardTwoModal}
-                    toggleModal={toggleModal}
-                    toggleRescheduleModal={toggleRescheduleModal}
-                  /> */}
-                  {/* To be deleted */}
-                  <>
-                    <MeetingCard
-                      title="Second Opinion on scheduled Cancer surgery"
-                      date="Today"
-                      time="11:30PM GMT+1 ( In 30 min)"
-                      doctorName="Dr. Alison Ogaga"
-                      speciality="General Practioner "
-                      // onClick={toggleModal}
-                      // cancelOnClick={toggleCancel}
-                      // rescheduleOnClick={toggleRescheduleModal}
-                    />
-
-                    {appointmentSampleData?.slice(1).map((item: any) => {
-                      return (
-                        <div key={item?.publicId}>
-                          <MeetingCardTwo
-                            title={item?.summaryTitle}
-                            date={item?.date}
-                            time={item?.time}
-                            doctorName={item?.nameOfDoc}
-                            ifView
-                            // onClick={toggleMeetingCardTwoModal}
-                          />
-                        </div>
-                      );
-                    })}
-                  </>
+                  <UpComingAppointments
+                    toggleCancel={() =>
+                      triggerToggleCancelAppointment(dispatch)
+                    }
+                    toggleMeetingCardTwoModal={() =>
+                      triggerToggleMeetingCardTwo(dispatch)
+                    }
+                    toggleModal={() => triggerToggleModal(dispatch)}
+                    toggleRescheduleModal={() =>
+                      triggerToggleRescheduleModal(dispatch)
+                    }
+                  />
                 </section>
               </div>
             </section>
