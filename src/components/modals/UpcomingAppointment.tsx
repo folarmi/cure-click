@@ -37,7 +37,6 @@ const UpcomingAppointment = ({
   const [roomID, setRoomID] = useState("");
   const [username, setUsername] = useState<string | undefined>("");
 
-  console.log(userType);
   const handleCancel = () => {
     toggleModal();
     toggleCancel();
@@ -53,7 +52,7 @@ const UpcomingAppointment = ({
     method: "put",
     errorMessage: (error: any) => error?.response?.data?.message,
     onSuccessCallback: (data: any) => {
-      console.log(decodeLogin(data?.data?.patientToken));
+      console.log(data.data.roomId);
       const meetingDetails = decodeLogin(
         userType === "patient"
           ? data?.data?.patientToken

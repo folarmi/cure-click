@@ -143,7 +143,7 @@ const Schedule = () => {
       appointmentTime: convertStartTimeToBackendFormat(timeSlot),
       timezone: getTimeZoneInfo().id,
     };
-    console.log(formData?.appointmentTime);
+
     if (!isUploadedFileEmpty(uploadedFile)) {
       uploadFile(
         { file: uploadedFile },
@@ -431,6 +431,7 @@ const Schedule = () => {
             createAppointment={() => bookAppointment(getValues())}
             transactionID={transactionId}
             serviceFee={singleDoctorData?.data?.pricing}
+            customerEmail={singleDoctorData?.data?.email}
           />
         </div>
       </Modal>

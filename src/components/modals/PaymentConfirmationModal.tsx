@@ -8,6 +8,7 @@ type Prop = {
   createAppointment: () => void;
   transactionID: string | null;
   serviceFee: string | null;
+  customerEmail: string | null;
 };
 
 const PaymentConfirmationModal = ({
@@ -16,6 +17,7 @@ const PaymentConfirmationModal = ({
   createAppointment,
   transactionID,
   serviceFee,
+  customerEmail,
 }: Prop) => {
   const verifyPaymentMutation = useCustomMutation({
     endpoint: `payment/api/flutterwave/verify-payment?transactionId=${transactionID}`,
@@ -29,6 +31,7 @@ const PaymentConfirmationModal = ({
     verifyPaymentMutation.mutate({
       serviceFee: serviceFee,
       currency: "NGN",
+      customerEmail,
     });
   };
 
