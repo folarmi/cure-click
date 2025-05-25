@@ -15,56 +15,42 @@ import { sortUpcomingAppointments } from "../../utils/calendarutil";
 import { Appointment } from "../../utils/types";
 import { UpcomingAppointment } from "../../components/modals/UpcomingAppointment";
 import { UpComingAppointments } from "../../components/ui/UpComingAppointments";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  triggerToggleCancelAppointment,
+  triggerToggleCompletedAppointment,
+  triggerToggleMeetingCardTwo,
+  triggerToggleModal,
+  triggerToggleRescheduleModal,
+  triggerToggleRescheduleModalTwo,
+  triggerToggleUpcomingDetails,
+} from "../../utils/toggleFunctions";
+import { RootState } from "../../lib/store";
+import { setMeetingCardTwoToFalse } from "../../lib/features/appointmentSlice";
 
 type Prop = {
   appointmentsData: any;
-  modal: boolean;
-  cancelAppointment: boolean;
-  cancelledDetails: boolean;
-  upcomingDetails: boolean;
-  rescheduleModal: boolean;
-  rescheduleModalTwo: boolean;
-  completedAppointment: boolean;
-  toggleModal: () => void;
-  toggleCancel: () => void;
-  toggleCancelledDetails: () => void;
-  toggleUpcomingDetails: () => void;
-  toggleRescheduleModal: () => void;
-  toggleRescheduleTwoModal: () => void;
-  toggleCompletedAppointment: () => void;
   selectedAppointment: Appointment;
 };
 
-const ModuleContent = ({
-  appointmentsData,
-  modal,
-  cancelAppointment,
-  selectedAppointment,
-  cancelledDetails,
-  upcomingDetails,
-  rescheduleModalTwo,
-  rescheduleModal,
-  completedAppointment,
-  toggleModal,
-  toggleCancel,
-  toggleUpcomingDetails,
-  toggleCancelledDetails,
-  toggleRescheduleTwoModal,
-  toggleRescheduleModal,
-  toggleCompletedAppointment,
-}: Prop) => {
-  const [meetingCardTwoModal, setMeetingCardTwoModal] = useState(false);
+const ModuleContent = ({ appointmentsData, selectedAppointment }: Prop) => {
+  const dispatch = useDispatch();
   const [meetingTwoCancel, setMeetingTwoCancel] = useState(false);
-
+  const {
+    modal,
+    cancelAppointment,
+    cancelledDetails,
+    upcomingDetails,
+    rescheduleModal,
+    rescheduleModalTwo,
+    completedAppointment,
+    meetingCardTwoModal,
+  } = useSelector((state: RootState) => state.appointmentUI);
   const sortedAppointments = sortUpcomingAppointments(appointmentsData);
-
-  const toggleMeetingCardTwoModal = () => {
-    setMeetingCardTwoModal(!meetingCardTwoModal);
-  };
 
   const toggleMeetingTwoCancel = () => {
     if (meetingCardTwoModal) {
-      setMeetingCardTwoModal(false);
+      dispatch(setMeetingCardTwoToFalse(false));
     }
     setMeetingTwoCancel(!meetingTwoCancel);
   };
@@ -85,29 +71,33 @@ const ModuleContent = ({
         </div>
 
         <UpComingAppointments
-          sortedAppointments={sortedAppointments}
-          toggleCancel={toggleCancel}
-          toggleMeetingCardTwoModal={toggleMeetingCardTwoModal}
-          toggleModal={toggleModal}
-          toggleRescheduleModal={toggleRescheduleModal}
+          toggleCancel={() => triggerToggleCancelAppointment(dispatch)}
+          toggleMeetingCardTwoModal={() =>
+            triggerToggleMeetingCardTwo(dispatch)
+          }
+          toggleModal={() => triggerToggleModal(dispatch)}
+          toggleRescheduleModal={() => triggerToggleRescheduleModal(dispatch)}
         />
       </Box>
 
       {/* Pending and Active Appointment Details Page */}
-      <Modal show={modal} toggleModal={toggleModal}>
+      <Modal show={modal} toggleModal={() => triggerToggleModal(dispatch)}>
         <div className="p-4">
           <AppointmentDetails
-            toggleModal={toggleModal}
+            toggleModal={() => triggerToggleModal(dispatch)}
             selectedAppointment={selectedAppointment}
-            toggleCancel={toggleCancel}
+            toggleCancel={() => triggerToggleCancelAppointment(dispatch)}
           />
         </div>
       </Modal>
 
-      <Modal show={meetingCardTwoModal} toggleModal={toggleMeetingCardTwoModal}>
+      <Modal
+        show={meetingCardTwoModal}
+        toggleModal={() => triggerToggleMeetingCardTwo(dispatch)}
+      >
         <div className="p-4">
           <MeetingTwoDetailsCard
-            toggleModal={toggleMeetingCardTwoModal}
+            toggleModal={() => triggerToggleMeetingCardTwo(dispatch)}
             toggleMeetingTwoCancel={toggleMeetingTwoCancel}
             selectedAppointment={selectedAppointment}
           />
@@ -117,21 +107,24 @@ const ModuleContent = ({
       {/* Completed Appointment Details Page */}
       <Modal
         show={completedAppointment}
-        toggleModal={toggleCompletedAppointment}
+        toggleModal={() => triggerToggleCompletedAppointment(dispatch)}
       >
         <div className="p-4">
           <CompletedAppointment
-            toggleModal={toggleCompletedAppointment}
+            toggleModal={() => triggerToggleCompletedAppointment(dispatch)}
             selectedAppointment={selectedAppointment}
           />
         </div>
       </Modal>
 
       {/* Cancelled Appointment Details Page */}
-      <Modal show={cancelledDetails} toggleModal={toggleCancelledDetails}>
+      <Modal
+        show={cancelledDetails}
+        toggleModal={() => triggerToggleCancelAppointment(dispatch)}
+      >
         <div className="p-4">
           <CompletedAppointment
-            toggleModal={toggleCancelledDetails}
+            toggleModal={() => triggerToggleCancelAppointment(dispatch)}
             ifCompleted={false}
             selectedAppointment={selectedAppointment}
           />
@@ -139,22 +132,28 @@ const ModuleContent = ({
       </Modal>
 
       {/* Upcoming Appointment Details Page */}
-      <Modal show={upcomingDetails} toggleModal={toggleUpcomingDetails}>
+      <Modal
+        show={upcomingDetails}
+        toggleModal={() => triggerToggleUpcomingDetails(dispatch)}
+      >
         <div className="p-4">
           <UpcomingAppointment
-            toggleModal={toggleUpcomingDetails}
+            toggleModal={() => triggerToggleUpcomingDetails(dispatch)}
             selectedAppointment={selectedAppointment}
-            toggleCancel={toggleCancel}
-            toggleRescheduleModal={toggleRescheduleModal}
+            toggleCancel={() => triggerToggleCancelAppointment(dispatch)}
+            toggleRescheduleModal={() => triggerToggleRescheduleModal(dispatch)}
             // toggleRescheduleTwoModal={toggleRescheduleTwoModal}
           />
         </div>
       </Modal>
 
-      <Modal show={cancelAppointment} toggleModal={toggleCancel}>
+      <Modal
+        show={cancelAppointment}
+        toggleModal={() => triggerToggleCancelAppointment(dispatch)}
+      >
         <div className="p-4">
           <CancelAppointment
-            toggleModal={toggleCancel}
+            toggleModal={() => triggerToggleCancelAppointment(dispatch)}
             details={sortedAppointments?.[0]}
           />
         </div>
@@ -166,23 +165,29 @@ const ModuleContent = ({
         </div>
       </Modal>
 
-      <Modal show={rescheduleModal} toggleModal={toggleRescheduleModal}>
+      <Modal
+        show={rescheduleModal}
+        toggleModal={() => triggerToggleRescheduleModal(dispatch)}
+      >
         <div className="p-4">
           <Reschedule
             // details={sortedAppointments?.[0] || selectedAppointment} - find a fix for passing the selected appointment to the blue/green card on the left
             details={selectedAppointment}
-            toggleModal={toggleRescheduleModal}
+            toggleModal={() => triggerToggleRescheduleModal(dispatch)}
           />
         </div>
       </Modal>
 
       {/* Request Rescheduled Details Page */}
-      <Modal show={rescheduleModalTwo} toggleModal={toggleRescheduleTwoModal}>
+      <Modal
+        show={rescheduleModalTwo}
+        toggleModal={() => triggerToggleRescheduleModalTwo(dispatch)}
+      >
         <div className="p-4">
           <RescheduleTwo
-            toggleModal={toggleRescheduleTwoModal}
-            toggleRescheduleModal={toggleRescheduleModal}
-            toggleCancel={toggleCancel}
+            toggleModal={() => triggerToggleRescheduleModalTwo(dispatch)}
+            toggleRescheduleModal={() => triggerToggleRescheduleModal(dispatch)}
+            toggleCancel={() => triggerToggleCancelAppointment(dispatch)}
             details={selectedAppointment}
           />
         </div>

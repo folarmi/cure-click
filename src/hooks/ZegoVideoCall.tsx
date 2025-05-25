@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
-import { ZegoUIKitPrebuilt, ZegoUser } from "@zegocloud/zego-uikit-prebuilt";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useEffect, useRef } from "react";
 // import { useNavigate } from "react-router";
 
@@ -29,7 +29,6 @@ export function getUrlParams(url = window.location.href) {
 export default function ZegoVideoCall({ userID, username }: Prop) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const roomID = getUrlParams().get("roomID");
-  console.log(userID);
 
   // const myMeeting = async (element: any) => {
   //   // generate Kit Token
