@@ -2,16 +2,16 @@
 import { IoWalletOutline } from "react-icons/io5";
 import { CustomText } from "./CustomText";
 import sampleImage from "../../assets/sampleImage.svg";
-import CustomSelect from "./CustomSelect";
-import { sampleSpecializations } from "../../utils/data";
+
 import { CustomButton } from "./CustomButton";
-import { CalendarIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { CustomInput } from "./CustomInput";
 import { BackgroundHeader } from "./BackgroundHeader";
 import Breadcrumb from "./BreadCrumb";
-import { decodeLogin, getAllCountryOptions } from "../../utils/util";
-import { useMemo } from "react";
+import { decodeLogin } from "../../utils/util";
 import { useNavigate } from "react-router";
+import filter from "../../assets/icons/filter.svg";
+import { Filter } from "./Filter";
 
 type Prop = {
   ifNameAndWalletBalance?: boolean;
@@ -29,7 +29,6 @@ const DashboardHeader = ({
   getValues,
 }: Prop) => {
   const navigate = useNavigate();
-  const countryOptions = useMemo(() => getAllCountryOptions(), []);
 
   const generateQueryString = () => {
     const rawValues = getValues();
@@ -102,44 +101,8 @@ const DashboardHeader = ({
           <img src={sampleImage} className="w-1/2 md:w-auto mt-4 md:mt-0" />
         </div>
 
-        <div className="mt-4 hidden md:flex items-center space-x-4">
-          <CustomSelect
-            options={sampleSpecializations}
-            placeholder="Select Speciality"
-            name="specialization"
-            control={control}
-            ifGrayBg
-            // className="hidden md:block"
-          />
-          <CustomSelect
-            options={countryOptions}
-            placeholder="Select Country"
-            name="country"
-            control={control}
-            ifGrayBg
-            // className="hidden md:block"
-          />
-
-          <CustomInput
-            icon={<MagnifyingGlassIcon />}
-            label=""
-            placeholder="Search by Firstname"
-            type="text"
-            className="bg-alpha_3"
-            ifGrayBg
-            control={control}
-            name="firstname"
-          />
-          <CustomInput
-            label=""
-            placeholder="Search by Lastname"
-            icon={<CalendarIcon />}
-            className="bg-alpha_3 hidden md:block"
-            type="text"
-            ifGrayBg
-            control={control}
-            name="lastname"
-          />
+        <div className="mt-4  hidden md:flex items-center space-x-4">
+          <Filter />
           <CustomButton
             icon={<MagnifyingGlassIcon />}
             variant="primary"
@@ -148,6 +111,21 @@ const DashboardHeader = ({
           >
             Search For a Specialist
           </CustomButton>
+        </div>
+
+        <div className="flex items-center lg:hidden border border-gray3 mt-4 rounded-lg px-2 pb-2">
+          <CustomInput
+            icon={<MagnifyingGlassIcon />}
+            label=""
+            placeholder="Search by a specialist"
+            type="text"
+            className="mr-2"
+            ifGrayBg
+            control={control}
+            name="firstname"
+          />
+
+          <img src={filter} className="mt-2" />
         </div>
       </div>
     </BackgroundHeader>

@@ -28,7 +28,7 @@ const ProfilePicture = ({
 
   return shouldShowInitials ? (
     <div
-      className="rounded-full bg-gray-300 flex items-center justify-center text-white font-bold text-lg"
+      className=" rounded-full bg-gray-300 hidden lg:flex items-center justify-center text-white font-bold text-lg"
       style={sizeStyle}
     >
       {initials}

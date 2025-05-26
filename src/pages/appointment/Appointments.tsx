@@ -220,7 +220,7 @@ const Appointments = () => {
               justify="center"
               className="flex-col md:flex-row px-4 md:px-10 mt-10"
             >
-              <Box className="w-[28%]">
+              <Box className="w-full lg:w-[28%]">
                 <ModuleContent
                   appointmentsData={appointmentsData?.data?.content}
                   selectedAppointment={selectedAppointment}

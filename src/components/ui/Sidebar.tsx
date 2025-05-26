@@ -106,11 +106,11 @@ const Sidebar = () => {
       <div className="flex items-center">
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
-            <BellIcon className="w-6 h-6 cursor-pointer mr-3" />
+            <BellIcon className="w-[30px] h-7 cursor-pointer mr-3" />
           </DropdownMenu.Trigger>
           <BiMenu
             onClick={() => toggleMobileSideBar()}
-            className="md:hidden bg-grass9 text-white h-6 w-6 ml-4 rounded-lg"
+            className="md:hidden bg-grass9 text-white h-10 w-10 rounded-lg"
           />
 
           <DropdownMenu.Content className="hidden mt-4 w-[432px]">
@@ -260,54 +260,52 @@ const Sidebar = () => {
           </DropdownMenu.Content>
         </DropdownMenu.Root>
 
-        {showSideBar && (
-          <div className="bg-white px-8 pt-10 w-full z-10 absolute right-2 top-0 bottom-0">
-            <div className="flex items-center justify-between border-b-2 border-gray2">
-              <img
-                src={logo}
-                className="cursor-pointer"
-                onClick={() => navigate("/dashboard")}
-              />
-
-              <IoClose
-                onClick={() => toggleMobileSideBar()}
-                className="bg-grass9 text-white h-6 w-6 rounded-lg"
-              />
-            </div>
-            <div className="">
-              {navBarItems.map(({ icon: Icon, id, name, path }) => {
-                return (
-                  <NavLink
-                    end
-                    to={path}
-                    className={`flex items-center mt-4`}
-                    key={id}
-                    onClick={() => toggleMobileSideBar()}
-                  >
-                    <Icon
-                      className={`${
-                        pathName.startsWith(path)
-                          ? "text-[var(--color-primary)] fill-current"
-                          : "text-neutral_11"
-                      }`}
-                    />
-
-                    <Text
-                      size="3"
-                      className={`pl-2 ${
-                        pathName.startsWith(path)
-                          ? "text-[var(--color-primary)] font-medium"
-                          : "text-neutral_11 font-normal"
-                      }`}
-                    >
-                      {name}
-                    </Text>
-                  </NavLink>
-                );
-              })}
-            </div>
+        <div
+          className={`bg-white w-full z-50 absolute right-0 top-0 bottom-0 transform transition-transform duration-1000 ease-in-out ${
+            showSideBar ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex py-4 px-8 items-center justify-between border-b-2 border-gray2">
+            <img
+              src={logo}
+              className="cursor-pointer"
+              onClick={() => navigate("/dashboard")}
+            />
+            <IoClose
+              onClick={toggleMobileSideBar}
+              className="bg-grass9 text-white h-10 w-10 rounded-lg"
+            />
           </div>
-        )}
+          <div className="px-8">
+            {navBarItems.map(({ icon: Icon, id, name, path }) => (
+              <NavLink
+                end
+                to={path}
+                className="flex items-center mt-4"
+                key={id}
+                onClick={toggleMobileSideBar}
+              >
+                <Icon
+                  className={`${
+                    pathName.startsWith(path)
+                      ? "text-[var(--color-primary)] fill-current"
+                      : "text-neutral_11"
+                  }`}
+                />
+                <Text
+                  size="3"
+                  className={`pl-2 ${
+                    pathName.startsWith(path)
+                      ? "text-[var(--color-primary)] font-medium"
+                      : "text-neutral_11 font-normal"
+                  }`}
+                >
+                  {name}
+                </Text>
+              </NavLink>
+            ))}
+          </div>
+        </div>
       </div>
     </nav>
   );

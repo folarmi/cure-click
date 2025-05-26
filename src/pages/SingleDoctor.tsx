@@ -14,7 +14,6 @@ import Review from "../components/cards/Review";
 import Modal from "../components/ui/Modal";
 import { useState } from "react";
 import Availability from "../components/modals/Availability";
-import { PaymentBox } from "../components/ui/PaymentBox";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import { NumberOfReview } from "../components/ui/NumberOfReview";
@@ -314,13 +313,6 @@ const SingleDoctor = () => {
                 name="John Doe"
                 date="25/10/2023"
                 time="10:59 am"
-              />
-
-              <PaymentBox
-                price={singleDoctorData?.data?.pricing}
-                currency={singleDoctorData?.data?.currency}
-                toggleModal={toggleModal}
-                className=" md:hidden"
               />
             </section>
           </div>

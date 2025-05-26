@@ -113,7 +113,7 @@ const Dashboard = () => {
           ) : (
             <section className="px-6 mt-8">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="hidden lg:block">
                   <CustomText
                     className="text-gray_12"
                     size="large"
@@ -131,8 +131,8 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="md:flex">
-                <section className="flex flex-wrap w-full md:w-[75%] order-2 md:order-1">
+              <div className="flex flex-col lg:flex-row">
+                <section className="flex flex-wrap w-full md:w-[75%] order-2 md:order-1 mt-6 lg:mt-0">
                   {doctorData?.data?.content?.length > 0 ? (
                     doctorData?.data?.content?.map((item: any) => (
                       <DoctorCard
@@ -156,8 +156,8 @@ const Dashboard = () => {
                   )}
                 </section>
 
-                <section className="w-full md:w-[25%] order-1 md:order-2 -mt-16">
-                  <div className="hidden md:block ">
+                <section className="w-full md:w-[25%] flex lg:flex-col order-1 md:order-2 -mt-16">
+                  <div className="mt-12 lg:mt-0">
                     <CustomText
                       className="text-gray_12"
                       size="large"
@@ -172,20 +172,20 @@ const Dashboard = () => {
                     >
                       View your upcoming appointments
                     </CustomText>
-                  </div>
 
-                  <UpComingAppointments
-                    toggleCancel={() =>
-                      triggerToggleCancelAppointment(dispatch)
-                    }
-                    toggleMeetingCardTwoModal={() =>
-                      triggerToggleMeetingCardTwo(dispatch)
-                    }
-                    toggleModal={() => triggerToggleModal(dispatch)}
-                    toggleRescheduleModal={() =>
-                      triggerToggleRescheduleModal(dispatch)
-                    }
-                  />
+                    <UpComingAppointments
+                      toggleCancel={() =>
+                        triggerToggleCancelAppointment(dispatch)
+                      }
+                      toggleMeetingCardTwoModal={() =>
+                        triggerToggleMeetingCardTwo(dispatch)
+                      }
+                      toggleModal={() => triggerToggleModal(dispatch)}
+                      toggleRescheduleModal={() =>
+                        triggerToggleRescheduleModal(dispatch)
+                      }
+                    />
+                  </div>
                 </section>
               </div>
             </section>

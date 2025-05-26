@@ -8,7 +8,6 @@ import PricePerSession from "../components/atoms/PricePerSession";
 import { CustomInput } from "../components/ui/CustomInput";
 import { CustomTextarea } from "../components/ui/CustomTextArea";
 import { DashboardIcon } from "@radix-ui/react-icons";
-import { PaymentBox } from "../components/ui/PaymentBox";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import Modal from "../components/ui/Modal";
@@ -181,11 +180,12 @@ const Schedule = () => {
           <img src={doctors} className="h-auto object-cover -mr-6" />
         </Flex> */}
       </BackgroundHeader>
+
       <Flex
         className="w-full px-4 md:px-12 bg-gray_bg flex-col md:flex-row"
         justify="end"
       >
-        <Box className="flex flex-col items-center ml-auto ">
+        <Box className="flex flex-col items-center mx-auto ">
           {/* <Box className="w-[100px] h-[100px] overflow-hidden rounded-lg">
             <img
               src={sampleDoctor}
@@ -217,7 +217,7 @@ const Schedule = () => {
             )}
           </Text>
 
-          <Flex className="space-x-2 mt-3 flex-wrap md:flex-nowrap justify-center">
+          <Flex className="space-x-2 mt-3 flex-wrap md:flex-nowrap md:justify-center w-full">
             <Badge variant="soft" size="2" className="text-accent_alpha_11">
               <IoBriefcaseOutline className="w-4 h-4 " />
               {singleDoctorData?.data?.specialization || "N/A"}
@@ -231,7 +231,7 @@ const Schedule = () => {
             <Badge
               variant="soft"
               size="2"
-              className="text-cyanA11 bg-cyanA3 mt-4 md:mt-0"
+              className="text-cyanA11 bg-cyanA3 md:mt-0"
             >
               <HiOutlineTranslate className="w-4 h-4 " />
               {singleDoctorData?.data?.hospitalWorkPlace || "N/A"}
@@ -358,7 +358,7 @@ const Schedule = () => {
                     size="2"
                     as="p"
                     weight="regular"
-                    className="text-gray11 w-[371px]"
+                    className="text-gray11 w-full max-w-[371px]"
                   >
                     Provide any document or image that would assist this
                     specialist in rendering professional service to you
@@ -381,15 +381,6 @@ const Schedule = () => {
               size="3"
               variant="solid"
               radius="medium"
-              onClick={toggleModal}
-              className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer md:hidden mx-6"
-            >
-              Proceed to Pay
-            </Button>
-            <Button
-              size="3"
-              variant="solid"
-              radius="medium"
               disabled={
                 isPending ||
                 bookAppointmentMutation.isPending ||
@@ -400,20 +391,11 @@ const Schedule = () => {
                 bookAppointmentMutation.isPending ||
                 createPaymentLinkMutation.isPending
               }
-              className="bg-grass9 w-full mb-6 font-semibold text-base cursor-pointer mx-6"
+              className="bg-grass9 w-full lg:w-full mb-6 font-semibold text-base cursor-pointer lg:mx-6"
             >
               Proceed to Pay
             </Button>
           </form>
-        </Box>
-
-        <Box className="">
-          <PaymentBox
-            toggleModal={toggleModal}
-            className="hidden md:block"
-            price={singleDoctorData?.data?.pricing}
-            currency={singleDoctorData?.data?.currency}
-          />
         </Box>
       </Flex>
 
