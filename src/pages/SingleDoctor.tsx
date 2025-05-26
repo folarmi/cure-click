@@ -51,7 +51,7 @@ const SingleDoctor = () => {
   const toggleModal = () => {
     setModal(!modal);
   };
-
+  console.log(reviewsData);
   const scheduleData = {
     ...doctorAvailableSessions?.data,
     date: doctorAvailableSessions?.date,
