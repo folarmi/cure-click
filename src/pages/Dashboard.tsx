@@ -24,7 +24,7 @@ import {
 import { getFullName } from "../utils/util";
 import { Loader } from "../components/ui/Loader";
 import { useEffect, useMemo } from "react";
-import { setPublicId } from "../lib/features/authSlice";
+import { setPublicId, updateUserObject } from "../lib/features/authSlice";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
 import { EmptyDoctorSearch } from "../components/emptyStates/EmptyDoctorSearch";
@@ -73,9 +73,16 @@ const Dashboard = () => {
           : doctorProfile?.data?.publicId
       )
     );
+    dispatch(
+      userType === "patient"
+        ? updateUserObject(patientProfileData?.data)
+        : updateUserObject(doctorProfile?.data)
+    );
   }, [
     dispatch,
+    doctorProfile?.data,
     doctorProfile?.data?.publicId,
+    patientProfileData?.data,
     patientProfileData?.data?.publicId,
     userType,
   ]);

@@ -26,7 +26,7 @@ const PaymentConfirmationModal = ({
       createAppointment();
     },
   });
-  console.log(serviceFee);
+
   const handleAppointmentBooking = () => {
     verifyPaymentMutation.mutate({
       serviceFee: serviceFee,

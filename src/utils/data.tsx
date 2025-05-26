@@ -399,24 +399,39 @@ export const appointmentSampleData = [
   },
 ];
 
-// export const reasonsForCancelling = [
-//   {
-//     id: 1,
-//     reason: "Doctor asked me to cancel",
-//   },
-//   {
-//     id: 2,
-//     reason: "I don’t need the service anymore",
-//   },
-//   {
-//     id: 3,
-//     reason: "Doctor Did Not Attend session",
-//   },
-//   {
-//     id: 4,
-//     reason: "Other Reasons",
-//   },
-// ];
+export const baseReasonsForCancelling = [
+  { key: "initiator_requested", label: "", value: "initiator_requested" },
+  { key: "no_longer_needed", label: "", value: "no_longer_needed" },
+  {
+    key: "counterparty_did_not_attend",
+    label: "",
+    value: "counterparty_did_not_attend",
+  },
+  { key: "other", label: "", value: "other" },
+];
+
+export const getReasonLabels = (userType: "patient" | "doctor") => {
+  const labelMap: Record<string, string> =
+    userType === "patient"
+      ? {
+          initiator_requested: "Doctor asked me to cancel",
+          no_longer_needed: "I don’t need the service anymore",
+          counterparty_did_not_attend: "Doctor did not attend session",
+          other: "Other reasons",
+        }
+      : {
+          initiator_requested: "Patient asked me to cancel",
+          no_longer_needed: "I’m not available anymore",
+          counterparty_did_not_attend: "Patient did not attend session",
+          other: "Other reasons",
+        };
+
+  return baseReasonsForCancelling.map((reason) => ({
+    ...reason,
+    label: labelMap[reason.key],
+  }));
+};
+
 export const reasonsForCancelling = [
   {
     label: "Doctor asked me to cancel",

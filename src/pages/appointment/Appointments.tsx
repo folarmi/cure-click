@@ -42,7 +42,7 @@ const Appointments = () => {
 
   const { data: appointmentsData, isLoading: appointmentsDataIsLoading } =
     useGetData({
-      url: `appointment/api/appointments?patient=${publicId}&appointmentStatus=${activeTab}&page=0&size=20&sort=DESC`,
+      url: `appointment/api/appointments?patient=${publicId}&appointmentStatus=${activeTab}&page=0&size=100&sort=desc`,
       queryKey: ["GetAllAppointments", activeTab],
       enabled: !!publicId && userType === "patient",
     });

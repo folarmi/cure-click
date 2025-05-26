@@ -95,7 +95,7 @@ const UpcomingAppointment = ({
         </div>
 
         {/* Leave button overlay */}
-        {/* <div
+        <div
           style={{
             position: "absolute",
             top: "1rem",
@@ -118,7 +118,7 @@ const UpcomingAppointment = ({
           >
             Leave Meeting
           </button>
-        </div> */}
+        </div>
       </div>
     );
   }

@@ -11,7 +11,7 @@ import { formatAppointmentTime } from "../../utils/calendarutil";
 import { getFullName } from "../../utils/util";
 import { useState } from "react";
 import { CustomRadioGroup } from "../CustomRadioGroup";
-import { reasonsForCancelling } from "../../utils/data";
+import { getReasonLabels } from "../../utils/data";
 import {
   useCustomMutation,
   useGetDoctorProfile,
@@ -138,7 +138,7 @@ const CancelAppointment = ({ toggleModal, details }: Prop) => {
 
         <div className="mt-4">
           <CustomRadioGroup
-            options={reasonsForCancelling}
+            options={getReasonLabels(userType)}
             value={selectedReason}
             onValueChange={setSelectedReason}
             name="gender"
