@@ -2,8 +2,6 @@
 import { Badge, Box, Button, Flex, Text } from "@radix-ui/themes";
 import { useCustomMutation } from "../../lib/apiCalls";
 import mark from "../../assets/paymentSuccess.svg";
-import { useAppSelector } from "../../lib/hook";
-import { RootState } from "../../lib/store";
 
 type Prop = {
   toggleModal: () => void;
@@ -22,15 +20,11 @@ const PaymentConfirmationModal = ({
   serviceFee,
   customerEmail,
 }: Prop) => {
-  const { appointmentDetails, appointmentTopic } = useAppSelector(
-    (state: RootState) => state.schedule
-  );
   const verifyPaymentMutation = useCustomMutation({
     endpoint: `payment/api/flutterwave/verify-payment?transactionId=${transactionID}`,
     errorMessage: (error: any) => error?.response?.data?.message,
     onSuccessCallback: () => {
-      const test = createAppointment();
-      console.log(appointmentDetails, appointmentTopic, test);
+      createAppointment();
     },
   });
 

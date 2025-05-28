@@ -10,13 +10,11 @@ import { IoBriefcaseOutline } from "react-icons/io5";
 import { HiOutlineTranslate } from "react-icons/hi";
 import TopAndBottomText from "../components/atoms/TopAndBottomText";
 import { DashboardIcon } from "@radix-ui/react-icons";
-import Review from "../components/cards/Review";
 import Modal from "../components/ui/Modal";
 import { useState } from "react";
 import Availability from "../components/modals/Availability";
 import Breadcrumb from "../components/ui/BreadCrumb";
 import { BackgroundHeader } from "../components/ui/BackgroundHeader";
-import { NumberOfReview } from "../components/ui/NumberOfReview";
 import {
   useGetData,
   useGetDoctorAvailableSessions,
@@ -34,6 +32,7 @@ import { RootState } from "../lib/store";
 import { useSelector } from "react-redux";
 import { DefaultProfile } from "../components/ui/DefaultProfile";
 import { getFirstAndLastInitials } from "../utils/randomUtil";
+import { ReviewPage } from "../components/ui/ReviewPage";
 
 const SingleDoctor = () => {
   const { id } = useParams();
@@ -184,9 +183,9 @@ const SingleDoctor = () => {
                 </div>
               </Box>
 
-              <NumberOfReview />
+              <ReviewPage reviewsData={reviewsData} />
 
-              <Review
+              {/* <Review
                 title="Review Title"
                 numberOfRating={4}
                 paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
@@ -201,7 +200,7 @@ const SingleDoctor = () => {
                 name="John Doe"
                 date="25/10/2023"
                 time="10:59 am"
-              />
+              /> */}
             </section>
 
             <section className="md:hidden px-4">
@@ -296,24 +295,7 @@ const SingleDoctor = () => {
                 Reviews
               </Text>
 
-              <NumberOfReview />
-              <Review
-                title="Review Title"
-                numberOfRating={4}
-                paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
-                name="John Doe"
-                date="25/10/2023"
-                time="10:59 am"
-              />
-
-              <Review
-                title="Review Title"
-                numberOfRating={4}
-                paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
-                name="John Doe"
-                date="25/10/2023"
-                time="10:59 am"
-              />
+              <ReviewPage reviewsData={reviewsData} />
             </section>
           </div>
 

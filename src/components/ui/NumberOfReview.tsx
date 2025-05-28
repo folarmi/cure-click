@@ -1,11 +1,15 @@
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import { Flex, Text } from "@radix-ui/themes";
 
-const NumberOfReview = () => {
+type Prop = {
+  total: number;
+};
+
+const NumberOfReview = ({ total }: Prop) => {
   return (
     <Flex align="center" justify="between" className="bg-white p-4 mt-4">
       <Text as="p" size="3" className="text-gray12 font-semibold">
-        24 Reviews
+        {total} Reviews
       </Text>
       <Flex align="center">
         <Text as="p" size="3" className="text-gray12">

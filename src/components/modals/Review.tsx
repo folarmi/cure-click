@@ -10,8 +10,6 @@ import { formatAppointmentTime } from "../../utils/calendarutil";
 import { getFullName } from "../../utils/util";
 import { useState } from "react";
 import { useCustomMutation } from "../../lib/apiCalls";
-import { RootState } from "../../lib/store";
-import { useAppSelector } from "../../lib/hook";
 
 type Prop = {
   toggleModal: () => void;
@@ -19,7 +17,6 @@ type Prop = {
 };
 const Review = ({ toggleModal, details }: Prop) => {
   const { control, handleSubmit } = useForm();
-  const { publicId } = useAppSelector((state: RootState) => state.auth);
 
   const [internalRating, setInternalRating] = useState(0);
 
@@ -34,11 +31,12 @@ const Review = ({ toggleModal, details }: Prop) => {
   const submitForm = (data: any) => {
     const formData = {
       appointmentPublicId: details?.publicId,
-      reviewerPublicId: publicId,
       starRating: internalRating,
       message: data?.message,
+      // reviewerPublicId: publicId,
+      localDateTime: new Date(),
     };
-    // console.log(formData);
+    console.log(formData);
     reviewDoctorMutation.mutate(formData);
   };
 
@@ -82,7 +80,7 @@ const Review = ({ toggleModal, details }: Prop) => {
             control={control}
             name="message"
             rules={{
-              required: "Reason for Rescheduling is required",
+              required: "Review is required",
             }}
           />
 

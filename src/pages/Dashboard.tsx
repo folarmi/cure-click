@@ -11,8 +11,7 @@ import { DoctorDashboardHeader } from "../components/ui/DoctorDashboardHeader";
 import { Flex, Text } from "@radix-ui/themes";
 import { GraphCard } from "../components/cards/GraphCard";
 import TopAndBottomText from "../components/atoms/TopAndBottomText";
-import { NumberOfReview } from "../components/ui/NumberOfReview";
-import Review from "../components/cards/Review";
+
 import { DoctorShareProfile } from "../components/ui/DoctorShareProfile";
 import { countriesData } from "../utils/data";
 import MobileSlider from "../components/ui/MobileSlider";
@@ -35,6 +34,7 @@ import {
   triggerToggleModal,
   triggerToggleRescheduleModal,
 } from "../utils/toggleFunctions";
+import { ReviewPage } from "../components/ui/ReviewPage";
 // import { UpComingAppointments } from "../components/ui/UpComingAppointments";
 // import { decodeLogin } from "../utils/util";
 
@@ -60,10 +60,11 @@ const Dashboard = () => {
   });
 
   const { data: reviewsData, isLoading: reviewsDataIsLoading } = useGetData({
-    url: `appointment/api/reviews?publicId=${doctorProfile?.data?.publicId}&page=0&size=20`,
+    url: `appointment/api/reviews?doctorPublicId=${doctorProfile?.data?.publicId}&page=0&size=20`,
     queryKey: ["GetDoctorsReviews"],
-    enabled: userType === "doctor",
+    enabled: userType === "doctor" && !!doctorProfile?.data?.publicId,
   });
+
   useEffect(() => {
     dispatch(
       setPublicId(
@@ -289,21 +290,9 @@ const Dashboard = () => {
                       ifSpaceBetween={false}
                     />
                   </div>
+                  <ReviewPage reviewsData={reviewsData} />
 
-                  <NumberOfReview />
-
-                  <Review
-                    title="Review Title"
-                    numberOfRating={4}
-                    paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
-                    name="John Doe"
-                    date="25/10/2023"
-                    time="10:59 am"
-                    ifVerticalIcon
-                    ifInput
-                  />
-
-                  <Review
+                  {/* <Review
                     title="Review Title"
                     numberOfRating={4}
                     paragraph="After being forced to move twice within five years, our customers had a hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only revitalized our brand, but saved our nearly 100-year-old family business from the brink of ruin by optimizing our website for search and creating our Google My Business listing."
@@ -346,7 +335,7 @@ const Dashboard = () => {
                     time="10:59 am"
                     ifVerticalIcon
                     ifReply
-                  />
+                  /> */}
                 </div>
 
                 <div className="w-full md:w-[30%] order-1 md:order-2 md:ml-6">
