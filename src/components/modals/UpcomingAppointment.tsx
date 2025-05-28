@@ -33,9 +33,9 @@ const UpcomingAppointment = ({
     (state: RootState) => state.auth
   );
   const [inCall, setInCall] = useState(false);
-
   const [roomID, setRoomID] = useState("");
   const [username, setUsername] = useState<string | undefined>("");
+  const [patientToken, setPatientToken] = useState("");
 
   const handleCancel = () => {
     toggleModal();
@@ -52,7 +52,6 @@ const UpcomingAppointment = ({
     method: "put",
     errorMessage: (error: any) => error?.response?.data?.message,
     onSuccessCallback: (data: any) => {
-      console.log(data.data.roomId);
       const meetingDetails = decodeLogin(
         userType === "patient"
           ? data?.data?.patientToken
@@ -60,6 +59,7 @@ const UpcomingAppointment = ({
       );
       setRoomID(data?.data?.roomId);
       setUsername(meetingDetails?.username);
+      setPatientToken(data.data?.patientToken);
       setInCall(true);
     },
     onError: () => {
@@ -91,7 +91,18 @@ const UpcomingAppointment = ({
             inset: 0, // shorthand for top: 0, right: 0, bottom: 0, left: 0
           }}
         >
-          <ZegoVideoCall userID={publicId} username={username} />
+          {/* <ZegoVideoCall
+            userID={publicId}
+            username={username}
+            patientToken={patientToken}
+          /> */}
+          {inCall && roomID && patientToken && username && (
+            <ZegoVideoCall
+              patientToken={patientToken}
+              userID={publicId}
+              username={username}
+            />
+          )}
         </div>
 
         {/* Leave button overlay */}

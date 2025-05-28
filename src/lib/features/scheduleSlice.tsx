@@ -6,6 +6,8 @@ interface ScheduleState {
   selectedDate: string | undefined;
   appointmentPublicId: string | undefined;
   doctorPricing: string | undefined;
+  appointmentDetails: string | undefined;
+  appointmentTopic: string | undefined;
 }
 
 const initialState: ScheduleState = {
@@ -14,6 +16,8 @@ const initialState: ScheduleState = {
   selectedDate: "",
   appointmentPublicId: "",
   doctorPricing: "",
+  appointmentDetails: "",
+  appointmentTopic: "",
 };
 
 const scheduleSlice = createSlice({
@@ -32,6 +36,12 @@ const scheduleSlice = createSlice({
     updateAppointmentPublicId: (state, action: PayloadAction<string>) => {
       state.selectedDate = action.payload;
     },
+    updateAppointmentDetails: (state, action: PayloadAction<string>) => {
+      state.appointmentDetails = action.payload;
+    },
+    updateAppointmentTopic: (state, action: PayloadAction<string>) => {
+      state.appointmentTopic = action.payload;
+    },
   },
 });
 
@@ -40,5 +50,7 @@ export const {
   updateTimeSlot,
   updateDate,
   updateAppointmentPublicId,
+  updateAppointmentDetails,
+  updateAppointmentTopic,
 } = scheduleSlice.actions;
 export default scheduleSlice.reducer;

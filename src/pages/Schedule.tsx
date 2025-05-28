@@ -37,10 +37,16 @@ import FileUploader from "../components/FileUploader";
 import { DefaultProfile } from "../components/ui/DefaultProfile";
 import { getFirstAndLastInitials } from "../utils/randomUtil";
 import { PaymentConfirmationModal } from "../components/modals/PaymentConfirmationModal";
+import { useDispatch } from "react-redux";
+import {
+  updateAppointmentDetails,
+  updateAppointmentTopic,
+} from "../lib/features/scheduleSlice";
 
 const Schedule = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
+  const dispatch = useDispatch();
   const queryParams = new URLSearchParams(search);
   const { control, handleSubmit, getValues } = useForm();
   const [showModal, setShowModal] = useState(false);
@@ -56,9 +62,13 @@ const Schedule = () => {
   const transactionId = queryParams.get("transaction_id");
 
   const userType = useAppSelector((state: RootState) => state.auth.userType);
-  const { doctorId, timeSlot, selectedDate } = useAppSelector(
-    (state: RootState) => state.schedule
-  );
+  const {
+    doctorId,
+    timeSlot,
+    selectedDate,
+    appointmentDetails,
+    appointmentTopic,
+  } = useAppSelector((state: RootState) => state.schedule);
 
   const date =
     typeof selectedDate === "string" ? parseISO(selectedDate) : selectedDate;
@@ -106,12 +116,6 @@ const Schedule = () => {
     successMessage: (data: any) => data?.remark,
     errorMessage: (error: any) =>
       error?.response?.data?.remark || error?.response?.data,
-
-    // onSuccessCallback: (data) => {
-    //   handleOpenNewTab(data?.data?.data?.link);
-    //   bookAppointment();
-    //   // dispatch(updateReferenceNumber(data?.paymentReferenceId));
-    // },
   });
 
   const generatePaymentLink = () => {
@@ -125,6 +129,9 @@ const Schedule = () => {
       ),
       currency: "NGN",
     };
+
+    dispatch(updateAppointmentDetails(getValues("details")));
+    dispatch(updateAppointmentTopic(getValues("topic")));
 
     createPaymentLinkMutation.mutate(paymentFormData, {
       onSuccess: (data) => {
@@ -410,7 +417,12 @@ const Schedule = () => {
           <PaymentConfirmationModal
             status={status}
             toggleModal={togglePaymentModal}
-            createAppointment={() => bookAppointment(getValues())}
+            createAppointment={() =>
+              bookAppointment({
+                details: appointmentDetails,
+                topic: appointmentTopic,
+              })
+            }
             transactionID={transactionId}
             serviceFee={singleDoctorData?.data?.pricing}
             customerEmail={singleDoctorData?.data?.email}
@@ -422,3 +434,18 @@ const Schedule = () => {
 };
 
 export default Schedule;
+
+// {
+//   "id": 41,
+//   "publicId": "11152438YLBW16068",
+//   "createdDate": "2025-05-28T11:15:24.82267",
+//   "lastModifiedDate": "2025-05-28T11:15:24.82267",
+//   "createdBy": "fygabubuh",
+//   "lastModifiedBy": "fygabubuh",
+//   "patientToken": "eyJhbGciOiJIUzI1NiJ9.eyJyb29tX2lkIjoiNmJlNGNhNTEtOWM0ZS00ZjllLWFlYjEtN2E4YTU0OTk2ZDNjIiwibmJmIjoiMjAyNS0wNS0yOFQxNTowMDowMFoiLCJlZmZlY3RpdmVfdGltZV9pbl9zZWNvbmRzIjoiMzYwMCIsInVzZXJfaWQiOiIxMDA4NTcwOUhPN0YyNzQ2OCIsImFjdGlvbiI6Im1lZXRpbmciLCJzZWNyZXQiOiI3NzU0NWFlYmY0MjhlZTZjYTJiNGQ2ZTY4NDJiNTcyOSIsImFwcF9pZCI6IjU3NjU5MDMzOCIsImVtYWlsIjoicmVhbFBhdGllbnRAbWFpbGluYXRvci5jb20iLCJ1c2VybmFtZSI6ImhpamljIiwic3ViIjoicmVhbFBhdGllbnRAbWFpbGluYXRvci5jb20iLCJpYXQiOjE3NDg0NDUzMjQsImV4cCI6MTc0ODQ0ODAwMH0.Gexx-dlT7yGFCve1lbgKK26dOi1k-LXsB9sUriE3uV8",
+//   "doctorToken": "eyJhbGciOiJIUzI1NiJ9.eyJyb29tX2lkIjoiNmJlNGNhNTEtOWM0ZS00ZjllLWFlYjEtN2E4YTU0OTk2ZDNjIiwibmJmIjoiMjAyNS0wNS0yOFQxNTowMDowMFoiLCJlZmZlY3RpdmVfdGltZV9pbl9zZWNvbmRzIjoiMzYwMCIsInVzZXJfaWQiOiIwNTMwMTNONDJIU0YyNTQ3MiIsImFjdGlvbiI6Im1lZXRpbmciLCJzZWNyZXQiOiI3NzU0NWFlYmY0MjhlZTZjYTJiNGQ2ZTY4NDJiNTcyOSIsImFwcF9pZCI6IjU3NjU5MDMzOCIsImVtYWlsIjoiYmVzdERvY0BtYWlsaW5hdG9yLmNvbSIsInVzZXJuYW1lIjoiZnlnYWJ1YnVoIiwic3ViIjoiYmVzdERvY0BtYWlsaW5hdG9yLmNvbSIsImlhdCI6MTc0ODQ0NTMyNCwiZXhwIjoxNzQ4NDQ4MDAwfQ.qgPnbWrpc-ysXHPLEs47JFKX-Uxj1SufYQpSTUA86oM",
+//   "roomId": "6be4ca51-9c4e-4f9e-aeb1-7a8a54996d3c",
+//   "nbf": "2025-05-28T15:00:00Z"
+// }
+
+// eyJhbGciOiJIUzI1NiJ9.eyJyb29tX2lkIjoiNmJlNGNhNTEtOWM0ZS00ZjllLWFlYjEtN2E4YTU0OTk2ZDNjIiwibmJmIjoiMjAyNS0wNS0yOFQxNTowMDowMFoiLCJlZmZlY3RpdmVfdGltZV9pbl9zZWNvbmRzIjoiMzYwMCIsInVzZXJfaWQiOiIxMDA4NTcwOUhPN0YyNzQ2OCIsImFjdGlvbiI6Im1lZXRpbmciLCJzZWNyZXQiOiI3NzU0NWFlYmY0MjhlZTZjYTJiNGQ2ZTY4NDJiNTcyOSIsImFwcF9pZCI6IjU3NjU5MDMzOCIsImVtYWlsIjoicmVhbFBhdGllbnRAbWFpbGluYXRvci5jb20iLCJ1c2VybmFtZSI6ImhpamljIiwic3ViIjoicmVhbFBhdGllbnRAbWFpbGluYXRvci5jb20iLCJpYXQiOjE3NDg0NDUzMjQsImV4cCI6MTc0ODQ0ODAwMH0.Gexx-dlT7yGFCve1lbgKK26dOi1k-LXsB9sUriE3uV8

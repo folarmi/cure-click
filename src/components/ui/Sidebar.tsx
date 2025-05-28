@@ -261,7 +261,7 @@ const Sidebar = () => {
         </DropdownMenu.Root>
 
         <div
-          className={`bg-white w-full z-50 absolute right-0 top-0 bottom-0 transform transition-transform duration-1000 ease-in-out ${
+          className={`lg:hidden bg-white w-full z-50 absolute right-0 top-0 bottom-0 transform transition-transform duration-1000 ease-in-out ${
             showSideBar ? "translate-x-0" : "translate-x-full"
           }`}
         >
