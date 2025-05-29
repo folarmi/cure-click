@@ -14,7 +14,7 @@ type Prop = {
 
 const PaymentConfirmationModal = ({
   // toggleModal,
-  status,
+  // status,
   createAppointment,
   transactionID,
   serviceFee,

@@ -223,7 +223,7 @@ const DoctorAccountProfile = () => {
 
                   <Tabs.Content value="reviews">
                     <Box className="mt-5">
-                      <NumberOfReview />
+                      <NumberOfReview total={4} />
                       <Review
                         title="Review Title"
                         numberOfRating={4}
