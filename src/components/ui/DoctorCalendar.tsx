@@ -62,7 +62,9 @@ const DoctorCalendar = ({
   const dispatch = useAppDispatch();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [availableTimes, setAvailableTimes] = useState<any>([]);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState();
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<
+    string | undefined
+  >();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const events = transformToCalendarEvents(scheduleData);
