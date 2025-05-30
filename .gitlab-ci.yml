@@ -5,8 +5,6 @@ stages:
   - deploy_image
 
 variables:
-  # DOCKER_HOST: tcp://docker:2375
-  # DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
   DOCKER_IMAGE_NAME: $(echo "cureclick-frontend-$CI_COMMIT_REF_NAME" | tr '.' '-')
   DOCKER_REGISTRY: registry.gitlab.com/biyartech1/cure-click-apps/cure-click-frontend:$CI_COMMIT_REF_NAME
@@ -25,11 +23,15 @@ build_project:
     - echo "DOCKER_REGISTRY in build stage:" $DOCKER_REGISTRY
     - echo "Installing dependencies..."
     - npm install
+    - echo "Creating WEB-INF directory..."
+    - mkdir -p dist/WEB-INF
+    - cp public/web.xml dist/WEB-INF/web.xml
     - echo "Building the React app..."
     - npm run build
     - echo "Build completed. Listing files..."
     - ls -la
-    - ls dist
+    - ls -la dist
+    - ls -la dist/WEB-INF
   artifacts:
     paths:
       - dist/
@@ -45,20 +47,19 @@ build_image:
     - echo "Building Docker image..."
     - docker build -t $DOCKER_REGISTRY .
     - echo "Pushing Docker image..."
-    - docker image
     - docker push "$DOCKER_REGISTRY"
     - echo "Docker image $DOCKER_REGISTRY built and pushed successfully."
 
 deploy_static_files:
   stage: deploy_static
   tags:
-    - windows # Your actual Windows runner tag
+    - windows
   except:
     - main
   script:
     - echo "Exporting Static files"
     - ls -Force
-    - echo "Replacing files in the fan-farm folder in Tomcat"
+    - echo "Deploying files to Tomcat"
     - |
       $TOMCAT_DIR = "C:\Program Files\Apache Software Foundation\Tomcat 11.0_Tomcat\webapps\ROOT"
       $OUT_DIR = "dist"
@@ -67,16 +68,23 @@ deploy_static_files:
       if (-Not (Test-Path -Path $TOMCAT_DIR)) {
           Write-Host "Directory does not exist. Creating: $TOMCAT_DIR"
           New-Item -ItemType Directory -Path $TOMCAT_DIR -Force | Out-Null
-      } else {
-          Write-Host "Directory already exists: $TOMCAT_DIR"
       }
 
-      # Remove existing files in TOMCAT_DIR
-      Write-Host "Removing existing files in $TOMCAT_DIR"
-      Remove-Item "$TOMCAT_DIR\*" -Recurse -Force
+      # Remove existing files except WEB-INF if it exists
+      Write-Host "Cleaning Tomcat directory (preserving WEB-INF)"
+      Get-ChildItem -Path $TOMCAT_DIR -Exclude 'WEB-INF' | Remove-Item -Recurse -Force
 
-      # Copy new files to TOMCAT_DIR
-      Write-Host "Copying files from $OUT_DIR to $TOMCAT_DIR"
-      Copy-Item "$OUT_DIR\*" -Destination $TOMCAT_DIR -Recurse
+      # Copy new files
+      Write-Host "Copying new files to $TOMCAT_DIR"
+      Copy-Item "$OUT_DIR\*" -Destination $TOMCAT_DIR -Recurse -Force
 
-      Write-Host "fan-farm folder in Tomcat replaced with new build files."
+      # Ensure web.xml is properly placed
+      if (Test-Path "$OUT_DIR\WEB-INF\web.xml") {
+          if (-Not (Test-Path "$TOMCAT_DIR\WEB-INF")) {
+              New-Item -ItemType Directory -Path "$TOMCAT_DIR\WEB-INF" -Force | Out-Null
+          }
+          Copy-Item "$OUT_DIR\WEB-INF\web.xml" -Destination "$TOMCAT_DIR\WEB-INF\" -Force
+          Write-Host "web.xml deployed to WEB-INF directory"
+      }
+
+      Write-Host "Deployment to Tomcat completed successfully."

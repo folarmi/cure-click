@@ -2,7 +2,7 @@
 // // /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Calendar, DateHeaderProps } from "react-big-calendar";
-import { format, isSameDay } from "date-fns";
+import { format, isBefore, isSameDay, parse } from "date-fns";
 import {
   getTotalAvailableTimes,
   localizer,
@@ -151,6 +151,24 @@ const DoctorCalendar = ({
   const handleSelectedTimeSlot = () => {
     if (!selectedTimeSlot || !selectedDate) {
       toast.error("Missing required data: Time slot or date not selected");
+      return;
+    }
+
+    // Get start time from slot
+    const [startTime] = selectedTimeSlot.split(" - ");
+
+    // Parse the selected time on the selected date
+    const selectedStartDateTime = parse(
+      `${selectedDate.toDateString()} ${startTime}`,
+      "EEE MMM dd yyyy h:mm a",
+      new Date()
+    );
+
+    const now = new Date();
+
+    if (isBefore(selectedStartDateTime, now)) {
+      setSelectedDate(null);
+      toast.error("You cannot select a time in the past.");
       return;
     }
 
