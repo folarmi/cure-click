@@ -20,14 +20,13 @@ build_project:
   image: node:18-alpine
   script:
     - echo "CI_COMMIT_REF_NAME - $CI_COMMIT_REF_NAME"
-    - echo "DOCKER_REGISTRY in build stage:" $DOCKER_REGISTRY
     - echo "Installing dependencies..."
     - npm install
+    - echo "Building the React app..."
+    - npm run build
     - echo "Creating WEB-INF directory..."
     - mkdir -p dist/WEB-INF
     - cp public/web.xml dist/WEB-INF/web.xml
-    - echo "Building the React app..."
-    - npm run build
     - echo "Build completed. Listing files..."
     - ls -la
     - ls -la dist
