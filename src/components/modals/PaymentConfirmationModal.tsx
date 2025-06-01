@@ -30,10 +30,13 @@ const PaymentConfirmationModal = ({
 
   const handleAppointmentBooking = () => {
     verifyPaymentMutation.mutate({
-      serviceFee: serviceFee,
+      // serviceFee: serviceFee,
+      serviceFee: "90,000",
       currency: "NGN",
-      customerEmail,
+      // customerEmail,
+      customerEmail: "realPatient@mailinator.com",
     });
+    console.log(serviceFee, customerEmail);
   };
 
   return (

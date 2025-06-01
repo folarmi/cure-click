@@ -19,8 +19,7 @@ const ResetPassword = () => {
     successMessage: () => "Password reset successful!",
     errorMessage: (error: any) => error?.response?.data?.remark,
     method: "put",
-    onSuccessCallback: (data) => {
-      console.log(data);
+    onSuccessCallback: () => {
       navigate("/login");
     },
   });
